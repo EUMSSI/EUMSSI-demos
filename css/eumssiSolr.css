@@ -1,0 +1,343 @@
+/*************** TESTTING **************/
+/*************** ******** **************/
+video {
+  background-color: black;
+}
+.ui-loading-modal::before {
+  background-color: rgba(0, 0, 0, 0.25);
+  background-image: url("../images/bar-ajax-loader.gif");
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 100;
+  content: " ";
+  width: 100%;
+  height: 100%;
+}
+.result-panel-content .tabs-container {
+  height: 100%;
+  overflow: visible;
+  /* Override jQuery Theme*/
+  border-radius: 0px;
+  padding: 0px;
+}
+.result-panel-content .ui-tabs .ui-tabs-nav {
+  position: absolute;
+  top: -35px;
+  left: 0px;
+}
+.result-panel-content .ui-tabs .ui-tabs-panel {
+  overflow: auto;
+  height: 100%;
+  padding: 0px;
+}
+.content-panel.ui-layout-center {
+  overflow: visible !important;
+}
+.tab-content img {
+  display: block;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+}
+body .advancedSearch-panel {
+  background-color: #c7dae9;
+  opacity: 1;
+  z-index: 1;
+}
+body .widget-panel {
+  background-color: #eeeeee;
+  opacity: 1;
+  z-index: 1;
+}
+body,
+.header-panel,
+.search-panel {
+  background-color: #eeeeee;
+}
+/*************** ******** **************/
+/*************** TESTTING **************/
+/*************************** General ***************************/
+* {
+  padding: 0;
+  margin: 0;
+}
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: #333333;
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+}
+img {
+  border: none;
+}
+a {
+  color: #6998f0;
+  text-decoration: none;
+}
+a:hover {
+  color: #000000;
+  text-decoration: underline;
+}
+.clear {
+  clear: both;
+}
+p {
+  margin-bottom: 5px;
+  text-align: left;
+}
+/*************************** ****** ***************************/
+/*************************** LAYOUT GENERAL ***************************/
+.ui-layout-resizer {
+  background-color: #777777;
+}
+.ui-layout-toggler {
+  background-color: #ff4900;
+}
+.content-panel .ui-layout-resizer-west,
+.content-panel .ui-layout-resizer-east {
+  background-color: #6998f0;
+}
+.content-panel .ui-layout-resizer-west:hover,
+.content-panel .ui-layout-resizer-east:hover {
+  background-color: #97b8f5;
+}
+.button-pin {
+  position: absolute;
+  top: 0;
+  margin: 1px;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+}
+.button-pin.button-pin-west {
+  right: 0px;
+}
+.button-pin.button-pin-east {
+  left: 0px;
+}
+.button-pin.ui-layout-button-pin-up {
+  background-image: url("../lib/jquery/images/ui-icons_222222_256x240.png");
+  background-position: -128px -144px;
+  border: 1px solid #666666;
+}
+.button-pin.ui-layout-button-pin-down {
+  background-image: url("../lib/jquery/images/ui-icons_222222_256x240.png");
+  background-position: -144px -144px;
+  border: 1px solid #ff4900;
+}
+.ui-layout-toggler-none {
+  display: none !important;
+}
+.ui-layout-resizer-none {
+  display: none !important;
+}
+/*************************** ****** ***************************/
+/*************************** Header ***************************/
+.header-panel h1 {
+  padding: 20px 0 5px 10px;
+  font-size: 20px;
+  color: #1b2c33;
+}
+.header-panel h2 {
+  padding-left: 10px;
+  color: #666666;
+  font-size: 14px;
+  font-weight: 100;
+}
+img.logo {
+  float: right;
+}
+/*************************** Center (Result) ***************************/
+.result-panel-content {
+  text-align: justify;
+  overflow: visible;
+}
+.result-panel-content h2 {
+  padding: 15px 0 5px 0;
+  color: #1b2c33;
+  font-size: 20px;
+  font-weight: 100;
+}
+.result-panel-content h2:hover {
+  color: #ff4900;
+  text-decoration: underline;
+  -webkit-transition: all 200ms;
+  -o-transition: all 200ms;
+  -moz-transition: all 200ms;
+  transition: all 200ms;
+}
+.result-panel-content .tab-content {
+  padding: 10px 20px 10px 40px;
+}
+.result-panel-content .date {
+  font-size: 10px;
+}
+.pager,
+.pager-header {
+  display: inline;
+}
+.pager li,
+.links li {
+  list-style-type: none;
+  display: inline;
+}
+#selection {
+  padding: 10px 15px 0;
+}
+#selection li {
+  list-style-type: none;
+}
+.resultWidget-placeholder {
+  padding-top: 1px;
+}
+p.links,
+a.links {
+  cursor: pointer;
+}
+/*************************** search-panel (LEFT Side) ***************************/
+.search-panel-content,
+.advancedSearch-panel-content {
+  padding: 0 0 10px 10px;
+  overflow: auto;
+}
+.search-panel-content h2,
+.advancedSearch-panel-content h2 {
+  clear: left;
+  padding-top: 20px;
+  color: #333333;
+  font-size: 13px;
+}
+.search-panel-content input.text-widget-input,
+.advancedSearch-panel-content input.text-widget-input {
+  width: 200px;
+}
+.search-panel-content select,
+.advancedSearch-panel-content select {
+  width: 150px;
+}
+.search-panel-content .filter-container,
+.advancedSearch-panel-content .filter-container {
+  position: relative;
+}
+.search-panel-content .filter-container h2,
+.advancedSearch-panel-content .filter-container h2 {
+  display: inline-block;
+}
+.search-panel-content .filter-container .ui-checkbox-input,
+.advancedSearch-panel-content .filter-container .ui-checkbox-input {
+  margin: 0px 2px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.search-panel-content .filter-container .ui-checkbox-label,
+.advancedSearch-panel-content .filter-container .ui-checkbox-label {
+  font-size: 10px;
+  font-style: italic;
+}
+/*************************** Dialog ***************************/
+span.info-label {
+  font-weight: bold;
+  color: #ff4900;
+}
+span.info-label::after {
+  content: ": ";
+}
+/*************************** Dialog & New Filter ***************************/
+.dialog-new-filter p {
+  margin-bottom: 1em;
+}
+.dialog-new-filter p label {
+  width: 8em;
+  text-align: right;
+  display: inline-block;
+  margin-right: 0.5em;
+}
+.dialog-new-filter p input {
+  width: 20em;
+}
+/*************************** Main Actions Buttons ***************************/
+button.ui-button-main {
+  padding: 5px 10px;
+  margin: 1px 0px;
+  width: 200px;
+  text-align: initial;
+  background-color: #777777;
+  color: #ffffff;
+  font-weight: bold;
+  border-style: solid;
+  border-left: 10px solid #1b2c33;
+  border-top: 0px;
+  border-bottom: 0px;
+  border-right: 0px;
+}
+button.ui-button-main:hover {
+  /*border-left: 15px solid @rgb_seablue;*/
+  background-color: #ff4900;
+}
+button.btn-remove-filter {
+  position: absolute;
+  top: 40px;
+  right: 18px;
+  border-radius: 15px;
+  background: none;
+  border: none;
+  opacity: 0.2;
+}
+button.btn-remove-filter:hover {
+  opacity: 1;
+}
+/*************************** Errors ***************************/
+.ui-error-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff0000;
+}
+/*************************** Text Slice more/less ***************************/
+span.more {
+  display: inline-block;
+  vertical-align: sub;
+  cursor: pointer;
+}
+.ui-after-points::after {
+  content: "... ";
+}
+/*************************** Tag Cloud Widget ***************************/
+.tagcloud {
+  padding: 5px 0px;
+}
+.tagcloud * {
+  display: inline-block;
+}
+.tagcloud .tagcloud-item {
+  width: 200px;
+  font-weight: bold;
+}
+.tagcloud .tagcloud-item-count {
+  margin-left: 5px;
+  font-weight: normal;
+}
+.tagcloud .ui-checkbox-container {
+  margin-bottom: 5px;
+}
+.tagcloud .ui-checkbox-container:hover {
+  background-color: rgba(255, 77, 0, 0.1);
+}
+.tagcloud .ui-checkbox-container input {
+  vertical-align: top;
+  margin: 2px 2px;
+}
+/*************************** OVERRIDE - jQuery UI ***************************/
+body .ui-widget-header {
+  border: none;
+  background: none;
+}
+body .ui-widget-content a {
+  color: #6998f0;
+}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>EUMSSI</title>
+    <link rel="icon"
+          type="image/png"
+          href="images/favicon-2.png" />
+
+    <link rel="stylesheet" href="css/eumssiSolr.css">
+    <!--ONLINE APIs-->
+    <!--<script type='text/javascript' src='http://www.google.com/jsapi'></script>-->
+    <!---->
+    <script src="lib/jquery/jquery-1.11.2.min.js"></script>
+    <script src="lib/jquery/jquery-ui.min.js"></script>
+    <script src="lib/jquery/jquery.layout-1.4.4.js"></script>
+    <!--<script src="lib/jquery/jquery.layout.pseudoClose.min-1.1.js"></script>-->
+    <!--<script src="lib/jquery/jquery.layout.slideOffscreen.min-1.1.js"></script>-->
+    <link rel="stylesheet" href="lib/jquery/jquery-ui.min.css">
+
+    <script src="js/Utils.js"></script>
+
+    <script src="js/eumssiSolr.js"></script>
+
+    <script src="lib/ajax-solr/Core.js"></script>
+    <script src="lib/ajax-solr/AbstractManager.js"></script>
+    <script src="lib/ajax-solr/Parameter.js"></script>
+    <script src="lib/ajax-solr/ParameterStore.js"></script>
+    <script src="lib/ajax-solr/AbstractWidget.js"></script>
+    <script src="lib/ajax-solr/AbstractFacetWidget.js"></script>
+    <script src="lib/ajax-solr/AbstractTextWidget.js"></script>
+
+    <script src="js/Manager.jquery.js"></script>
+
+    <script src="js/widgets/ResultWidget.js"></script>
+    <script src="js/widgets/jquery/PagerWidget.js"></script>
+    <script src="js/widgets/TextWidget.js"></script>
+    <script src="js/widgets/SelectLocaleWidget.js"></script>
+    <script src="js/widgets/SelectVideoQualityWidget.js"></script>
+    <script src="js/widgets/FilterManagerWidget.js"></script>
+    <script src="js/widgets/TagFacetWidget.js"></script>
+    <script src="js/widgets/MapChartWidget.js"></script>
+
+
+
+
+</head>
+<body>
+
+    <div class="header-panel ui-layout-north">
+    <!--## HEADER PANEL ##-->
+        <img class="logo" src="images/eumssi-logo.png" alt="Logo">
+        <h1>EUMSSI Project - Demonstration</h1>
+    <!--####-->
+    </div>
+
+    <div class="search-panel ui-layout-west">
+        <div class="search-panel-content panel-content">
+        <!--## SEARCH PANEL ##-->
+
+            <button class="btn-do-search ui-button-main">Search</button>
+
+            <div class="mainSearch-placeholder"></div>
+
+            <h2>Locale</h2>
+            <div class="localeWidget-placeholder"></div>
+            <h2>Video</h2>
+            <div class="videoQualityWidget-placeholder"></div>
+
+            <div class="source-placeholder tagcloud" ></div>
+
+            <div class="clear"></div>
+        <!--####-->
+        </div>
+    </div>
+
+    <div class="content-panel ui-layout-center">
+
+        <div class="advancedSearch-panel ui-layout-west">
+            <div class="advancedSearch-panel-content panel-content">
+            <!--## ADVANCED SEARCH PANEL ##-->
+
+                <!--<h3>Advanced Filter</h3>-->
+                <button class="btn-do-add-filter ui-button-main">Add Filter</button></br>
+                <div class="generatedFilters-placeholder"></div>
+
+            <!--####-->
+            </div>
+            <button class="button-pin button-pin-west"></button>
+        </div>
+
+        <div class="result-panel ui-layout-center">
+            <div class="result-panel-content panel-content ui-layout-content">
+                <div class="tabs-container">
+                    <ul>
+                        <li><a href="#fragment-1">Result</a></li>
+                        <li><a href="#fragment-2">Map</a></li>
+                        <li><a href="#fragment-3">Sample</a></li>
+                    </ul>
+                    <div id="fragment-1" >
+                        <div class="tab-content">
+                            <!--## RESULT TAB ##-->
+
+                            <div class="navigation">
+                                <ul class="pager"></ul>
+                                <div class="pager-header"></div>
+                            </div>
+                            <div class="resultWidget-placeholder"></div>
+                            <br>
+                            <div class="navigation">
+                                <ul class="pager"></ul>
+                            </div>
+
+                            <!--####-->
+                        </div>
+                    </div>
+                    <div id="fragment-2">
+                        <div class="tab-content">
+                            <!--## TAB 2 CONTENT ##-->
+                            <div class='mapChart-placeholder'></div>
+                            <!--####-->
+                        </div>
+                    </div>
+                    <div id="fragment-3">
+                        <div class="tab-content">
+                            <!--## TAB 3 CONTENT ##-->
+                            <h1>SAMPLE</h1>
+                            <img src="http://3.bp.blogspot.com/-aepyVr_3pt0/U3QB_D_nNVI/AAAAAAABmzU/6xPuRaFH33c/s1600/Tag+cloud.png">
+                            <!--####-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="widget-panel ui-layout-east">
+            <div class="widget-panel-content panel-content ui-layout-content">
+
+                <!--<h2>AuxWidgets</h2>-->
+
+            </div>
+            <button class="button-pin button-pin-east"></button>
+        </div>
+
+    </div>
+
+    <div class="footer-panel ui-layout-south"></div>
+
+</body>
+</html>
