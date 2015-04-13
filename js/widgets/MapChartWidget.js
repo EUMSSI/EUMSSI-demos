@@ -67,7 +67,7 @@
 		_refreshChartData: function(){
 			var facet, countryCode, data,
 				countryDataArray = [],
-				facetCount = this.manager.response.facet_counts.facet_fields['meta.extracted.text.ner'];
+				facetCount = this.manager.response.facet_counts.facet_fields[CONF.MAP_LOCATION_FIELD_NAME];
 
 			countryDataArray.push(['Country', 'Text', 'Count']);
 			for( facet in facetCount ){
@@ -135,22 +135,20 @@
 			this.manager.store.removeByValue('fq', this._lastfq);
 			//Create new FQ
 			var region = event.region;
-			this._lastfq = 'meta.extracted.text.ner:("LOCATION:' + UTIL.countryCode_SWAP[region]+'")';
+			this._lastfq = CONF.MAP_LOCATION_FIELD_NAME + ':("' + UTIL.countryCode_SWAP[region]+ '")';
 			this.manager.store.addByValue('fq', this._lastfq );
 			this.flag_MapChartRequest = true;
 			this.doRequest();
 		},
 
 		/**
-		 * Returns the country Code (ISO-3166) for the current country name as LOCATION: facet.
+		 * Returns the country Code (ISO-3166) for the current country name.
 		 * @param {String} facetName - The name of the facet with the country location
 		 * @returns {String} the code on ISO-3166 format
 		 * @private
 		 */
 		_getCountryCode: function(facetName){
-			//Clean the "LOCATION:"
-			var name = facetName.replace("LOCATION:","");
-			return UTIL.countryCode[name];
+			return UTIL.countryCode[facetName];
 		}
 
 	});

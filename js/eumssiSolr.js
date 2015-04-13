@@ -81,17 +81,18 @@ var Manager;
 		Manager.store.addByValue('ident', 'true');
 
 		//Faceting Parametres
+
+
 		var params = {
 			'facet': true,
-			'facet.field': [ 'source', 'meta.extracted.text.ner' ],
+			'facet.field': [ 'source', CONF.MAP_LOCATION_FIELD_NAME ],
 
 			//'facet.limit': 20,	// Tagclud Size
 			'facet.mincount': 1,	// Min count to appear
 
 			'f.source.facet.limit': 10,
 
-			'f.meta.extracted.text.ner.facet.limit': 250,
-			'f.meta.extracted.text.ner.facet.prefix': 'LOCATION',
+			//'f.meta.extracted.text.ner.LOCATION.facet.prefix': 'LOCATION',
 
 			//'facet.date': 'date',
 			//'facet.date.start': '1987-02-26T00:00:00.000Z/DAY',
@@ -100,6 +101,8 @@ var Manager;
 			'json.nl': 'map'
 			//'timeAllowed': 100		// Tiempo límite para la consulta (ms)
 		};
+		params['f.' + CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
+
 		for (var name in params) {
 			Manager.store.addByValue(name, params[name]);
 		}

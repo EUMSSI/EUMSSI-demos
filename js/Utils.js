@@ -6,6 +6,8 @@
 var CONF = {};
 var UTIL = {};
 
+CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text.ner.LOCATION";
+
 
 // Country Code ISO-3166-2
 UTIL.countryCode = [];
