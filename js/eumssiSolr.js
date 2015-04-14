@@ -73,6 +73,13 @@ var Manager;
 			target: '.mapChart-placeholder'
 		}));
 
+		Manager.addWidget(new AjaxSolr.TagcloudWidget({
+			id: 'TagCloudWidget',
+			target: '.tagCloud-placeholder',
+			field: 'meta.extracted.text.dbpedia.PERSON'
+		}));
+
+
 		Manager.init();
 		//Set Main Query to search on All
 		Manager.store.addByValue('q', '*:*');
@@ -81,16 +88,16 @@ var Manager;
 		Manager.store.addByValue('ident', 'true');
 
 		//Faceting Parametres
-
-
 		var params = {
 			'facet': true,
-			'facet.field': [ 'source', CONF.MAP_LOCATION_FIELD_NAME ],
+			'facet.field': [ 'source', CONF.MAP_LOCATION_FIELD_NAME, 'meta.extracted.text.dbpedia.PERSON' ],
 
 			//'facet.limit': 20,	// Tagclud Size
 			'facet.mincount': 1,	// Min count to appear
 
 			'f.source.facet.limit': 10,
+			'f.meta.extracted.text.dbpedia.PERSON.facet.limit' : 50,
+
 
 			//'f.meta.extracted.text.ner.LOCATION.facet.prefix': 'LOCATION',
 

@@ -57,9 +57,9 @@
 		 */
 		_updateRender : function(items){
 			//Clean the items count
-			this.$target.find(".ui-checkbox-container .tagcloud-item-count").html("");
+			this.$target.find(".ui-checkbox-container .tagfacet-item-count").html("");
 			for (var i = 0; i < items.length ; i++) {
-				this.$target.find(".ui-checkbox-container."+items[i].facet+" .tagcloud-item-count").text("("+ items[i].count +")");
+				this.$target.find(".ui-checkbox-container."+items[i].facet+" .tagfacet-item-count").text("("+ items[i].count +")");
 			}
 		},
 
@@ -79,7 +79,7 @@
 				var $checkboxContainer = $("<div class='ui-checkbox-container'>")
 				$checkboxContainer.addClass(facet);
 				$checkboxContainer.append($("<input type='checkbox'>").prop("data-value",facet).prop("id",checkboxID));
-				$checkboxContainer.append($('<label class="tagcloud-item"></label>').html( facet +"<span class='tagcloud-item-count'> ("+count+")</span>").prop("for",checkboxID));
+				$checkboxContainer.append($('<label class="tagfacet-item"></label>').html( facet +"<span class='tagfacet-item-count'> ("+count+")</span>").prop("for",checkboxID));
 				$checkboxContainer.append($("<br>"));
 
 				//Bind Event

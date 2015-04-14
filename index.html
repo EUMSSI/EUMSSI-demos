@@ -11,15 +11,17 @@
     <!--ONLINE APIs-->
     <!--<script type='text/javascript' src='http://www.google.com/jsapi'></script>-->
     <!---->
+    <script src="lib/underscore/underscore-min.js"></script>
     <script src="lib/jquery/jquery-1.11.2.min.js"></script>
     <script src="lib/jquery/jquery-ui.min.js"></script>
     <script src="lib/jquery/jquery.layout-1.4.4.js"></script>
+    <script src="lib/jquery/jquery.freetile.js"></script>
+    <!--<script src="lib/jquery/jquery.flex.js"></script>-->
     <!--<script src="lib/jquery/jquery.layout.pseudoClose.min-1.1.js"></script>-->
     <!--<script src="lib/jquery/jquery.layout.slideOffscreen.min-1.1.js"></script>-->
     <link rel="stylesheet" href="lib/jquery/jquery-ui.min.css">
 
     <script src="js/Utils.js"></script>
-
     <script src="js/eumssiSolr.js"></script>
 
     <script src="lib/ajax-solr/Core.js"></script>
@@ -40,6 +42,7 @@
     <script src="js/widgets/FilterManagerWidget.js"></script>
     <script src="js/widgets/TagFacetWidget.js"></script>
     <script src="js/widgets/MapChartWidget.js"></script>
+    <script src="js/widgets/TagCloudWidget.js"></script>
 
 
 
@@ -67,7 +70,7 @@
             <h2>Video</h2>
             <div class="videoQualityWidget-placeholder"></div>
 
-            <div class="source-placeholder tagcloud" ></div>
+            <div class="source-placeholder tagfacet" ></div>
 
             <div class="clear"></div>
         <!--####-->
@@ -95,7 +98,7 @@
                     <ul>
                         <li><a href="#fragment-1">Result</a></li>
                         <li><a href="#fragment-2">Map</a></li>
-                        <li><a href="#fragment-3">Sample</a></li>
+                        <li><a href="#fragment-3">People</a></li>
                     </ul>
                     <div id="fragment-1" >
                         <div class="tab-content">
@@ -124,8 +127,8 @@
                     <div id="fragment-3">
                         <div class="tab-content">
                             <!--## TAB 3 CONTENT ##-->
-                            <h1>SAMPLE</h1>
-                            <img src="http://3.bp.blogspot.com/-aepyVr_3pt0/U3QB_D_nNVI/AAAAAAABmzU/6xPuRaFH33c/s1600/Tag+cloud.png">
+                            <!--<h1>PERSONS TAG CLOUD</h1>-->
+                            <div class="tagCloud-placeholder"></div>
                             <!--####-->
                         </div>
                     </div>
