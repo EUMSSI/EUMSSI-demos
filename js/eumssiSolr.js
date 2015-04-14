@@ -55,8 +55,8 @@ var Manager;
 				//{key:"meta.source.text",label:"Content Search", showInResultCheck: false},
 				{key:"meta.extracted.audio_transcript",label:"Audio Transcript", showInResultCheck: true},
 				{key:"meta.extracted.video_ocr.best",label:"OCR", showInResultCheck: true},
-				{key:"meta.extracted.text.dbpedia",label:"DBPedia", showInResultCheck: true},
-				{key:"meta.extracted.text.ner",label:"NER", showInResultCheck: true}
+				{key:"meta.extracted.text.dbpedia.PERSON",label:"Person", showInResultCheck: true},
+				{key:"meta.extracted.text.dbpedia.LOCATION",label:"Location", showInResultCheck: true}
 				//...
 			]
 		}));
@@ -81,6 +81,8 @@ var Manager;
 
 
 		Manager.init();
+		Manager.retrieveSolrFieldsNames();
+
 		//Set Main Query to search on All
 		Manager.store.addByValue('q', '*:*');
 		//Example: Search Only items with headline

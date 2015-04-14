@@ -253,8 +253,9 @@ span.info-label::after {
   display: inline-block;
   margin-right: 0.5em;
 }
-.dialog-new-filter p input {
-  width: 20em;
+.dialog-new-filter p input,
+.dialog-new-filter p select {
+  min-width: 15em;
 }
 /*************************** Main Actions Buttons ***************************/
 button.ui-button-main {

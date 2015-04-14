@@ -78,7 +78,7 @@
 						$img.attr("src", "images/dummy.png");
 					}
 					//Replace the <a> text content with the <img>
-					this.$target.find("a[data-id='" + facetId + "']").html($img);
+					this.$target.find('a[data-id="' + facetId + '"]').html($img);
 				}, this);
 
 				this.onAllImagesReady(this.$target.find("img"), function(){

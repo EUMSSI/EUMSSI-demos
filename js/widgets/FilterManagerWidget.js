@@ -29,17 +29,19 @@
 
 			//Dialog with the input Data
 			$dialog = $('<div class="dialog-new-filter">' +
-			'<p><label>Search Key*</label><input type="text" class="searchKey"></p>' +
+			'<p><label>Search Key*</label><select class="searchKey"></select></p>' +
 			'<p><label>Label*</label><input type="text" class="searchLabel"></p></div>');
+
+			this._loadSelectFieldsOptions($dialog.find("select"));
 
 			$dialog.dialog({
 				title: "Add new Search filter",
-				width: 450,
+				width: "auto",
 				resizable: false,
 				modal: true,
 				buttons: {
 					"Add": function(){
-						fieldKey = $dialog.find("input.searchKey").val();
+						fieldKey = $dialog.find("select.searchKey").val();
 						fieldLabel = $dialog.find("input.searchLabel").val();
 						// Improve Validation
 						if(fieldKey && fieldLabel){
@@ -116,6 +118,12 @@
 			}
 			this.manager.widgets["result"].removeDynamicAttribute(key);
 			this.addedIDs.pop(genKey);
+		},
+
+		_loadSelectFieldsOptions: function($select){
+			_.each(this.manager._solrFields, function(element){
+				$select.append($("<option>").attr("value",element).text(element));
+			},this);
 		}
 
 	});
