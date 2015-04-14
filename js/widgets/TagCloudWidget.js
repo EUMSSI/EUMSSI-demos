@@ -58,7 +58,7 @@
 		 *
 		 */
 		getWikipediaImages: function(facetes){
-			var urlRoot = "http://en.wikipedia.org/w/api.php?",
+			var urlRoot = "http://eumssi.cloudapp.net/wikiBridge/w/api.php?",
 				urlParams = [];
 
 			urlParams.push("action=query");
