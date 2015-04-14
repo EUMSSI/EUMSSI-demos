@@ -38,23 +38,15 @@
 		renderItem: function(item,size) {
 			var url = "http://wikipedia.org/wiki/" + item.facet;
 			return $('<a href="'+url+'" target="_blank" class="tagcloud_item"></a>')
-				.html(item.facet.replace(/_/g,"&nbsp;"))
+				//.html(item.facet.replace(/_/g,"&nbsp;")) // Text
 				.addClass('tagcloud_size_' + size)
 				.attr('data-id',item.facet);
-				//.click(this.clickHandler.bind(this,item.facet));
 		},
-
-/*
-		clickHandler: function(facet){
-			//var url = "http://dbpedia.org/resource/" + facet;
-			var url = "http://wikipedia.org/wiki/" + facet;
-			window.open(url,'_blank');
-		},
-*/
 
 		/**
 		 * Get images from the wikipedia
 		 * example: "http://en.wikipedia.org/w/api.php?action=query&titles=Barack_Obama|Muhammad|John_Kerry&prop=pageimages&format=json&pithumbsize=150&pilimit=50"
+		 * apache.conf proxy: ProxyPass /wikiBridge http://en.wikipedia.org/
 		 *
 		 */
 		getWikipediaImages: function(facetes){
@@ -77,43 +69,36 @@
 		getWikipediaImages_success: function(response){
 			if(response && response.query && response.query.pages) {
 				_.each(response.query.pages, function(obj){
+					var facetId = obj.title.replace(/ /g, "_");
+					var $img = $("<img>").attr("title",obj.title);
+
 					if (obj.thumbnail && obj.thumbnail.source) {
-						var facetId = obj.title.replace(/ /g, "_");
-						var $img = $("<img>").attr("src", obj.thumbnail.source);
-						this.$target.find("a[data-id='" + facetId + "']")//.attr('width',obj.thumbnail.width)
-							//.attr('height',obj.thumbnail.height)
-							//.attr('style',"left: 0px; top: 0px; width: 250px; height: 125px; overflow: hidden;")
-							.html($img);
+						$img.attr("src", obj.thumbnail.source);
+					} else {
+						$img.attr("src", "images/dummy.png");
 					}
+					//Replace the <a> text content with the <img>
+					this.$target.find("a[data-id='" + facetId + "']").html($img);
 				}, this);
 
-
-				this.onImagesReady(this.$target.find("img"), handler);
-
-				function handler() {
-					console.log("Images Loaded.")
+				this.onAllImagesReady(this.$target.find("img"), function(){
 					$(this).parents(".tagCloud-placeholder").freetile({
-						//animate: true,
-						//elementDelay: 1,
 						containerAnimate: true
 					});
-				}
-
+				});
 			}
 		},
 
 
-		onImagesReady: function (selector, handler) {
+		onAllImagesReady: function (selector, handler) {
 			var list = typeof selector === 'string' ? $(selector) : selector;
 
 			list.each(function(index, element) {
-				$(element).bind('load', fireHandler);
+				$(element).one('load', fireHandler);
 			});
 
 			function fireHandler() {
-				$(this).unbind('load', fireHandler );
 				if (checkListComplete(list)) {
-					// Call the handler
 					handler.call(this);
 				}
 			}
