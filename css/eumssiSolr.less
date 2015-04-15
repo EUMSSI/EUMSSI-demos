@@ -10,92 +10,19 @@
 @rgb_orange:    #FF4900;
 @rgb_red:       #FF0000;
 
-/*************** TESTTING **************/
+/*************** MISC **************/
 /*************** ******** **************/
 
-video {
-    background-color: black;
-}
-
-.ui-loading-modal::before {
-    background-color: rgba(0, 0, 0, 0.25);
-    background-image: url("../images/bar-ajax-loader.gif");
-    background-position: center;
-    background-repeat: no-repeat;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    z-index: 100;
-    content: " ";
-    width: 100%;
-    height: 100%;
-}
-
-.result-panel-content .tabs-container {
-    height: 100%;
-    overflow: visible;
-    /* Override jQuery Theme*/
-    border-radius: 0px;
-    padding: 0px;
-}
-
-.result-panel-content .ui-tabs .ui-tabs-nav{
-    position: absolute;
-    top: -35px;
-    left: 0px;
-}
-
-.result-panel-content .ui-tabs .ui-tabs-panel {
-    overflow: auto;
-    height: 100%;
-    width: 100%;
-    padding: 0px;
-}
-
-.content-panel.ui-layout-center {
-    overflow: visible !important;
-}
 
 
-//.tab-content img{
-//    display: block;
-//    margin-top: 50px;
-//    margin-left: auto;
-//    margin-right: auto;
-//}
 
 
-//body .search-panel {
-//    background-color: #FFAAAA;
-//    opacity: 0.8;
-//    z-index: 1;
-//}
-//
-//body .result-panel {
-//    background-color: #AAAAFF;
-//    opacity: 0.8;
-//}
-//
-body .advancedSearch-panel {
-    background-color: @rgb_background_widget;
-    opacity: 1;
-    z-index: 1;
-}
 
-body .widget-panel {
-    background-color: @rgb_background;
-    opacity: 1;
-    z-index: 1;
-}
-
-body, .header-panel, .search-panel {
-    background-color: @rgb_background;
-}
 
 /*************** ******** **************/
-/*************** TESTTING **************/
+/*************** MISC **************/
 
-/*************************** General ***************************/
+/*************************** Common ***************************/
 * {
     padding: 0;
     margin: 0;
@@ -133,7 +60,10 @@ p {
     margin-bottom: 5px;
     text-align: left;
 }
-/*************************** ****** ***************************/
+
+video {
+    background-color: black;
+}
 
 /*************************** LAYOUT GENERAL ***************************/
 
@@ -142,6 +72,10 @@ p {
 }
 .ui-layout-toggler {
     background-color: @rgb_orange;
+}
+
+.content-panel.ui-layout-center {
+    overflow: visible !important;
 }
 
 .content-panel .ui-layout-resizer-west,
@@ -184,8 +118,37 @@ p {
     display: none !important;
 }
 
+.ui-loading-modal::before {
+    background-color: rgba(0, 0, 0, 0.25);
+    background-image: url("../images/bar-ajax-loader.gif");
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 100;
+    content: " ";
+    width: 100%;
+    height: 100%;
+}
 
-/*************************** ****** ***************************/
+body .advancedSearch-panel {
+    background-color: @rgb_background_widget;
+    opacity: 1;
+    z-index: 1;
+}
+
+body .widget-panel {
+    background-color: @rgb_background;
+    opacity: 1;
+    z-index: 1;
+}
+
+body,
+.header-panel,
+.search-panel {
+    background-color: @rgb_background;
+}
 
 /*************************** Header ***************************/
 
@@ -232,6 +195,28 @@ img.logo {
     .date{
         font-size: 10px;
     }
+    .tabs-container {
+        height: 100%;
+        overflow: visible;
+        /* Override jQuery Theme*/
+        border-radius: 0px;
+        padding: 0px;
+    }
+
+    .ui-tabs {
+        .ui-tabs-nav{
+            position: absolute;
+            top: -35px;
+            left: 0px;
+        }
+        .ui-tabs-panel {
+            overflow: auto;
+            height: 100%;
+            width: 100%;
+            padding: 0px;
+        }
+    }
+
 }
 
 .pager,
@@ -300,9 +285,6 @@ span.info-label{
     &::after {
         content: ": ";
     }
-}
-span.info-value{
-
 }
 
 /*************************** Dialog & New Filter ***************************/

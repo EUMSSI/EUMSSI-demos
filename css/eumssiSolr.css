@@ -1,60 +1,8 @@
-/*************** TESTTING **************/
+/*************** MISC **************/
 /*************** ******** **************/
-video {
-  background-color: black;
-}
-.ui-loading-modal::before {
-  background-color: rgba(0, 0, 0, 0.25);
-  background-image: url("../images/bar-ajax-loader.gif");
-  background-position: center;
-  background-repeat: no-repeat;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  z-index: 100;
-  content: " ";
-  width: 100%;
-  height: 100%;
-}
-.result-panel-content .tabs-container {
-  height: 100%;
-  overflow: visible;
-  /* Override jQuery Theme*/
-  border-radius: 0px;
-  padding: 0px;
-}
-.result-panel-content .ui-tabs .ui-tabs-nav {
-  position: absolute;
-  top: -35px;
-  left: 0px;
-}
-.result-panel-content .ui-tabs .ui-tabs-panel {
-  overflow: auto;
-  height: 100%;
-  width: 100%;
-  padding: 0px;
-}
-.content-panel.ui-layout-center {
-  overflow: visible !important;
-}
-body .advancedSearch-panel {
-  background-color: #c7dae9;
-  opacity: 1;
-  z-index: 1;
-}
-body .widget-panel {
-  background-color: #eeeeee;
-  opacity: 1;
-  z-index: 1;
-}
-body,
-.header-panel,
-.search-panel {
-  background-color: #eeeeee;
-}
 /*************** ******** **************/
-/*************** TESTTING **************/
-/*************************** General ***************************/
+/*************** MISC **************/
+/*************************** Common ***************************/
 * {
   padding: 0;
   margin: 0;
@@ -87,13 +35,18 @@ p {
   margin-bottom: 5px;
   text-align: left;
 }
-/*************************** ****** ***************************/
+video {
+  background-color: black;
+}
 /*************************** LAYOUT GENERAL ***************************/
 .ui-layout-resizer {
   background-color: #777777;
 }
 .ui-layout-toggler {
   background-color: #ff4900;
+}
+.content-panel.ui-layout-center {
+  overflow: visible !important;
 }
 .content-panel .ui-layout-resizer-west,
 .content-panel .ui-layout-resizer-east {
@@ -133,7 +86,34 @@ p {
 .ui-layout-resizer-none {
   display: none !important;
 }
-/*************************** ****** ***************************/
+.ui-loading-modal::before {
+  background-color: rgba(0, 0, 0, 0.25);
+  background-image: url("../images/bar-ajax-loader.gif");
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 100;
+  content: " ";
+  width: 100%;
+  height: 100%;
+}
+body .advancedSearch-panel {
+  background-color: #c7dae9;
+  opacity: 1;
+  z-index: 1;
+}
+body .widget-panel {
+  background-color: #eeeeee;
+  opacity: 1;
+  z-index: 1;
+}
+body,
+.header-panel,
+.search-panel {
+  background-color: #eeeeee;
+}
 /*************************** Header ***************************/
 .header-panel h1 {
   padding: 20px 0 5px 10px;
@@ -173,6 +153,24 @@ img.logo {
 }
 .result-panel-content .date {
   font-size: 10px;
+}
+.result-panel-content .tabs-container {
+  height: 100%;
+  overflow: visible;
+  /* Override jQuery Theme*/
+  border-radius: 0px;
+  padding: 0px;
+}
+.result-panel-content .ui-tabs .ui-tabs-nav {
+  position: absolute;
+  top: -35px;
+  left: 0px;
+}
+.result-panel-content .ui-tabs .ui-tabs-panel {
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+  padding: 0px;
 }
 .pager,
 .pager-header {
