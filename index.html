@@ -11,6 +11,12 @@
     <!--ONLINE APIs-->
     <!--<script type='text/javascript' src='http://www.google.com/jsapi'></script>-->
     <!---->
+	
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <!-- BEGIN TimelineJS -->
+    <script type="text/javascript" src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
+	
+	
     <script src="lib/underscore/underscore-min.js"></script>
     <script src="lib/jquery/jquery-1.11.2.min.js"></script>
     <script src="lib/jquery/jquery-ui.min.js"></script>
@@ -37,6 +43,7 @@
     <script src="js/widgets/ResultWidget.js"></script>
     <script src="js/widgets/jquery/PagerWidget.js"></script>
     <script src="js/widgets/TextWidget.js"></script>
+    <script src="js/widgets/TimelineWidget.js"></script>
     <script src="js/widgets/SelectLocaleWidget.js"></script>
     <script src="js/widgets/SelectVideoQualityWidget.js"></script>
     <script src="js/widgets/FilterManagerWidget.js"></script>
@@ -99,6 +106,7 @@
                         <li><a href="#fragment-1">Result</a></li>
                         <li><a href="#fragment-2">Map</a></li>
                         <li><a href="#fragment-3">People</a></li>
+						<li><a href="#timelinetab">Timeline</a></li>
                     </ul>
                     <div id="fragment-1" >
                         <div class="tab-content">
@@ -132,6 +140,21 @@
                             <!--####-->
                         </div>
                     </div>
+
+                     <div id="timelinetab" >
+                        <div class="tab-content">
+                            <table height=1200px width=1000px>
+                            <!--## RESULT TAB ##-->
+                                <tr>
+                                    <td valign="top" width=75%>
+                                        <div id="my-timeline"> </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!--####-->
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

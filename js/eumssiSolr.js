@@ -8,6 +8,11 @@ var Manager;
 			solrUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/'
 		});
 
+		Manager.addWidget(new AjaxSolr.TimelineWidget({
+			id: 'my-timeline'
+			//target: '.timelineWidget-placeholder'
+		}));
+
 		Manager.addWidget(new AjaxSolr.ResultWidget({
 			id: 'result',
 			target: '.resultWidget-placeholder'
