@@ -9,8 +9,8 @@ var Manager;
 		});
 
 		Manager.addWidget(new AjaxSolr.TimelineWidget({
-			id: 'my-timeline'
-			//target: '.timelineWidget-placeholder'
+			id: 'my-timeline',
+			target: '#my-timeline'
 		}));
 
 		Manager.addWidget(new AjaxSolr.ResultWidget({
