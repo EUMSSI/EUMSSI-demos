@@ -127,7 +127,9 @@ var Manager;
 		});
 
 		/******************** JQUERY.TABS ********************/
-		$(".tabs-container").tabs();
+		$(".tabs-container").tabs({
+			active: 0
+		});
 
 		/******************** <JQUERY.LAYOUT> ********************/
 		/*
@@ -200,7 +202,6 @@ var Manager;
 		contentLayout.addPinBtn(".button-pin-west", "west");
 		contentLayout.addPinBtn(".button-pin-east", "east");
 		/***************** </JQUERY.LAYOUT> *******************/
-
 
 	});
 

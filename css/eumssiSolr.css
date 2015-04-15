@@ -31,6 +31,7 @@ video {
 .result-panel-content .ui-tabs .ui-tabs-panel {
   overflow: auto;
   height: 100%;
+  width: 100%;
   padding: 0px;
 }
 .content-panel.ui-layout-center {

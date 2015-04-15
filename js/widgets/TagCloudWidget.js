@@ -31,8 +31,22 @@
 				$(this.target).append(this.renderItem(objectedItems[i],size));
 			}
 
-			//Try get the Thumbnails
-			this.getWikipediaImages(objectedItems);
+			var self = this;
+			// Get the Thumbnails
+			if(this.$target.parents(".tabs-container").tabs( "option", "active") === 2) {
+				this.getWikipediaImages(objectedItems);
+			} else {
+				this.$target.parents(".tabs-container").off( "tabsactivate" );
+				this.$target.parents(".tabs-container").on( "tabsactivate", tabChange );
+			}
+
+			function tabChange( event, ui ) {
+				if($(this).tabs( "option", "active") === 2){
+					$(this).off("tabsactivate", tabChange );
+					self.getWikipediaImages(objectedItems);
+				}
+			}
+
 		},
 
 		renderItem: function(item,size) {
@@ -60,6 +74,7 @@
 			urlParams.push("pithumbsize=280");
 			urlParams.push("pilimit=50");
 
+			this.manager._showLoader();
 			$.ajax({
 				url: urlRoot + urlParams.join("&"),
 				success: this.getWikipediaImages_success.bind(this)
@@ -67,6 +82,7 @@
 		},
 
 		getWikipediaImages_success: function(response){
+			var tiled = false;
 			if(response && response.query && response.query.pages) {
 				_.each(response.query.pages, function(obj){
 					var facetId = obj.title.replace(/ /g, "_");
@@ -82,10 +98,14 @@
 				}, this);
 
 				this.onAllImagesReady(this.$target.find("img"), function(){
-					$(this).parents(".tagCloud-placeholder").freetile({
-						containerAnimate: true
-					});
-				});
+					if(!tiled){
+						tiled = true;
+						this.$target.freetile({
+							containerAnimate: true
+						});
+						this.manager._hideLoader();
+					}
+				}.bind(this));
 			}
 		},
 
@@ -104,12 +124,9 @@
 			}
 
 			function checkListComplete() {
-				list.each(function(index, element){
-					if (!element.complete){
-						return false;
-					}
+				return _.every(list, function(element){
+					return (element.complete) ? true : false;
 				});
-				return true;
 			}
 		}
 
