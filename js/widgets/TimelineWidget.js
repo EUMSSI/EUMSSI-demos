@@ -65,7 +65,7 @@
 				
 				output["headline"] = doc['meta.source.headline_html'];
 				//output["headline"] = this._renderTitle(doc);
-				output["text"] = doc['meta.source.description'];
+				output["text"] = doc['meta.source.text'];
 				dateIn = new Date(doc['meta.source.datePublished']);
    				var yyyy = dateIn.getFullYear();
    				var mm = dateIn.getMonth()+1; // getMonth() is zero-based
@@ -74,17 +74,21 @@
    				output["endDate"] = datetljs;
 				output["startDate"] = datetljs;
 				if (!!output["headline"] && output["headline"].length>0) {
-					dateObj.push(output);
+					
 					if (dateObj.length == timelinesize) { break; }
+					if (!!output["text"]) {output["text"] = output["text"].substring(0,200);}
+					dateObj.push(output);
 				}
 			}
 
+			if (dateObj.length==0) {return;}
 			tlobj["date"] = dateObj;
 
 			timelineobject = {};
 			timelineobject["timeline"] = tlobj;
 
  			timeline = JSON.stringify(timelineobject);
+
 
  			//now change the <head>
  			$script = "<script>";
