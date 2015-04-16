@@ -13,6 +13,13 @@ var Manager;
 			target: '#my-timeline'
 		}));
 
+
+		Manager.addWidget(new AjaxSolr.WordCloudWidget({
+			id: 'my-wordcloud',
+			target: '#my-wordcloud'
+		}));
+
+
 		Manager.addWidget(new AjaxSolr.ResultWidget({
 			id: 'result',
 			target: '.resultWidget-placeholder'
