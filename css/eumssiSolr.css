@@ -335,7 +335,8 @@ span.more {
   position: relative;
 }
 .tagCloud-placeholder .tagcloud_item {
-  display: block;
+  display: inline-block;
+  vertical-align: middle;
   margin: 3px;
   color: #6998f0;
 }

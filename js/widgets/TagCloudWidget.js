@@ -4,6 +4,7 @@
 
 		init: function() {
 			this.$target = $(this.target);
+			this.$tabs = this.$target.parents(".tabs-container");
 		},
 
 		afterRequest: function () {
@@ -31,16 +32,16 @@
 				$(this.target).append(this.renderItem(objectedItems[i],size));
 			}
 
-			var self = this;
 			// Get the Thumbnails
-			if(this.$target.parents(".tabs-container").tabs( "option", "active") === 2) {
+			if(this.$tabs.tabs( "option", "active") === 2) {
 				this.getWikipediaImages(objectedItems);
 			} else {
-				this.$target.parents(".tabs-container").off( "tabsactivate" );
-				this.$target.parents(".tabs-container").on( "tabsactivate", tabChange );
+				this.$tabs.off( "tabsactivate", tabChange );
+				this.$tabs.on( "tabsactivate", tabChange );
 			}
 
-			function tabChange( event, ui ) {
+			var self = this;
+			function tabChange( event , ui ) {
 				if($(this).tabs( "option", "active") === 2){
 					$(this).off("tabsactivate", tabChange );
 					self.getWikipediaImages(objectedItems);
@@ -100,9 +101,11 @@
 				this.onAllImagesReady(this.$target.find("img"), function(){
 					if(!tiled){
 						tiled = true;
-						this.$target.freetile({
-							containerAnimate: true
-						});
+						if(this.$target.data("FreetileData")){
+							this._refreshFreeTile();
+						} else {
+							this._initFreeTile();
+						}
 						this.manager._hideLoader();
 					}
 				}.bind(this));
@@ -114,20 +117,44 @@
 			var list = typeof selector === 'string' ? $(selector) : selector;
 
 			list.each(function(index, element) {
-				$(element).one('load', fireHandler);
+				$(element).one('load', function() {
+					if (checkListComplete(list)) {
+						handler.call(this);
+					}
+				});
 			});
-
-			function fireHandler() {
-				if (checkListComplete(list)) {
-					handler.call(this);
-				}
-			}
 
 			function checkListComplete() {
 				return _.every(list, function(element){
 					return (element.complete) ? true : false;
 				});
 			}
+		},
+
+		/**
+		 * Init the freetile Widget to display more "pretty" the images
+		 * @private
+		 */
+		_initFreeTile: function(){
+			this.$target.freetile({
+				containerAnimate: true
+			});
+
+			//Bind refresh when change to the tab
+			this.$tabs.on( "tabsactivate", organizeLayout.bind(this) );
+			function organizeLayout(){
+				if( this.$tabs.tabs( "option", "active") === 2 && this.$target.data("FreetileData") ) {
+					this._refreshFreeTile();
+				}
+			}
+		},
+
+		/**
+		 * Reorganize the images
+		 * @private
+		 */
+		_refreshFreeTile: function(){
+			this.$target.freetile("layout");
 		}
 
 	});
