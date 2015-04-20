@@ -7,6 +7,7 @@ var CONF = {};
 var UTIL = {};
 
 CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text.ner.LOCATION";
+CONF.PERSON_FIELD_NAME = "meta.extracted.text.dbpedia.PERSON";
 
 
 // Country Code ISO-3166-2

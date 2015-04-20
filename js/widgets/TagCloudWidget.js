@@ -2,17 +2,31 @@
 
 	AjaxSolr.TagcloudWidget = AjaxSolr.AbstractFacetWidget.extend({
 
+		start: 0,	//Reset the pagination with doRequest on this Widget
+
 		init: function() {
 			this.$target = $(this.target);
 			this.$tabs = this.$target.parents(".tabs-container");
 		},
 
-		afterRequest: function () {
-			if (this.manager.response.facet_counts.facet_fields[this.field] === undefined) {
-				$(this.target).html('no items found in current selection');
-				return;
+		beforeRequest: function(){
+			if(!this.flag_TagCloudRequest && !this.manager.flag_PaginationRequest) {
+				this._cleanPersonFilter(false);
 			}
+			this.flag_TagCloudRequest = false;
+		},
 
+		afterRequest: function () {
+			if(!this.manager.flag_PaginationRequest){
+				if (this.manager.response.facet_counts.facet_fields[this.field] === undefined) {
+					$(this.target).html('No items found in current selection.');
+					return;
+				}
+				this._renderTagCloud();
+			}
+		},
+
+		_renderTagCloud: function(){
 			var maxCount = 0;
 			var objectedItems = [];
 			for (var facet in this.manager.response.facet_counts.facet_fields[this.field]) {
@@ -47,7 +61,6 @@
 					self._getWikipediaImages(objectedItems);
 				}
 			}
-
 		},
 
 		/**
@@ -187,9 +200,15 @@
 			$menu.append('<div class="ui-widget-header">'+facetName.replace(/_/g,"&nbsp;")+'</div>');
 			$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
 			$menu.append('<li class="open-dbpedia"><span class="ui-icon ui-icon-newwin"></span>Open DBpedia page</li>');
+			$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by person</li>');
+			if(this._lastfq){
+				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
+			}
 
 			$menu.on("click",".open-wikipedia",this._openNewPage.bind(this,"http://wikipedia.org/wiki/"+facetName));
 			$menu.on("click",".open-dbpedia",this._openNewPage.bind(this,"http://dbpedia.org/resource/"+facetName));
+			$menu.on("click",".filter",this._addPersonFilter.bind(this,facetName));
+			$menu.on("click",".filter-clear",this._cleanPersonFilter.bind(this,true));
 
 			UTIL.showContextMenu($menu);
 		},
@@ -201,6 +220,34 @@
 		 */
 		_openNewPage: function(url){
 			window.open(url,"_blank");
+		},
+
+		/**
+		 * Remove the last filter query and adds a new one.
+		 * @param {String} value - value to filter
+		 * @private
+		 */
+		_addPersonFilter: function(value){
+			this._cleanPersonFilter(false);
+			//Create new FQ
+			this._lastfq = this.field + ':("' + value + '")';
+			this.manager.store.addByValue('fq', this._lastfq );
+			this.flag_TagCloudRequest = true;
+			this.doRequest();
+		},
+
+		/**
+		 * Remove the current filter
+		 * @param {Boolean} fetch - true if want to perform a request
+		 * @private
+		 */
+		_cleanPersonFilter: function(fetch){
+			//Clean FQ
+			this.manager.store.removeByValue('fq', this._lastfq);
+			this._lastfq = undefined;
+			if(fetch){
+				this.doRequest();
+			}
 		}
 
 	});

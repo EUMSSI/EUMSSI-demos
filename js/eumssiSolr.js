@@ -13,30 +13,14 @@ var Manager;
 			target: '#my-timeline'
 		}));
 
-
 		Manager.addWidget(new AjaxSolr.WordCloudWidget({
 			id: 'my-wordcloud',
 			target: '#my-wordcloud'
 		}));
 
-
 		Manager.addWidget(new AjaxSolr.ResultWidget({
 			id: 'result',
 			target: '.resultWidget-placeholder'
-		}));
-
-		Manager.addWidget(new AjaxSolr.PagerWidget({
-			id: 'pager',
-			target: '.pager',
-			prevLabel: '&lt;',
-			nextLabel: '&gt;',
-			innerWindow: 1,
-			renderHeader: function (perPage, offset, total) {
-				$('.pager-header').html($('<span></span>').text('displaying ' + Math.min(total, offset + 1) + ' to ' + Math.min(total, offset + perPage) + ' of ' + total));
-			},
-			cleanHeader: function() {
-				$('.pager-header').empty();
-			}
 		}));
 
 		Manager.addWidget(new AjaxSolr.SelectLocaleWidget({
@@ -88,7 +72,21 @@ var Manager;
 		Manager.addWidget(new AjaxSolr.TagcloudWidget({
 			id: 'TagCloudWidget',
 			target: '.tagCloud-placeholder',
-			field: 'meta.extracted.text.dbpedia.PERSON'
+			field: CONF.PERSON_FIELD_NAME
+		}));
+
+		Manager.addWidget(new AjaxSolr.PagerWidget({
+			id: 'pager',
+			target: '.pager',
+			prevLabel: '&lt;',
+			nextLabel: '&gt;',
+			innerWindow: 1,
+			renderHeader: function (perPage, offset, total) {
+				$('.pager-header').html($('<span></span>').text('displaying ' + Math.min(total, offset + 1) + ' to ' + Math.min(total, offset + perPage) + ' of ' + total));
+			},
+			cleanHeader: function() {
+				$('.pager-header').empty();
+			}
 		}));
 
 
@@ -104,15 +102,13 @@ var Manager;
 		//Faceting Parametres
 		var params = {
 			'facet': true,
-			'facet.field': [ 'source', CONF.MAP_LOCATION_FIELD_NAME, 'meta.extracted.text.dbpedia.PERSON' ],
+			'facet.field': [ 'source', CONF.MAP_LOCATION_FIELD_NAME, CONF.PERSON_FIELD_NAME ],
 
 			//'facet.limit': 20,	// Tagclud Size
 			'facet.mincount': 1,	// Min count to appear
 
 			'f.source.facet.limit': 10,
-			'f.meta.extracted.text.dbpedia.PERSON.facet.limit' : 50,
-
-
+			//'f.meta.extracted.text.dbpedia.PERSON.facet.limit' : 50,
 			//'f.meta.extracted.text.ner.LOCATION.facet.prefix': 'LOCATION',
 
 			//'facet.date': 'date',
@@ -123,6 +119,7 @@ var Manager;
 			//'timeAllowed': 100		// Tiempo límite para la consulta (ms)
 		};
 		params['f.' + CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
+		params['f.' + CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
 
 		for (var name in params) {
 			Manager.store.addByValue(name, params[name]);
