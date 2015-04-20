@@ -183,27 +183,15 @@
 		 * @private
 		 */
 		_openActionsMenu: function(facetName){
-			var $menu = $('<ul class="click-menu">');
+			var $menu = $('<ul>');
 			$menu.append('<div class="ui-widget-header">'+facetName.replace(/_/g,"&nbsp;")+'</div>');
 			$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
 			$menu.append('<li class="open-dbpedia"><span class="ui-icon ui-icon-newwin"></span>Open DBpedia page</li>');
 
-			$("body").append($menu);
-			$menu.menu({
-				position: { my: "left top", at: "left+"+window.mouse_x + " top+" + window.mouse_y, of:"window"}
-			});
-
-			$menu.css("left",window.mouse_x - 10);
-			$menu.css("top",window.mouse_y - 10);
-
 			$menu.on("click",".open-wikipedia",this._openNewPage.bind(this,"http://wikipedia.org/wiki/"+facetName));
 			$menu.on("click",".open-dbpedia",this._openNewPage.bind(this,"http://dbpedia.org/resource/"+facetName));
 
-			function removeMenu(){
-				$menu.remove();
-			}
-			$menu.on("click mouseleave",removeMenu);
-
+			UTIL.showContextMenu($menu);
 		},
 
 		/**

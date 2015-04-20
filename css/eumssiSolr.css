@@ -43,6 +43,7 @@ video {
   width: auto;
   z-index: 1000;
 }
+.click-menu.ui-menu .ui-widget-header:active,
 .click-menu.ui-menu .ui-widget-header:hover {
   font-weight: bold;
   background: none;

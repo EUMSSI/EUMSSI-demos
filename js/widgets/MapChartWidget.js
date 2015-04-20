@@ -131,28 +131,16 @@
 		 * @private
 		 */
 		_onRegionClick: function(event){
-			var $menu = $('<ul class="click-menu">');
+			var $menu = $('<ul>');
 			$menu.append('<li class="filter-add"><span class="ui-icon ui-icon-plusthick"></span>Filter by Country</li>');
 			if(this._lastfq){
 				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear Filter</li>');
 			}
 
-			$("body").append($menu);
-			$menu.menu({
-				position: { my: "left top", at: "left+"+window.mouse_x + " top+" + window.mouse_y, of:"window"}
-			});
-			$menu.css("position","absolute");
-			$menu.css("left",window.mouse_x - 10);
-			$menu.css("top",window.mouse_y - 10);
-
 			$menu.on("click",".filter-add",this._addContryFilter.bind(this,event));
 			$menu.on("click",".filter-clear",this._cleanCountryFilter.bind(this,true));
 
-			function removeMenu(){
-				$menu.remove();
-			}
-			$menu.on("click mouseleave",removeMenu);
-
+			UTIL.showContextMenu($menu);
 		},
 
 		/**

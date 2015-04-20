@@ -282,7 +282,32 @@ UTIL.checkUrlExists = function(url, callback){
 		}
 	};
 	http.send();
-}
+};
+
+UTIL.showContextMenu = function($menu){
+	var timeoutFunction;
+	if($menu){
+		$menu.addClass("click-menu");
+		$("body").append($menu);
+		$menu.menu({
+			position: { my: "left top", at: "left+"+window.mouse_x + " top+" + window.mouse_y, of:"window"}
+		});
+		$menu.css("left",window.mouse_x - 10);
+		$menu.css("top",window.mouse_y - 10);
+
+		function removeMenu(){
+			$menu.remove();
+		}
+		$menu.on("click",removeMenu);
+		$menu.on("mouseleave",function(){
+			timeoutFunction= setTimeout(removeMenu, 500);
+		});
+		$menu.on("mouseenter",function(){
+			clearTimeout(timeoutFunction);
+		});
+	}
+	return $menu;
+};
 
 String.prototype.unCamelCase = function(){
 	return this
