@@ -27,10 +27,13 @@
 		},
 
 		_renderTagCloud: function(){
-			var maxCount = 0;
-			var objectedItems = [];
-			for (var facet in this.manager.response.facet_counts.facet_fields[this.field]) {
-				var count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
+			var facet, count, i, l, size,
+				maxCount = 0,
+				objectedItems = [],
+				tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos"),
+				self = this;
+			for ( facet in this.manager.response.facet_counts.facet_fields[this.field]) {
+				count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
 				if (count > maxCount) {
 					maxCount = count;
 				}
@@ -41,25 +44,24 @@
 			});
 
 			$(this.target).empty();
-			for (var i = 0, l = objectedItems.length; i < l; i++) {
-				var size = parseInt(objectedItems[i].count / maxCount * 10);
+			for ( i = 0, l = objectedItems.length; i < l; i++) {
+				size = parseInt(objectedItems[i].count / maxCount * 10);
 				$(this.target).append(this._renderItem(objectedItems[i],size));
 			}
 
 			// Get the Thumbnails
-			if(this.$tabs.tabs( "option", "active") === 2) {
+			function tabChange() {
+				if($(this).tabs( "option", "active") === tabPosition){
+					$(this).off("tabsactivate", tabChange );
+					self._getWikipediaImages(objectedItems);
+				}
+			}
+
+			if(this.$tabs.tabs( "option", "active") === tabPosition) {
 				this._getWikipediaImages(objectedItems);
 			} else {
 				this.$tabs.off( "tabsactivate", tabChange );
 				this.$tabs.on( "tabsactivate", tabChange );
-			}
-
-			var self = this;
-			function tabChange( event , ui ) {
-				if($(this).tabs( "option", "active") === 2){
-					$(this).off("tabsactivate", tabChange );
-					self._getWikipediaImages(objectedItems);
-				}
 			}
 		},
 
@@ -169,6 +171,7 @@
 		 * @private
 		 */
 		_initFreeTile: function(){
+			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
 			this.$target.freetile({
 				containerAnimate: true
 			});
@@ -176,7 +179,7 @@
 			//Bind refresh when change to the tab
 			this.$tabs.on( "tabsactivate", organizeLayout.bind(this) );
 			function organizeLayout(){
-				if( this.$tabs.tabs( "option", "active") === 2 && this.$target.data("FreetileData") ) {
+				if( this.$tabs.tabs( "option", "active") === tabPosition && this.$target.data("FreetileData") ) {
 					this._refreshFreeTile();
 				}
 			}
