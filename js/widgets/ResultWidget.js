@@ -276,6 +276,8 @@
 			var nextWhitePosition = auxText.indexOf(' ');
 			if(nextWhitePosition > 0){
 				nextWhitePosition += size;
+			} else {
+				nextWhitePosition = size;
 			}
 			return nextWhitePosition;
 		},
