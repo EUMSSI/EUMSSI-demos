@@ -29,12 +29,12 @@
 			$(this.target).empty();
 			for (var i = 0, l = objectedItems.length; i < l; i++) {
 				var size = parseInt(objectedItems[i].count / maxCount * 10);
-				$(this.target).append(this.renderItem(objectedItems[i],size));
+				$(this.target).append(this._renderItem(objectedItems[i],size));
 			}
 
 			// Get the Thumbnails
 			if(this.$tabs.tabs( "option", "active") === 2) {
-				this.getWikipediaImages(objectedItems);
+				this._getWikipediaImages(objectedItems);
 			} else {
 				this.$tabs.off( "tabsactivate", tabChange );
 				this.$tabs.on( "tabsactivate", tabChange );
@@ -44,27 +44,36 @@
 			function tabChange( event , ui ) {
 				if($(this).tabs( "option", "active") === 2){
 					$(this).off("tabsactivate", tabChange );
-					self.getWikipediaImages(objectedItems);
+					self._getWikipediaImages(objectedItems);
 				}
 			}
 
 		},
 
-		renderItem: function(item,size) {
-			var url = "http://wikipedia.org/wiki/" + item.facet;
-			return $('<a href="'+url+'" target="_blank" class="tagcloud_item"></a>')
+		/**
+		 * Create the html code for an item
+
+		 * @param {Number} size - importance of the item in the tagcloud
+		 * @returns {JQuery}
+		 * @private
+		 */
+		_renderItem: function(item,size) {
+			//var url = "http://wikipedia.org/wiki/" + item.facet;
+			return $('<a class="tagcloud_item"></a>')
 				//.html(item.facet.replace(/_/g,"&nbsp;")) // Text
 				.addClass('tagcloud_size_' + size)
-				.attr('data-id',item.facet);
+				.attr('data-id',item.facet)
+				.click(this._openActionsMenu.bind(this,item.facet));
 		},
 
 		/**
 		 * Get images from the wikipedia
 		 * example: "http://en.wikipedia.org/w/api.php?action=query&titles=Barack_Obama|Muhammad|John_Kerry&prop=pageimages&format=json&pithumbsize=150&pilimit=50"
 		 * apache.conf proxy: ProxyPass /wikiBridge http://en.wikipedia.org/
-		 *
+		 * @param {Object} facetes - object that contains the data
+		 * @private
 		 */
-		getWikipediaImages: function(facetes){
+		_getWikipediaImages: function(facetes){
 			var urlRoot = "http://eumssi.cloudapp.net/wikiBridge/w/api.php?",
 				urlParams = [];
 
@@ -78,11 +87,17 @@
 			this.manager._showLoader();
 			$.ajax({
 				url: urlRoot + urlParams.join("&"),
-				success: this.getWikipediaImages_success.bind(this)
+				success: this._getWikipediaImages_success.bind(this)
 			});
 		},
 
-		getWikipediaImages_success: function(response){
+		/**
+		 * Success callback to retrieve the wikipedia Images.
+		 * Render the images.
+		 * @param response
+		 * @private
+		 */
+		_getWikipediaImages_success: function(response){
 			var tiled = false;
 			if(response && response.query && response.query.pages) {
 				_.each(response.query.pages, function(obj){
@@ -98,7 +113,7 @@
 					this.$target.find('a[data-id="' + facetId + '"]').html($img);
 				}, this);
 
-				this.onAllImagesReady(this.$target.find("img"), function(){
+				this._onAllImagesReady(this.$target.find("img"), function(){
 					if(!tiled){
 						tiled = true;
 						if(this.$target.data("FreetileData")){
@@ -112,8 +127,13 @@
 			}
 		},
 
-
-		onAllImagesReady: function (selector, handler) {
+		/**
+		 * Check if all <img> tags has been loaded, and fires the handler
+		 * @param {JQuery} selector - Selection of al the <img> tags to be checked
+		 * @param {Function} handler - callback
+		 * @private
+		 */
+		_onAllImagesReady: function (selector, handler) {
 			var list = typeof selector === 'string' ? $(selector) : selector;
 
 			list.each(function(index, element) {
@@ -155,6 +175,44 @@
 		 */
 		_refreshFreeTile: function(){
 			this.$target.freetile("layout");
+		},
+
+		/**
+		 * When click on a photo display a menu to perform some actions.
+		 * @param {String} facetName - name of the item
+		 * @private
+		 */
+		_openActionsMenu: function(facetName){
+			var $menu = $('<ul class="click-menu">');
+			$menu.append('<div class="ui-widget-header">'+facetName.replace(/_/g,"&nbsp;")+'</div>');
+			$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
+			$menu.append('<li class="open-dbpedia"><span class="ui-icon ui-icon-newwin"></span>Open DBpedia page</li>');
+
+			$("body").append($menu);
+			$menu.menu({
+				position: { my: "left top", at: "left+"+window.mouse_x + " top+" + window.mouse_y, of:"window"}
+			});
+
+			$menu.css("left",window.mouse_x - 10);
+			$menu.css("top",window.mouse_y - 10);
+
+			$menu.on("click",".open-wikipedia",this._openNewPage.bind(this,"http://wikipedia.org/wiki/"+facetName));
+			$menu.on("click",".open-dbpedia",this._openNewPage.bind(this,"http://dbpedia.org/resource/"+facetName));
+
+			function removeMenu(){
+				$menu.remove();
+			}
+			$menu.on("click mouseleave",removeMenu);
+
+		},
+
+		/**
+		 * Open link on a new page
+		 * @param {Strin} url - the link
+		 * @private
+		 */
+		_openNewPage: function(url){
+			window.open(url,"_blank");
 		}
 
 	});

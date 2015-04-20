@@ -215,6 +215,12 @@ var Manager;
 		contentLayout.addPinBtn(".button-pin-east", "east");
 		/***************** </JQUERY.LAYOUT> *******************/
 
+		// Record mouse position in order to display contextual menus
+		$(document).mousemove(function(e) {
+			window.mouse_x = e.pageX;
+			window.mouse_y = e.pageY;
+		});
+
 	});
 
 })(jQuery);

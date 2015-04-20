@@ -17,8 +17,6 @@
 
 
 
-
-
 /*************** ******** **************/
 /*************** MISC **************/
 
@@ -63,6 +61,19 @@ p {
 
 video {
     background-color: black;
+}
+
+.click-menu.ui-menu {
+    position: absolute;
+    width: auto;
+    z-index: 1000;
+
+    .ui-widget-header:hover {
+        font-weight: bold;
+        background: none;
+        border: 1px solid transparent;
+        cursor: default;
+    }
 }
 
 /*************************** LAYOUT GENERAL ***************************/

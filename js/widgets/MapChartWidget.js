@@ -97,6 +97,7 @@
 
 			//Chart Events
 			google.visualization.events.addListener(this.chart, 'regionClick', this._onRegionClick.bind(this));
+			//google.visualization.events.addListener(this.chart, 'select', this._onRegionClick.bind(this));
 			google.visualization.events.addListener(this.chart, 'ready', this._renderExportBtn.bind(this));
 
 			var data = google.visualization.arrayToDataTable([ ['Country', 'Count'] ]);
@@ -125,20 +126,63 @@
 		},
 
 		/**
-		 * When click on a Country remove the last filter query and adds a new one with the
-		 * country code of the selected country.
+		 * When click on a Country shows a menu to perform some actions.
 		 * @param {google.GeoChart.event} event
 		 * @private
 		 */
 		_onRegionClick: function(event){
-			//Clean FQ
-			this.manager.store.removeByValue('fq', this._lastfq);
+			var $menu = $('<ul class="click-menu">');
+			$menu.append('<li class="filter-add"><span class="ui-icon ui-icon-plusthick"></span>Filter by Country</li>');
+			if(this._lastfq){
+				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear Filter</li>');
+			}
+
+			$("body").append($menu);
+			$menu.menu({
+				position: { my: "left top", at: "left+"+window.mouse_x + " top+" + window.mouse_y, of:"window"}
+			});
+			$menu.css("position","absolute");
+			$menu.css("left",window.mouse_x - 10);
+			$menu.css("top",window.mouse_y - 10);
+
+			$menu.on("click",".filter-add",this._addContryFilter.bind(this,event));
+			$menu.on("click",".filter-clear",this._cleanCountryFilter.bind(this,true));
+
+			function removeMenu(){
+				$menu.remove();
+			}
+			$menu.on("click mouseleave",removeMenu);
+
+		},
+
+		/**
+		 * Remove the last filter query and adds a new one with the
+		 * country code of the selected country.
+		 * @param {google.GeoChart.event} event
+		 * @private
+		 */
+		_addContryFilter: function(event){
+			this._cleanCountryFilter(false);
 			//Create new FQ
 			var region = event.region;
 			this._lastfq = CONF.MAP_LOCATION_FIELD_NAME + ':("' + UTIL.countryCode_SWAP[region]+ '")';
 			this.manager.store.addByValue('fq', this._lastfq );
 			this.flag_MapChartRequest = true;
 			this.doRequest();
+		},
+
+		/**
+		 * Remove the current filter
+		 * @param {Boolean} fetch - true if want to perform a request
+		 * @private
+		 */
+		_cleanCountryFilter: function(fetch){
+			//Clean FQ
+			this.manager.store.removeByValue('fq', this._lastfq);
+			this._lastfq = undefined;
+			if(fetch){
+				this.doRequest();
+			}
 		},
 
 		/**
