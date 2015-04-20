@@ -131,14 +131,23 @@
 		 * @private
 		 */
 		_onRegionClick: function(event){
-			var $menu = $('<ul>');
-			$menu.append('<li class="filter-add"><span class="ui-icon ui-icon-plusthick"></span>Filter by Country</li>');
-			if(this._lastfq){
-				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear Filter</li>');
-			}
+			var regionCode = event.region,
+				regionName = UTIL.countryCode_SWAP[regionCode],
+				$menu = $('<ul>');
 
-			$menu.on("click",".filter-add",this._addContryFilter.bind(this,event));
+			$menu.append('<div class="ui-widget-header">'+regionName+'</div>');
+			$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by country</li>');
+			if(this._lastfq){
+				//TODO $menu.append('<li class="filter-add"><span class="ui-icon ui-icon-plusthick"></span>Add country to filter</li>');
+				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
+			}
+			$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
+
+			$menu.on("click",".filter",this._addContryFilter.bind(this,regionCode));
 			$menu.on("click",".filter-clear",this._cleanCountryFilter.bind(this,true));
+			$menu.on("click",".open-wikipedia",function(){
+				window.open("http://wikipedia.org/wiki/"+regionName,"_blank");
+			});
 
 			UTIL.showContextMenu($menu);
 		},
@@ -146,14 +155,13 @@
 		/**
 		 * Remove the last filter query and adds a new one with the
 		 * country code of the selected country.
-		 * @param {google.GeoChart.event} event
+		 * @param {String} regionCode - [ISO 3166-1 alpha-2] country Code
 		 * @private
 		 */
-		_addContryFilter: function(event){
+		_addContryFilter: function(regionCode){
 			this._cleanCountryFilter(false);
 			//Create new FQ
-			var region = event.region;
-			this._lastfq = CONF.MAP_LOCATION_FIELD_NAME + ':("' + UTIL.countryCode_SWAP[region]+ '")';
+			this._lastfq = CONF.MAP_LOCATION_FIELD_NAME + ':("' + UTIL.countryCode_SWAP[regionCode]+ '")';
 			this.manager.store.addByValue('fq', this._lastfq );
 			this.flag_MapChartRequest = true;
 			this.doRequest();
