@@ -285,6 +285,12 @@ UTIL.checkUrlExists = function(url, callback){
 	http.send();
 };
 
+/**
+ * Create a jQuery menu with the passed structure in the $menu jquery selector.
+ * The menu is placed on the mouse and disappear when click or take of the mouse from it.
+ * @param {JQuery} $menu - jquery element that contains the list with the menu items $(<ul>)
+ * @returns {JQuery}
+ */
 UTIL.showContextMenu = function($menu){
 	var timeoutFunction;
 	if($menu){
@@ -310,6 +316,13 @@ UTIL.showContextMenu = function($menu){
 	return $menu;
 };
 
+/**
+ * Splits with espaces the current camelCase string.
+ * Capitalize the first letter.
+ * ex:  "myVarIsAwesome".unCamelCase() -> "My Var Is Awesome"
+ * 		"myVxrIsWTF".unCamelCase() ->	"My Vxg Is WTF"
+ * @returns {string}
+ */
 String.prototype.unCamelCase = function(){
 	return this
 		// insert a space between lower & upper
