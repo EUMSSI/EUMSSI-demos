@@ -213,7 +213,7 @@
 			$menu.on("click",".filter",this._addPersonFilter.bind(this,facetName));
 			$menu.on("click",".filter-clear",this._cleanPersonFilter.bind(this,true));
 
-			UTIL.showContextMenu($menu);
+			EUMSSI.UTIL.showContextMenu($menu);
 		},
 
 		/**

@@ -1,10 +1,6 @@
-/**
- * Created by jbarcelo on 09/03/2015.
- */
-
-//GLOBAL OBJECTS
-var CONF = {};
-var UTIL = {};
+/*global jQuery, $, AjaxSolr, EUMSSI, CONF, UTIL */
+window.CONF = {};
+window.UTIL = {};
 
 CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text.ner.LOCATION";
 CONF.PERSON_FIELD_NAME = "meta.extracted.text.dbpedia.PERSON";

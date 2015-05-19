@@ -67,13 +67,13 @@
 		_refreshChartData: function(){
 			var facet, countryCode, data,
 				countryDataArray = [],
-				facetCount = this.manager.response.facet_counts.facet_fields[CONF.MAP_LOCATION_FIELD_NAME];
+				facetCount = this.manager.response.facet_counts.facet_fields[EUMSSI.CONF.MAP_LOCATION_FIELD_NAME];
 
 			countryDataArray.push(['Country', 'Text', 'Count']);
 			for( facet in facetCount ){
 				countryCode = this._getCountryCode(facet);
 				if( countryCode ){
-					countryDataArray.push([ countryCode, UTIL.countryCode_SWAP[countryCode], facetCount[facet]]);
+					countryDataArray.push([ countryCode, EUMSSI.UTIL.countryCode_SWAP[countryCode], facetCount[facet]]);
 				}
 			}
 
@@ -132,7 +132,7 @@
 		 */
 		_onRegionClick: function(event){
 			var regionCode = event.region,
-				regionName = UTIL.countryCode_SWAP[regionCode],
+				regionName = EUMSSI.UTIL.countryCode_SWAP[regionCode],
 				$menu = $('<ul>');
 
 			$menu.append('<div class="ui-widget-header">'+regionName+'</div>');
@@ -149,7 +149,7 @@
 				window.open("http://wikipedia.org/wiki/"+regionName,"_blank");
 			});
 
-			UTIL.showContextMenu($menu);
+			EUMSSI.UTIL.showContextMenu($menu);
 		},
 
 		/**
@@ -161,7 +161,7 @@
 		_addContryFilter: function(regionCode){
 			this._cleanCountryFilter(false);
 			//Create new FQ
-			this._lastfq = CONF.MAP_LOCATION_FIELD_NAME + ':("' + UTIL.countryCode_SWAP[regionCode]+ '")';
+			this._lastfq = EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + ':("' + EUMSSI.UTIL.countryCode_SWAP[regionCode]+ '")';
 			this.manager.store.addByValue('fq', this._lastfq );
 			this.flag_MapChartRequest = true;
 			this.doRequest();
@@ -188,7 +188,7 @@
 		 * @private
 		 */
 		_getCountryCode: function(facetName){
-			return UTIL.countryCode[facetName];
+			return EUMSSI.UTIL.countryCode[facetName];
 		}
 
 	});

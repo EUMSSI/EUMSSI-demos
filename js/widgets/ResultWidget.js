@@ -50,7 +50,7 @@
 			$(this.target).empty();
 			for (var i = 0, l = this.manager.response.response.docs.length; i < l; i++) {
 				var doc = this.manager.response.response.docs[i];
-				$(this.target).append(this.templateTEST(doc));
+				$(this.target).append(this.defaultTemplate(doc));
 			}
 		},
 
@@ -62,7 +62,13 @@
 			$(this.target).html($("<div>").addClass("ui-error-text").text(message));
 		},
 
-		templateTEST: function (doc) {
+		/**
+		 * Generate a HTML for the given document DATA
+		 * @param {Object} doc - data of the document
+		 * @fires videoPlayer:loadVideo
+		 * @returns {*|jQuerySelector} the jQuery selector with the generated html code.
+		 */
+		defaultTemplate: function (doc) {
 			var text = doc['meta.source.text'] || "...",
 				date = doc['meta.source.datePublished'],
 				videoLink = doc['meta.source.httpHigh'],
@@ -89,16 +95,12 @@
 
 			//Link Video
 			if(videoLink) {
-				/** YOUTUBE **/
-				var isYoutube = !!doc['meta.source.youtubeVideoID'];
 				var $a = $('<a>').text("Play Video");
 				$output.append($("<p>").html($a));
 				$a.addClass("links");
-				$a.click(this._openVideoPlayer.bind(this,videoLink,isYoutube));
-
-				/** OLD **/
-				//var $a = $('<a>').attr("target","_blank").attr("href",videoLink).text("Video Link");
-				//$output.append($("<p>").html($a));
+				$a.click(function(){
+					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, doc]);
+				});
 			}
 
 			return $output;
@@ -280,36 +282,6 @@
 				nextWhitePosition = size;
 			}
 			return nextWhitePosition;
-		},
-
-		/**
-		 * Loads a Video Player on the right panel
-		 * @param {String} videoLink - Link to the video or URL of youtube video
-		 * @param {Bollean} isYoutube - true if the video is a youtube link
-		 * @private
-		 */
-		_openVideoPlayer: function(videoLink, isYoutube){
-			var container, embedHtml;
-			if(contentLayout.east.state.isClosed){
-				contentLayout.open("east");
-			}
-
-			container = contentLayout.east.pane.find(".panel-content");
-			if(isYoutube){
-				embedHtml = '<embed width="420" height="315"src="'+videoLink+'&autoplay=1">';
-			} else {
-				embedHtml = '<video width="420" height="315"src="'+videoLink+'" controls></video>';
-				//UTIL.checkUrlExists(videoLink, function(exist){
-				//	if(!exist){
-				//		container.append("<br><span class='ui-state-error-text'>VIDEO LINK BROKEN</span>");
-				//	}
-				//});
-			}
-			container.html(embedHtml);
-
-			var $a = $('<a>').attr("target","_blank").attr("href",videoLink).text("Video Link");
-			container.append("<br>");
-			container.append($("<p style='margin: 5px;'>").html($a));
 		},
 
 		init: function () {

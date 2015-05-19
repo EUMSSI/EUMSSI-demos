@@ -1,40 +1,49 @@
-var Manager;
+/*global jQuery, $, AjaxSolr, EUMSSI, CONF, UTIL */
+
+window.EUMSSI = {
+	Manager : {},
+	EventManager : $({}),
+	CONF : CONF || {},
+	UTIL : UTIL || {},
+	pageLayout : undefined,
+	contentLayout : undefined
+};
 
 (function ($) {
 
 	$(function () {
 
-		Manager = new AjaxSolr.Manager({
+		EUMSSI.Manager = new AjaxSolr.Manager({
 			solrUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/'
 		});
 
-		Manager.addWidget(new AjaxSolr.TimelineWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.TimelineWidget({
 			id: 'my-timeline',
 			target: '#my-timeline'
 		}));
 
-		Manager.addWidget(new AjaxSolr.WordCloudWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.WordCloudWidget({
 			id: 'my-wordcloud',
 			target: '#my-wordcloud'
 		}));
 
-		Manager.addWidget(new AjaxSolr.ResultWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.ResultWidget({
 			id: 'result',
 			target: '.resultWidget-placeholder'
 		}));
 
-		Manager.addWidget(new AjaxSolr.SelectLocaleWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.SelectLocaleWidget({
 			id: 'locale',
 			target: '.localeWidget-placeholder',
 			attributeName: 'meta.source.inLanguage'
 		}));
 
-		Manager.addWidget(new AjaxSolr.SelectVideoQualityWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.SelectVideoQualityWidget({
 			id: 'videoQuality',
 			target: '.videoQualityWidget-placeholder'
 		}));
 
-		Manager.addWidget(new AjaxSolr.FilterManagerWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.FilterManagerWidget({
 			id: 'mainFilter',
 			target: '.mainSearch-placeholder',
 			preload: [
@@ -42,7 +51,7 @@ var Manager;
 			]
 		}));
 
-		Manager.addWidget(new AjaxSolr.FilterManagerWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.FilterManagerWidget({
 			id: 'filterManager',
 			target: '.generatedFilters-placeholder',
 			targetButton: ".btn-do-add-filter",
@@ -57,25 +66,25 @@ var Manager;
 			]
 		}));
 
-		Manager.addWidget(new AjaxSolr.TagFacetWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.TagFacetWidget({
 			id: "source",
 			label: "Source",
 			target: '.source-placeholder',
 			field: "source"
 		}));
 
-		Manager.addWidget(new AjaxSolr.MapChartWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.MapChartWidget({
 			id: "MapChartWidget",
 			target: '.mapChart-placeholder'
 		}));
 
-		Manager.addWidget(new AjaxSolr.TagcloudWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.TagcloudWidget({
 			id: 'TagCloudWidget',
 			target: '.tagCloud-placeholder',
-			field: CONF.PERSON_FIELD_NAME
+			field: EUMSSI.CONF.PERSON_FIELD_NAME
 		}));
 
-		Manager.addWidget(new AjaxSolr.PagerWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.PagerWidget({
 			id: 'pager',
 			target: '.pager',
 			prevLabel: '&lt;',
@@ -89,20 +98,25 @@ var Manager;
 			}
 		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.VideoPlayerWidget({
+			id: "videoPlayer"
+			//target: '.mapChart-placeholder'
+		}));
 
-		Manager.init();
-		Manager.retrieveSolrFieldsNames();
+
+		EUMSSI.Manager.init();
+		EUMSSI.Manager.retrieveSolrFieldsNames();
 
 		//Set Main Query to search on All
-		Manager.store.addByValue('q', '*:*');
+		EUMSSI.Manager.store.addByValue('q', '*:*');
 		//Example: Search Only items with headline
 		//Manager.store.addByValue('q', 'meta.source.headline:[* TO *]');
-		Manager.store.addByValue('ident', 'true');
+		EUMSSI.Manager.store.addByValue('ident', 'true');
 
 		//Faceting Parametres
 		var params = {
 			'facet': true,
-			'facet.field': [ 'source', CONF.MAP_LOCATION_FIELD_NAME, CONF.PERSON_FIELD_NAME ],
+			'facet.field': [ 'source', EUMSSI.CONF.MAP_LOCATION_FIELD_NAME, EUMSSI.CONF.PERSON_FIELD_NAME ],
 
 			//'facet.limit': 20,	// Tagclud Size
 			'facet.mincount': 1,	// Min count to appear
@@ -118,21 +132,21 @@ var Manager;
 			'json.nl': 'map'
 			//'timeAllowed': 100		// Tiempo límite para la consulta (ms)
 		};
-		params['f.' + CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
-		params['f.' + CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
+		params['f.' + EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
+		params['f.' + EUMSSI.CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
 
 		for (var name in params) {
-			Manager.store.addByValue(name, params[name]);
+			EUMSSI.Manager.store.addByValue(name, params[name]);
 		}
 
 		//Perform an initial Search
-		Manager.doRequest();
+		EUMSSI.Manager.doRequest();
 
 		/** ADDITIONAL FUNCTIONS **/
 
 		//Search Button
 		$("button.btn-do-search").click(function(){
-			Manager.doRequest(0);
+			EUMSSI.Manager.doRequest(0);
 		});
 
 		/******************** JQUERY.TABS ********************/
@@ -148,7 +162,7 @@ var Manager;
 			EAST	-void-
 			SOUTH	FOOTER (HIDDEN)
 		 */
-		window.pageLayout = $("body").layout({
+		EUMSSI.pageLayout = $("body").layout({
 			defaults:{
 				//applyDefaultStyles: true
 			},
@@ -171,7 +185,7 @@ var Manager;
 			}
 		});
 
-		pageLayout.allowOverflow("center");
+		EUMSSI.pageLayout.allowOverflow("center");
 
 		/*
 			NORTH	-void-
@@ -180,7 +194,7 @@ var Manager;
 			EAST	AUXILIAR WIDGETS
 			FOOTER	-void-
 		 */
-		window.contentLayout = $("body .content-panel").layout({
+		EUMSSI.contentLayout = $("body .content-panel").layout({
 			west: {
 				size: 230,
 				initClosed: true,
@@ -208,8 +222,8 @@ var Manager;
 			}
 		});
 
-		contentLayout.addPinBtn(".button-pin-west", "west");
-		contentLayout.addPinBtn(".button-pin-east", "east");
+		EUMSSI.contentLayout.addPinBtn(".button-pin-west", "west");
+		EUMSSI.contentLayout.addPinBtn(".button-pin-east", "east");
 		/***************** </JQUERY.LAYOUT> *******************/
 
 		// Record mouse position in order to display contextual menus
