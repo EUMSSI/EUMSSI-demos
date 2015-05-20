@@ -1,4 +1,4 @@
-/*global jQuery, $, AjaxSolr, EUMSSI */
+/*global jQuery, $, _, AjaxSolr, EUMSSI*/
 (function ($) {
 
 	/**

@@ -1,3 +1,4 @@
+/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL */
 (function ($) {
 
 	/**
@@ -45,7 +46,10 @@
 		beforeRequest: function(){
 			if(!this.flag_MapChartRequest && !this.manager.flag_PaginationRequest) {
 				//Clean FQ - if the call don't activate the flag of Map
-				this.manager.store.removeByValue('fq', this._lastfq);
+
+				//this.manager.store.removeByValue('fq', this._lastfq);
+				this.manager.removeFilterByWidget(this.id);
+
 			}
 			this.flag_MapChartRequest = false;
 		},
@@ -162,7 +166,10 @@
 			this._cleanCountryFilter(false);
 			//Create new FQ
 			this._lastfq = EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + ':("' + EUMSSI.UTIL.countryCode_SWAP[regionCode]+ '")';
-			this.manager.store.addByValue('fq', this._lastfq );
+
+			//this.manager.store.addByValue('fq', this._lastfq );
+			this.manager.addFilter(EUMSSI.CONF.MAP_LOCATION_FIELD_NAME, this._lastfq, this.id);
+
 			this.flag_MapChartRequest = true;
 			this.doRequest();
 		},
@@ -174,7 +181,10 @@
 		 */
 		_cleanCountryFilter: function(fetch){
 			//Clean FQ
-			this.manager.store.removeByValue('fq', this._lastfq);
+
+			//this.manager.store.removeByValue('fq', this._lastfq);
+			this.manager.removeFilterByWidget(this.id);
+
 			this._lastfq = undefined;
 			if(fetch){
 				this.doRequest();

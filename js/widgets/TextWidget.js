@@ -1,3 +1,4 @@
+/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL */
 (function ($) {
 
 	/**
@@ -84,14 +85,20 @@
 			this.clearFilter();
 			//Set the current Filter
 			this.storedValue = attributeName + ":" + AjaxSolr.Parameter.escapeValue(value);
-			this.manager.store.addByValue('fq', this.storedValue);
+
+			//this.manager.store.addByValue('fq', this.storedValue);
+			this.manager.addFilter(this.attributeName, this.storedValue, this.id);
+
 		},
 
 		/**
 		 * Sets the main Solr query to the empty string.
 		 */
 		clearFilter: function () {
-			this.manager.store.removeByValue('fq',this.storedValue);
+
+			//this.manager.store.removeByValue('fq',this.storedValue);
+			this.manager.removeFilterByName(this.attributeName);
+
 		}
 
 	});

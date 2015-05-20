@@ -1,3 +1,4 @@
+/*global jQuery, $, _, AjaxSolr, EUMSSI*/
 (function (callback) {
   if (typeof define === 'function' && define.amd) {
     define(['core/AbstractWidget'], callback);

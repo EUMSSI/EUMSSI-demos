@@ -1,3 +1,4 @@
+/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL */
 (function ($) {
 
 	AjaxSolr.SelectVideoQualityWidget = AjaxSolr.AbstractTextWidget.extend({
@@ -51,23 +52,29 @@
 				case "youtube" :
 					filterQuery = "meta.source.httpHigh:* AND meta.source.youtubeVideoID:*";
 					break;
-				default :
-					filterQuery = "";
-					break;
+				default : break;
 			}
 
 			//Remove previous Value
 			this.clearFilter();
-			//Set the current Filter
-			this.storedValue = filterQuery;
-			this.manager.store.addByValue('fq',this.storedValue);
+
+			if(filterQuery != ""){
+				//Set the current Filter
+				this.storedValue = filterQuery;
+				//this.manager.store.addByValue('fq',this.storedValue);
+				this.manager.addFilter("videoQuality", filterQuery, this.id);
+			}
+
 		},
 
 		/**
 		 * Sets the main Solr query to the empty string.
 		 */
 		clearFilter: function () {
-			this.manager.store.removeByValue('fq',this.storedValue);
+
+			//this.manager.store.removeByValue('fq',this.storedValue);
+			this.manager.removeFilterByWidget(this.id);
+
 		}
 
 	});

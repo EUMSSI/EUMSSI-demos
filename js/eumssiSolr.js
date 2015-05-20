@@ -1,7 +1,8 @@
-/*global jQuery, $, AjaxSolr, EUMSSI, CONF, UTIL */
+/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL, FilterManager */
 
 window.EUMSSI = {
 	Manager : {},
+	FilterManager : new FilterManager(),
 	EventManager : $({}),
 	CONF : CONF || {},
 	UTIL : UTIL || {},
@@ -43,7 +44,7 @@ window.EUMSSI = {
 			target: '.videoQualityWidget-placeholder'
 		}));
 
-		EUMSSI.Manager.addWidget(new AjaxSolr.FilterManagerWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.DynamicSearchWidget({
 			id: 'mainFilter',
 			target: '.mainSearch-placeholder',
 			preload: [
@@ -51,7 +52,7 @@ window.EUMSSI = {
 			]
 		}));
 
-		EUMSSI.Manager.addWidget(new AjaxSolr.FilterManagerWidget({
+		EUMSSI.Manager.addWidget(new AjaxSolr.DynamicSearchWidget({
 			id: 'filterManager',
 			target: '.generatedFilters-placeholder',
 			targetButton: ".btn-do-add-filter",

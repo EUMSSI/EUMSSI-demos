@@ -1,3 +1,4 @@
+/*global jQuery, $, _, AjaxSolr, EUMSSI*/
 (function ($) {
 
 	/**
@@ -8,7 +9,7 @@
 	 * @param {String} targetButton - "#btn-do-add-filter",
 	 * @param {Array<Object>} preload - [{key,label,showInResultCheck}]
 	 */
-	AjaxSolr.FilterManagerWidget = AjaxSolr.AbstractWidget.extend({
+	AjaxSolr.DynamicSearchWidget = AjaxSolr.AbstractWidget.extend({
 		start: 0,
 		addedIDs: [],
 

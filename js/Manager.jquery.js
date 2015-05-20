@@ -1,3 +1,4 @@
+/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL */
 (function(callback){
 	if (typeof define === 'function' && define.amd) {
 		define(['core/AbstractManager'], callback);
@@ -23,7 +24,6 @@
 			// The fields that solr has indexed, must be fetched on start.
 			_solrFields : [],
 
-
 			/**
 			 * Custom REQUEST execution for jQuery
 			 * @param servlet
@@ -34,12 +34,15 @@
 			executeRequest: function(servlet, string, handler, errorHandler){
 				var self = this, options = {dataType: 'json'};
 				string = string || this.store.string();
+
 				handler = handler || function(data){
 					self.handleResponse(data);
 				};
+
 				errorHandler = errorHandler || function(jqXHR, textStatus, errorThrown){
 					self.handleError(textStatus + ', ' + errorThrown);
 				};
+
 				if (this.proxyUrl) {
 					options.url = this.proxyUrl;
 					options.data = {query: string};
@@ -51,6 +54,7 @@
 					options.url = this.solrUrl + servlet + '?' + string + '&wt=json';
 					options.headers = {Origin: undefined};
 				}
+
 				this._showLoader();
 				jQuery.ajax(options).done(handler).fail(errorHandler).always(this._hideLoader.bind(this));
 			},
@@ -68,12 +72,44 @@
 				});
 			},
 
+			/**
+			 * Refresh the Filter query and perform the request
+			 * @override AjaxSolr.AbstractManager.doRequest
+			 * @param start
+			 * @param servlet
+			 */
+			doRequest: function(start, servlet){
+				var fq = EUMSSI.FilterManager.getFilterQueryString();
+				this.store.removeByValue("fq",this._lastfq);
+				if(fq.length > 0){
+					this.store.addByValue("fq",fq);
+					this._lastfq = fq;
+				} else {
+					this._lastfq = "";
+				}
+
+				AjaxSolr.AbstractManager.prototype.doRequest.call(this, start, servlet);
+			},
+
 			_showLoader: function(){
 				$(".result-panel-content").addClass("ui-loading-modal");
 			},
 
 			_hideLoader: function(){
 				$(".result-panel-content").removeClass("ui-loading-modal");
+			},
+
+			/* Filter Interface  */
+			addFilter: function(filterName, query, widgetId){
+				EUMSSI.FilterManager.addFilter(filterName, query, widgetId);
+			},
+
+			removeFilterByName: function(filterName, widgetId){
+				EUMSSI.FilterManager.removeFilterByName(filterName, widgetId);
+			},
+
+			removeFilterByWidget: function(widgetId){
+				EUMSSI.FilterManager.removeFilterByWidget(widgetId);
 			}
 
 		});

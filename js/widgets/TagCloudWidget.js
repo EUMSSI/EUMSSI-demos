@@ -1,3 +1,4 @@
+/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL */
 (function ($) {
 
 	AjaxSolr.TagcloudWidget = AjaxSolr.AbstractFacetWidget.extend({
@@ -234,7 +235,10 @@
 			this._cleanPersonFilter(false);
 			//Create new FQ
 			this._lastfq = this.field + ':("' + value + '")';
-			this.manager.store.addByValue('fq', this._lastfq );
+
+			//this.manager.store.addByValue('fq', this._lastfq );
+			this.manager.addFilter(this.field, this._lastfq, this.id);
+
 			this.flag_TagCloudRequest = true;
 			this.doRequest();
 		},
@@ -246,7 +250,10 @@
 		 */
 		_cleanPersonFilter: function(fetch){
 			//Clean FQ
-			this.manager.store.removeByValue('fq', this._lastfq);
+
+			//this.manager.store.removeByValue('fq', this._lastfq);
+			this.manager.removeFilterByWidget(this.id);
+
 			this._lastfq = undefined;
 			if(fetch){
 				this.doRequest();

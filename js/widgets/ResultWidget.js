@@ -1,4 +1,4 @@
-
+/*global jQuery, $, _, AjaxSolr, EUMSSI*/
 (function ($) {
 
 	AjaxSolr.ResultWidget = AjaxSolr.AbstractWidget.extend({
