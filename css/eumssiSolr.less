@@ -503,7 +503,28 @@ span.more {
 
 }
 
+/*************************** TAG CLOUD WIDGET ***************************/
 
+.filterViewer-placeholder {
+    .ui-filters-label{
+        display: none;
+    }
+    .ui-filter *{
+        display: inline-block;
+    }
+    .ui-icon{
+        cursor: pointer;
+        vertical-align: top;
+        margin: 1px 2px;
+    }
+    .filterText {
+        cursor: default;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        width: calc(100% - 20px);
+    }
+}
 
 /*************************** OVERRIDE - jQuery UI ***************************/
 body .ui-widget-header {

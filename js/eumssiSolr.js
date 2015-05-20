@@ -18,6 +18,12 @@ window.EUMSSI = {
 			solrUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/'
 		});
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.FilterViewerWidget({
+			id: 'filterViewer',
+			target: '.filterViewer-placeholder',
+			label: "Custom Filters"
+		}));
+
 		EUMSSI.Manager.addWidget(new AjaxSolr.TimelineWidget({
 			id: 'my-timeline',
 			target: '#my-timeline'

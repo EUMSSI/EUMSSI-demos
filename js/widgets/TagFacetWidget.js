@@ -21,9 +21,7 @@
 		beforeRequest: function() {
 			if(!this.flag_TagFacetRequest) {
 				//Clean FQ - if the call don't activate the holdFacetNames
-
-				//this.manager.store.removeByValue('fq', this._lastfq);
-				this.manager.removeFilterByWidget(this.id);
+				EUMSSI.FilterManager.removeFilterByWidget(this.id);
 
 			}
 		},
@@ -101,9 +99,7 @@
 		 */
 		_onClickCheckbox: function(e){
 			//Clean FQ
-
-			//this.manager.store.removeByValue('fq', this._lastfq);
-			this.manager.removeFilterByWidget(this.id);
+			EUMSSI.FilterManager.removeFilterByWidget(this.id);
 
 			var checkedKeys = [];
 			this.$target.find("input[type='checkbox']").each(function(i, it){
@@ -115,9 +111,7 @@
 			if(checkedKeys.length > 0){
 				//Add FQ
 				this._lastfq = this.field + ":(" + checkedKeys.join(" OR ") + ")";
-
-				//this.manager.store.addByValue('fq', this._lastfq);
-				this.manager.addFilter(this.field, this._lastfq, this.id);
+				EUMSSI.FilterManager.addFilter(this.field, this._lastfq, this.id);
 
 				this.flag_TagFacetRequest = true;
 			}

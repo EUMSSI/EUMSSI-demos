@@ -1,4 +1,4 @@
-/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL */
+/*global jQuery, $, _, AjaxSolr, EUMSSI, google */
 (function ($) {
 
 	/**
@@ -46,9 +46,7 @@
 		beforeRequest: function(){
 			if(!this.flag_MapChartRequest && !this.manager.flag_PaginationRequest) {
 				//Clean FQ - if the call don't activate the flag of Map
-
-				//this.manager.store.removeByValue('fq', this._lastfq);
-				this.manager.removeFilterByWidget(this.id);
+				EUMSSI.FilterManager.removeFilterByWidget(this.id);
 
 			}
 			this.flag_MapChartRequest = false;
@@ -141,8 +139,8 @@
 
 			$menu.append('<div class="ui-widget-header">'+regionName+'</div>');
 			$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by country</li>');
-			if(this._lastfq){
-				//TODO $menu.append('<li class="filter-add"><span class="ui-icon ui-icon-plusthick"></span>Add country to filter</li>');
+			//TODO $menu.append('<li class="filter-add"><span class="ui-icon ui-icon-plusthick"></span>Add country to filter</li>');
+			if(EUMSSI.FilterManager.checkFilterByWidgetId(this.id)){
 				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
 			}
 			$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
@@ -166,9 +164,7 @@
 			this._cleanCountryFilter(false);
 			//Create new FQ
 			this._lastfq = EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + ':("' + EUMSSI.UTIL.countryCode_SWAP[regionCode]+ '")';
-
-			//this.manager.store.addByValue('fq', this._lastfq );
-			this.manager.addFilter(EUMSSI.CONF.MAP_LOCATION_FIELD_NAME, this._lastfq, this.id);
+			EUMSSI.FilterManager.addFilter(EUMSSI.CONF.MAP_LOCATION_FIELD_NAME, this._lastfq, this.id, "Location: "+EUMSSI.UTIL.countryCode_SWAP[regionCode]);
 
 			this.flag_MapChartRequest = true;
 			this.doRequest();
@@ -181,9 +177,7 @@
 		 */
 		_cleanCountryFilter: function(fetch){
 			//Clean FQ
-
-			//this.manager.store.removeByValue('fq', this._lastfq);
-			this.manager.removeFilterByWidget(this.id);
+			EUMSSI.FilterManager.removeFilterByWidget(this.id);
 
 			this._lastfq = undefined;
 			if(fetch){

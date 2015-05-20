@@ -447,6 +447,25 @@ span.more {
 .tagCloud-placeholder img:hover {
   opacity: 1 !important;
 }
+/*************************** TAG CLOUD WIDGET ***************************/
+.filterViewer-placeholder .ui-filters-label {
+  display: none;
+}
+.filterViewer-placeholder .ui-filter * {
+  display: inline-block;
+}
+.filterViewer-placeholder .ui-icon {
+  cursor: pointer;
+  vertical-align: top;
+  margin: 1px 2px;
+}
+.filterViewer-placeholder .filterText {
+  cursor: default;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: calc(80%);
+}
 /*************************** OVERRIDE - jQuery UI ***************************/
 body .ui-widget-header {
   border: none;

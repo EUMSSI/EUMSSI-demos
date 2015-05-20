@@ -1,7 +1,15 @@
 /*global jQuery, $, _, AjaxSolr, EUMSSI*/
 function FilterManager(){
-	// the temporal queries for the filter query
-	this._filters = {};
+
+	/**
+	 * @type {Object[]} filters - the temporal queries for the filter query
+	 * @param {String} filterName - Name of the filter, usually the field that affects
+	 * @param {String} query - the filter query for Solr
+	 * @param {String} [widgetId] - the widget that attach the filter
+	 * @param {String} [filterText] - Auxiliar text to display the filter
+	 * @private
+	 */
+	this._filters = [];
 }
 
 _.extend(FilterManager.prototype, {
@@ -9,56 +17,129 @@ _.extend(FilterManager.prototype, {
 	/* FILTERS API */
 
 	/**
-	 * Add a filter to be used on the filter query.
-	 * @param {String} filterName - name to recognize the filter, usually the field for the filter
-	 * @param {String} query - the query
-	 * @param {String} widgetId - If of the widget that apply the filter
-	 * @returns {{filterName: *, query: *, widgetId: *}}
+	 * Get all the filters Array
+	 * @returns {Object[]}
 	 */
-	addFilter: function(filterName, query, widgetId){
-		console.log("Manager > addFilter: "+filterName+" | "+query+" | "+widgetId);
-		var f = {
-			filterName: filterName,
-			query: query,
-			widgetId: widgetId
-		};
-		if( !this._filters[filterName] ) {
-			this._filters[filterName] = [];
-		}
-		this._filters[filterName].push(f);
-		EUMSSI.EventManager.trigger("filterChange", filterName);
-		return f;
+	getAllFilters: function(){
+		return this._filters;
 	},
 
 	/**
-	 * Removes a filter with a especific {filterName}
-	 * @param {String} filterName - the filter to be removed
-	 * @param {String} widgetId - the widgetId that added the filter to be removed
+	 * Return An array with the filters that match with the parameters
+	 * @param {String} filterName - name to recognize the filter, usually the field for the filter
+	 * @param {String} [widgetId] - If of the widget that apply the filter
+	 * @param {String} query - the query
+	 * @returns {Array.<Object>|*}
 	 */
-	removeFilterByName: function(filterName, widgetId){
-		console.log("Manager >  removeFilterByName: "+filterName+" | "+widgetId);
-		if( filterName && !widgetId ){
-			//Remove all the filters of the filterName
-			this._deleteFilter(filterName);
-		} else if( filterName && widgetId ) {
-			//Search only on the filters about that filterName
-			this._removeFilterCheckWidget(filterName, widgetId);
-		}
+	getkFilter: function(filterName, widgetId, query){
+		var f = {};
+		if(filterName){ f.filterName = filterName; }
+		if(query){ f.query = query; }
+		if(widgetId){ f.widgetId = widgetId; }
+
+		return _.filter(this._filters,function(filter){
+			if(_.isMatch(filter,f)){
+				return true;
+			}
+		});
 	},
 
-	removeFilterByWidget: function(widgetId){
-		console.log("Manager > removeFilterByWidget: "+widgetId);
-		if( widgetId ) {
-			//Search on all fields
-			_.each(this._filters, function(obj,key){
-				this._removeFilterCheckWidget(key, widgetId);
-			},this);
-		}
+	/**
+	 * Add a filter to be used on the filter query.
+	 * @param {String} filterName - name to recognize the filter, usually the field for the filter
+	 * @param {String} query - the query
+	 * @param {String} [widgetId] - If of the widget that apply the filter
+	 * @param {String} [filterText] - Auxiliar text to display the filter
+	 * @returns {{filterName: *, query: *, widgetId: *}}
+	 */
+	addFilter: function(filterName, query, widgetId, filterText){
+		console.log("Manager > addFilter: "+filterName+" | "+query+" | "+widgetId+" | "+filterText);
+		var filter = {
+			filterName: filterName,
+			query: query,
+			widgetId: widgetId,
+			filterText: filterText
+		};
+
+		this._filters.push(filter);
+		EUMSSI.EventManager.trigger("filterChange", filter);
+		return filter;
+	},
+
+	/**
+	 * Removes a filter with a especific parameters {filterName}
+	 * @param {String} filterName - the filter to be removed
+	 * @param {String} widgetId - the widgetId that added the filter to be removed
+	 * @param {String} query - the query for the widgets to be eliminated
+	 */
+	removeFilter: function(filterName, widgetId, query){
+		console.log("Manager >  removeFilterByName: "+filterName+" | "+widgetId+" | "+query);
+
+		var f = {};
+		if(filterName){ f.filterName = filterName; }
+		if(query){ f.query = query; }
+		if(widgetId){ f.widgetId = widgetId; }
+
+		_.each(this._filters,function(filter,index,array){
+			if(_.isMatch(filter,f)){
+				array.splice(index,1);
+				EUMSSI.EventManager.trigger("filterChange",filter);
+			}
+		});
+
+	},
+
+	/**
+	 * Check if a Filter exist
+	 * @param {String} filterName - the filter to be removed
+	 * @param {String} widgetId - the widgetId that added the filter to be removed
+	 * @param {String} query - the query for the widgets to be eliminated
+	 * @returns {Boolean}
+	 */
+	checkFilter: function(filterName, widgetId, query){
+		var f = {};
+		if(filterName){ f.filterName = filterName; }
+		if(query){ f.query = query; }
+		if(widgetId){ f.widgetId = widgetId; }
+
+		return _.isObject(_.find(this._filters,function(filter){
+			if(_.isMatch(filter,f)){
+				return true;
+			}
+		}));
 	},
 
 	cleanFilter: function(){
 		delete this._filters;
-		this._filters = {};
+		this._filters = [];
+	},
+
+	removeFilterByName: function(filterName, widgetId){
+		if(filterName){
+			this.removeFilter(filterName, widgetId, null);
+		}
+	},
+
+	removeFilterByWidget: function(widgetId){
+		if( widgetId ) {
+			this.removeFilter(null, widgetId, null);
+		}
+	},
+
+	removeFilterByQuery: function(query){
+		if( query ) {
+			this.removeFilter(null, null, query);
+		}
+	},
+
+	removeFilterObject: function(filter){
+		if( _.isObject(filter) ) {
+			this.removeFilter(filter.filterName, filter.widgetId, filter.query);
+		}
+	},
+
+	checkFilterByWidgetId: function(widgetId){
+		return this.checkFilter(null,widgetId,null);
 	},
 
 	/**
@@ -67,10 +148,8 @@ _.extend(FilterManager.prototype, {
 	 */
 	getFilterQueryString: function(){
 		var fq = "", q = [];
-		_.each(this._filters, function(subArray){
-			_.each(subArray,function(filterObj){
-				q.push(filterObj.query);
-			},this);
+		_.each(this._filters,function(filterObj){
+			q.push(filterObj.query);
 		},this);
 
 		if(q.length > 0){
@@ -78,26 +157,10 @@ _.extend(FilterManager.prototype, {
 		}
 
 		return fq;
-	},
+	}
 
 	/* end FILTERS API end */
 
-	_removeFilterCheckWidget: function(filterName, widgetId){
-		_.each(this._filters[filterName], function(obj,index){
-			if(obj.widgetId == widgetId){
-				this._filters[filterName].splice(index,1);
-				EUMSSI.EventManager.trigger("filterChange",filterName);
-			}
-		},this);
-		if(this._filters[filterName].length == 0){
-			this._deleteFilter(filterName);
-		}
-	},
-
-	_deleteFilter: function(filterName) {
-		delete this._filters[filterName];
-		EUMSSI.EventManager.trigger("filterChange",filterName);
-	}
 
 });
 

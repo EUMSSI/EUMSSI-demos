@@ -100,8 +100,8 @@
 			},
 
 			/* Filter Interface  */
-			addFilter: function(filterName, query, widgetId){
-				EUMSSI.FilterManager.addFilter(filterName, query, widgetId);
+			addFilter: function(filterName, query, widgetId, filterText){
+				EUMSSI.FilterManager.addFilter(filterName, query, widgetId, filterText);
 			},
 
 			removeFilterByName: function(filterName, widgetId){
