@@ -202,7 +202,7 @@
 			var $menu = $('<ul>');
 			$menu.append('<div class="ui-widget-header">'+facetName.replace(/_/g,"&nbsp;")+'</div>');
 			if(EUMSSI.FilterManager.checkFilterByWidgetId(this.id)){
-				$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Add person to filter</li>');
+				$menu.append('<li class="filter"><span class="ui-icon ui-icon-plusthick"></span>Add person to filter</li>');
 				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
 			} else {
 				$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by person</li>');
