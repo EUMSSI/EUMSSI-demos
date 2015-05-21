@@ -44,12 +44,7 @@
 		},
 
 		beforeRequest: function(){
-			if(!this.flag_MapChartRequest && !this.manager.flag_PaginationRequest) {
-				//Clean FQ - if the call don't activate the flag of Map
-				EUMSSI.FilterManager.removeFilterByWidget(this.id);
-
-			}
-			this.flag_MapChartRequest = false;
+			return true;
 		},
 
 		afterRequest: function(){
@@ -138,10 +133,11 @@
 				$menu = $('<ul>');
 
 			$menu.append('<div class="ui-widget-header">'+regionName+'</div>');
-			$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by country</li>');
-			//TODO $menu.append('<li class="filter-add"><span class="ui-icon ui-icon-plusthick"></span>Add country to filter</li>');
-			if(EUMSSI.FilterManager.checkFilterByWidgetId(this.id)){
+			if( EUMSSI.FilterManager.checkFilterByWidgetId(this.id) ){
+				$menu.append('<li class="filter"><span class="ui-icon ui-icon-plusthick"></span>Add country to filter</li>');
 				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
+			} else {
+				$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by country</li>');
 			}
 			$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
 
@@ -161,12 +157,13 @@
 		 * @private
 		 */
 		_addContryFilter: function(regionCode){
-			this._cleanCountryFilter(false);
 			//Create new FQ
-			this._lastfq = EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + ':("' + EUMSSI.UTIL.countryCode_SWAP[regionCode]+ '")';
-			EUMSSI.FilterManager.addFilter(EUMSSI.CONF.MAP_LOCATION_FIELD_NAME, this._lastfq, this.id, "Location: "+EUMSSI.UTIL.countryCode_SWAP[regionCode]);
-
-			this.flag_MapChartRequest = true;
+			EUMSSI.FilterManager.addFilter(
+				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME,
+				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + ':("' + EUMSSI.UTIL.countryCode_SWAP[regionCode]+ '")',
+				this.id,
+				"Location: "+EUMSSI.UTIL.countryCode_SWAP[regionCode]
+			);
 			this.doRequest();
 		},
 
@@ -179,7 +176,6 @@
 			//Clean FQ
 			EUMSSI.FilterManager.removeFilterByWidget(this.id);
 
-			this._lastfq = undefined;
 			if(fetch){
 				this.doRequest();
 			}

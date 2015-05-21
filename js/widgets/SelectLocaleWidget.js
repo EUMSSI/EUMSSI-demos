@@ -48,7 +48,7 @@
 			this.clearFilter();
 			//Set the current Filter
 			this.storedValue = prefix + this.attributeName + ":" + AjaxSolr.Parameter.escapeValue(value);
-			EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id);
+			EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id, "Locale: "+value);
 		},
 
 		/**

@@ -11,10 +11,7 @@
 		},
 
 		beforeRequest: function(){
-			if(!this.flag_TagCloudRequest && !this.manager.flag_PaginationRequest) {
-				this._cleanPersonFilter(false);
-			}
-			this.flag_TagCloudRequest = false;
+			return true;
 		},
 
 		afterRequest: function () {
@@ -90,21 +87,23 @@
 		 * @private
 		 */
 		_getWikipediaImages: function(facetes){
-			var urlRoot = "http://eumssi.cloudapp.net/wikiBridge/w/api.php?",
-				urlParams = [];
+			if(facetes.length > 0){
+				var urlRoot = "http://eumssi.cloudapp.net/wikiBridge/w/api.php?",
+					urlParams = [];
 
-			urlParams.push("action=query");
-			urlParams.push("prop=pageimages");
-			urlParams.push("titles="+_.pluck(facetes,"facet").join("|"));
-			urlParams.push("format=json");
-			urlParams.push("pithumbsize=280");
-			urlParams.push("pilimit=50");
+				urlParams.push("action=query");
+				urlParams.push("prop=pageimages");
+				urlParams.push("titles="+_.pluck(facetes,"facet").join("|"));
+				urlParams.push("format=json");
+				urlParams.push("pithumbsize=280");
+				urlParams.push("pilimit=50");
 
-			this.manager._showLoader();
-			$.ajax({
-				url: urlRoot + urlParams.join("&"),
-				success: this._getWikipediaImages_success.bind(this)
-			});
+				this.manager._showLoader();
+				$.ajax({
+					url: urlRoot + urlParams.join("&"),
+					success: this._getWikipediaImages_success.bind(this)
+				});
+			}
 		},
 
 		/**
@@ -205,7 +204,7 @@
 			$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
 			$menu.append('<li class="open-dbpedia"><span class="ui-icon ui-icon-newwin"></span>Open DBpedia page</li>');
 			$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by person</li>');
-			if(this._lastfq){
+			if(EUMSSI.FilterManager.checkFilterByWidgetId(this.id)){
 				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
 			}
 
@@ -234,10 +233,8 @@
 		_addPersonFilter: function(value){
 			this._cleanPersonFilter(false);
 			//Create new FQ
-			this._lastfq = this.field + ':("' + value + '")';
-			EUMSSI.FilterManager.addFilter(this.field, this._lastfq, this.id);
-
-			this.flag_TagCloudRequest = true;
+			var fq = this.field + ':("' + value + '")';
+			EUMSSI.FilterManager.addFilter(this.field, fq, this.id,"People: "+value.replace(/_/g, " "));
 			this.doRequest();
 		},
 
@@ -249,8 +246,6 @@
 		_cleanPersonFilter: function(fetch){
 			//Clean FQ
 			EUMSSI.FilterManager.removeFilterByWidget(this.id);
-
-			this._lastfq = undefined;
 			if(fetch){
 				this.doRequest();
 			}

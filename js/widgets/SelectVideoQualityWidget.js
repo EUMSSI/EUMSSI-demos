@@ -37,20 +37,24 @@
 		 * @param {String} value the value for the filter.
 		 */
 		setFilter: function (value) {
-			var filterQuery = "";
+			var filterQuery = "",
+				filterText = "Video Quality: ";
 
 			switch(value){
 				case "any" :
 					filterQuery = "meta.source.httpHigh:* OR meta.source.httpMedium:*";
+					filterText += "Any";
 					break;
 				//case "low" :
 				//	filterQuery = "meta.source.httpMedium:* NOT meta.source.httpHigh:*";
 				//	break;
 				case "hd" :
 					filterQuery = "meta.source.httpHigh:*";
+					filterText += "HD";
 					break;
 				case "youtube" :
 					filterQuery = "meta.source.httpHigh:* AND meta.source.youtubeVideoID:*";
+					filterText += "Youtube Only";
 					break;
 				default : break;
 			}
@@ -61,7 +65,7 @@
 			if(filterQuery != ""){
 				//Set the current Filter
 				this.storedValue = filterQuery;
-				EUMSSI.FilterManager.addFilter("videoQuality", filterQuery, this.id);
+				EUMSSI.FilterManager.addFilter("videoQuality", filterQuery, this.id, filterText);
 			}
 
 		},

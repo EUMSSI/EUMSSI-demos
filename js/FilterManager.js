@@ -80,13 +80,12 @@ _.extend(FilterManager.prototype, {
 		if(query){ f.query = query; }
 		if(widgetId){ f.widgetId = widgetId; }
 
-		_.each(this._filters,function(filter,index,array){
+		this._filters = _.reject(this._filters,function(filter){
 			if(_.isMatch(filter,f)){
-				array.splice(index,1);
-				EUMSSI.EventManager.trigger("filterChange",filter);
+				return true;
 			}
 		});
-
+		EUMSSI.EventManager.trigger("filterChange");
 	},
 
 	/**
