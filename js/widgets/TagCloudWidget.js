@@ -201,12 +201,14 @@
 		_openActionsMenu: function(facetName){
 			var $menu = $('<ul>');
 			$menu.append('<div class="ui-widget-header">'+facetName.replace(/_/g,"&nbsp;")+'</div>');
+			if(EUMSSI.FilterManager.checkFilterByWidgetId(this.id)){
+				$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Add person to filter</li>');
+				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
+			} else {
+				$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by person</li>');
+			}
 			$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
 			$menu.append('<li class="open-dbpedia"><span class="ui-icon ui-icon-newwin"></span>Open DBpedia page</li>');
-			$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by person</li>');
-			if(EUMSSI.FilterManager.checkFilterByWidgetId(this.id)){
-				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
-			}
 
 			$menu.on("click",".open-wikipedia",this._openNewPage.bind(this,"http://wikipedia.org/wiki/"+facetName));
 			$menu.on("click",".open-dbpedia",this._openNewPage.bind(this,"http://dbpedia.org/resource/"+facetName));
@@ -231,7 +233,7 @@
 		 * @private
 		 */
 		_addPersonFilter: function(value){
-			this._cleanPersonFilter(false);
+			//this._cleanPersonFilter(false);
 			//Create new FQ
 			var fq = this.field + ':("' + value + '")';
 			EUMSSI.FilterManager.addFilter(this.field, fq, this.id,"People: "+value.replace(/_/g, " "));
