@@ -88,7 +88,7 @@
 		 */
 		_getWikipediaImages: function(facetes){
 			if(facetes.length > 0){
-				var urlRoot = "http://eumssi.cloudapp.net/wikiBridge/w/api.php?",
+				var urlRoot = "http://en.wikipedia.org/w/api.php?",
 					urlParams = [];
 
 				urlParams.push("action=query");
@@ -100,6 +100,8 @@
 
 				this.manager._showLoader();
 				$.ajax({
+					crossDomain: true,
+					dataType: 'jsonp',
 					url: urlRoot + urlParams.join("&"),
 					success: this._getWikipediaImages_success.bind(this)
 				});
