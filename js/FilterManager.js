@@ -137,6 +137,10 @@ _.extend(FilterManager.prototype, {
 		}
 	},
 
+	checkFilterByName: function(filterName){
+		return this.checkFilter(filterName,null,null);
+	},
+
 	checkFilterByWidgetId: function(widgetId){
 		return this.checkFilter(null,widgetId,null);
 	},

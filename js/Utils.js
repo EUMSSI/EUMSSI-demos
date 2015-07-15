@@ -313,6 +313,78 @@ UTIL.showContextMenu = function($menu){
 };
 
 /**
+ * Get images from the wikipedia
+ * example: "http://en.wikipedia.org/w/api.php?action=query&titles=Barack_Obama|Muhammad|John_Kerry&prop=pageimages&format=json&pithumbsize=150&pilimit=50"
+ * apache.conf proxy: ProxyPass /wikiBridge http://en.wikipedia.org/
+ * @param {Array<String>} facetes - Array with the Facet Names to look for on th wikipedia
+ * @private
+ */
+UTIL.getWikipediaImages = function(facetes){
+	if(facetes.length > 0){
+		var urlRoot = "http://en.wikipedia.org/w/api.php?",
+			urlParams = [];
+
+		urlParams.push("action=query");
+		urlParams.push("prop=pageimages");
+		urlParams.push("titles="+facetes.join("|"));
+		urlParams.push("format=json");
+		urlParams.push("pithumbsize=280");
+		urlParams.push("pilimit=50");
+
+		//this.manager._showLoader();
+		return $.ajax({
+			crossDomain: true,
+			dataType: 'jsonp',
+			url: urlRoot + urlParams.join("&")
+			//success: this._getWikipediaImages_success.bind(this)
+		});
+	}
+};
+
+/**
+ * When click on a photo display a menu to perform some actions.
+ * @param {String} facetName - name of the item
+ * @private
+ */
+UTIL.openPeopleActionsMenu = function(facetName){
+	var $menu = $('<ul>');
+	$menu.append('<div class="ui-widget-header">'+facetName.replace(/_/g,"&nbsp;")+'</div>');
+	if(EUMSSI.FilterManager.checkFilterByName(EUMSSI.CONF.PERSON_FIELD_NAME)){
+		$menu.append('<li class="filter"><span class="ui-icon ui-icon-plusthick"></span>Add person to filter</li>');
+		$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
+	} else {
+		$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by person</li>');
+	}
+	$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
+	$menu.append('<li class="open-dbpedia"><span class="ui-icon ui-icon-newwin"></span>Open DBpedia page</li>');
+
+	function addPersonFilter(facetName){
+		var fq = EUMSSI.CONF.PERSON_FIELD_NAME + ':("' + facetName + '")';
+		EUMSSI.FilterManager.addFilter(EUMSSI.CONF.PERSON_FIELD_NAME, fq, this.id,"People: "+facetName.replace(/_/g, " "));
+		this.doRequest();
+	}
+	function cleanPersonFilter(){
+		EUMSSI.FilterManager.removeFilterByName(EUMSSI.CONF.PERSON_FIELD_NAME);
+		this.doRequest();
+	}
+
+	$menu.on("click", ".open-wikipedia", UTIL.openNewPage.bind(this, "http://wikipedia.org/wiki/"+facetName));
+	$menu.on("click", ".open-dbpedia", UTIL.openNewPage.bind(this, "http://dbpedia.org/resource/"+facetName));
+	$menu.on("click", ".filter", addPersonFilter.bind(this,facetName));
+	$menu.on("click", ".filter-clear", cleanPersonFilter.bind(this));
+
+	EUMSSI.UTIL.showContextMenu($menu);
+};
+
+/**
+ * Open link on a new page
+ * @param {String} url - the link
+ */
+UTIL.openNewPage = function(url){
+	window.open(url,"_blank");
+};
+
+/**
  * Splits with espaces the current camelCase string.
  * Capitalize the first letter.
  * ex:  "myVarIsAwesome".unCamelCase() -> "My Var Is Awesome"

@@ -51,12 +51,16 @@
 			function tabChange() {
 				if($(this).tabs( "option", "active") === tabPosition){
 					$(this).off("tabsactivate", tabChange );
-					self._getWikipediaImages(objectedItems);
+					//self._getWikipediaImages(objectedItems);
+					UTIL.getWikipediaImages(_.pluck(objectedItems,"facet"))
+						.done(self._getWikipediaImages_success.bind(self));
 				}
 			}
 
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this._getWikipediaImages(objectedItems);
+				//this._getWikipediaImages(objectedItems);
+				UTIL.getWikipediaImages(_.pluck(objectedItems,"facet"))
+					.done(this._getWikipediaImages_success.bind(this));
 			} else {
 				this.$tabs.off( "tabsactivate", tabChange );
 				this.$tabs.on( "tabsactivate", tabChange );
@@ -76,7 +80,7 @@
 				//.html(item.facet.replace(/_/g,"&nbsp;")) // Text
 				.addClass('tagcloud_size_' + size)
 				.attr('data-id',item.facet)
-				.click(this._openActionsMenu.bind(this,item.facet));
+				.click(UTIL.openPeopleActionsMenu.bind(this,item.facet));
 		},
 
 		/**
@@ -193,66 +197,6 @@
 		 */
 		_refreshFreeTile: function(){
 			this.$target.freetile("layout");
-		},
-
-		/**
-		 * When click on a photo display a menu to perform some actions.
-		 * @param {String} facetName - name of the item
-		 * @private
-		 */
-		_openActionsMenu: function(facetName){
-			var $menu = $('<ul>');
-			$menu.append('<div class="ui-widget-header">'+facetName.replace(/_/g,"&nbsp;")+'</div>');
-			if(EUMSSI.FilterManager.checkFilterByWidgetId(this.id)){
-				$menu.append('<li class="filter"><span class="ui-icon ui-icon-plusthick"></span>Add person to filter</li>');
-				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
-			} else {
-				$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by person</li>');
-			}
-			$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
-			$menu.append('<li class="open-dbpedia"><span class="ui-icon ui-icon-newwin"></span>Open DBpedia page</li>');
-
-			$menu.on("click",".open-wikipedia",this._openNewPage.bind(this,"http://wikipedia.org/wiki/"+facetName));
-			$menu.on("click",".open-dbpedia",this._openNewPage.bind(this,"http://dbpedia.org/resource/"+facetName));
-			$menu.on("click",".filter",this._addPersonFilter.bind(this,facetName));
-			$menu.on("click",".filter-clear",this._cleanPersonFilter.bind(this,true));
-
-			EUMSSI.UTIL.showContextMenu($menu);
-		},
-
-		/**
-		 * Open link on a new page
-		 * @param {Strin} url - the link
-		 * @private
-		 */
-		_openNewPage: function(url){
-			window.open(url,"_blank");
-		},
-
-		/**
-		 * Remove the last filter query and adds a new one.
-		 * @param {String} value - value to filter
-		 * @private
-		 */
-		_addPersonFilter: function(value){
-			//this._cleanPersonFilter(false);
-			//Create new FQ
-			var fq = this.field + ':("' + value + '")';
-			EUMSSI.FilterManager.addFilter(this.field, fq, this.id,"People: "+value.replace(/_/g, " "));
-			this.doRequest();
-		},
-
-		/**
-		 * Remove the current filter
-		 * @param {Boolean} fetch - true if want to perform a request
-		 * @private
-		 */
-		_cleanPersonFilter: function(fetch){
-			//Clean FQ
-			EUMSSI.FilterManager.removeFilterByWidget(this.id);
-			if(fetch){
-				this.doRequest();
-			}
 		}
 
 	});

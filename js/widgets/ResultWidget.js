@@ -91,7 +91,7 @@
 			$output.append($("<p>").html(text));
 
 			//Dynamic Fields
-			$output.append(this._renderKeyArray(this.getEnabledDynamicAttributesKeyArray(),doc,200).html());
+			$output.append(this._renderKeyArray(this.getEnabledDynamicAttributesKeyArray(),doc,200));
 
 			//Link Video
 			if(videoLink) {
@@ -188,20 +188,31 @@
 				//Check if the doc data has the Key
 				if(doc[key]) {
 					var text = doc[key].toString();
-					//FIX - comma problem
-					text = text.replace(/,([^\s])/g, ", $1");
+					var $value = $('<span>').addClass("info-value");
+					var $key = $('<span>').addClass("info-label");
 
-					var value = this._sliceTextMore(text, moreSize);
-					keyLabel = this._getSimpleKey(key);
+					switch(key){
+						case "meta.extracted.text.dbpedia.PERSON" :
+							value = this._personCustomRender(text, $content);
+							$value.addClass("person-data");
+						break;
+						default :
+							//FIX - comma problem
+							text = text.replace(/,([^\s])/g, ", $1");
 
-					//ADD here HTML tags to the value
-					//dbpedia links transformation
-					if(key == "meta.extracted.text.dbpedia"){
-						value = this._generateHTMLLinks(value);
+							var value = this._sliceTextMore(text, moreSize);
+
+							//ADD here HTML tags to the value
+							//dbpedia links transformation
+							if(key == "meta.extracted.text.dbpedia"){
+								value = this._generateHTMLLinks(value);
+							}
+						break;
 					}
 
-					var $key = $('<span>').addClass("info-label").html(keyLabel);
-					var $value = $('<span>').addClass("info-value").html(value);
+					keyLabel = this._getSimpleKey(key);
+					$key.html(keyLabel);
+					$value.html(value);
 
 					$content.append($('<p>').append($key).append($value));
 				}
@@ -282,6 +293,40 @@
 				nextWhitePosition = size;
 			}
 			return nextWhitePosition;
+		},
+
+		_personCustomRender : function(text, $content){
+			var personArray = [];
+			var tempValue = "";
+			if(text){
+				text = text.replace(/ /g,'');
+				personArray = _.uniq(text.split(","));
+				return UTIL.getWikipediaImages(personArray)
+					.done(this._renderWikipediaImages.bind(this, $content));
+
+				tempValue = "Loading Images..."
+			}
+			return tempValue;
+		},
+
+		_renderWikipediaImages : function($content, response){
+			var $value = $("<div>").addClass("result-person");
+			if(response && response.query && response.query.pages) {
+				_.each(response.query.pages, function (obj) {
+					var facetId = obj.title.replace(/ /g, "_");
+					var $a = $('<a>').attr("data-id",facetId);
+					var $img = $("<img>").attr("title", obj.title);
+					if (obj.thumbnail && obj.thumbnail.source) {
+						$img.attr("src", obj.thumbnail.source);
+					} else {
+						$img.attr("src", "images/dummy.png");
+					}
+					$a.append($img);
+					$a.click(UTIL.openPeopleActionsMenu.bind(this, facetId));
+					$value.append($a);
+				}, this);
+			}
+			$content.find(".info-value.person-data").html($value);
 		},
 
 		init: function () {
