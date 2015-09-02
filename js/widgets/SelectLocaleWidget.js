@@ -64,7 +64,7 @@
 			}
 
 			//Remove previous Value
-			this.clearFilter();
+			this.clearFilter(true);
 			//Set the current Filter
 			this.storedValue = prefix + this.attributeName + ":" + AjaxSolr.Parameter.escapeValue(value);
 			EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id, filterText);
@@ -72,9 +72,10 @@
 
 		/**
 		 * Sets the main Solr query to the empty string.
+		 * @param {Boolean} [silent] true, if don't want to trigger the change event
 		 */
-		clearFilter: function () {
-			EUMSSI.FilterManager.removeFilterByWidget(this.id);
+		clearFilter: function (silent) {
+			EUMSSI.FilterManager.removeFilterByWidget(this.id,silent);
 
 		},
 

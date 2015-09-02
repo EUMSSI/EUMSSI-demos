@@ -266,6 +266,9 @@ span.info-label::after {
 }
 .ui-dialog.tweet-dialog {
   border: none;
+  -webkit-box-shadow: 0 0 5px 2px #5ea9dd;
+  -moz-box-shadow: 0 0 5px 2px #5ea9dd;
+  box-shadow: 0 0 5px 2px #5ea9dd;
 }
 /*************************** Dialog & New Filter ***************************/
 .dialog-new-filter p {

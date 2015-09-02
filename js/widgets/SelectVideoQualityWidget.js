@@ -10,12 +10,12 @@
 			this.storedValue = "";
 
 			$select = $("<select>").addClass("videoQualitySelector");
-			$select.append($('<option value="" selected="selected">All types</option>'));
-			$select.append($('<option value="allvideo">Video</option>'));			// Has a video in any quality
+			$select.append($('<option value="" selected="selected">Video no required</option>'));
+			$select.append($('<option value="allvideo">Any quality</option>'));			// Has a video in any quality
 			//$select.append($('<option value="low">Low Quality</option>'));		// Has a video only in Medium quality
-			$select.append($('<option value="hd" >Video HD</option>'));				// Has a video in High quality
+			$select.append($('<option value="hd">HD quality</option>'));				// Has a video in High quality
 			$select.append($('<option value="youtube">YouTube</option>'));			// Has a video in Youtube
-			$select.append($('<option value="twitter">Twitter</option>'));			// Has a tweet
+			//$select.append($('<option value="twitter">Twitter</option>'));			// Has a tweet
 			//Set Initial Filter
 			this.setFilter("");
 
@@ -42,33 +42,33 @@
 		 */
 		setFilter: function (value) {
 			var filterQuery = "",
-				filterText = "Source type: ";
+				filterText = "Video Quality: ";
 
 			switch(value){
 				case "allvideo" :
 					filterQuery = "meta.source.httpHigh:* OR meta.source.httpMedium:*";
-					filterText += "Video";
+					filterText += "Any quality";
 					break;
 				//case "low" :
 				//	filterQuery = "meta.source.httpMedium:* NOT meta.source.httpHigh:*";
 				//	break;
 				case "hd" :
 					filterQuery = "meta.source.httpHigh:*";
-					filterText += "Video HD";
+					filterText += "HD quality";
 					break;
 				case "youtube" :
 					filterQuery = "meta.source.httpHigh:* AND meta.source.youtubeVideoID:*";
-					filterText += "Youtube Only";
+					filterText += "Youtube only";
 					break;
-				case "twitter" :
-					filterQuery = "meta.source.tweetId:*";
-					filterText += "Twitter Only";
-					break;
+				//case "twitter" :
+				//	filterQuery = "meta.source.tweetId:*";
+				//	filterText += "Twitter Only";
+				//	break;
 				default : break;
 			}
 
 			//Remove previous Value
-			this.clearFilter();
+			this.clearFilter(true);
 
 			if(filterQuery != ""){
 				//Set the current Filter
@@ -80,9 +80,10 @@
 
 		/**
 		 * Sets the main Solr query to the empty string.
+		 * @param {Boolean} [silent] true, if don't want to trigger the change event
 		 */
-		clearFilter: function () {
-			EUMSSI.FilterManager.removeFilterByWidget(this.id);
+		clearFilter: function (silent) {
+			EUMSSI.FilterManager.removeFilterByWidget(this.id,silent);
 		},
 
 		_manageFilterChange: function(){
