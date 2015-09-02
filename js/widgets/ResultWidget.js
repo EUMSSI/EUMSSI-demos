@@ -107,56 +107,34 @@
 		},
 
 		_renderTitle: function(doc){
-			var header = doc['meta.source.headline'];
+			var $header =  $("<span class='links'>"),
+				$title = $("<h2>");
+			$header.text(doc['meta.source.headline']);
 
 			//Twitter - special behaviour
-			if(!header && doc['source'] && doc['source'].startsWith("Twitter") ) {
+			if(!doc['meta.source.headline'] && doc['source'] && doc['source'].startsWith("Twitter") ) {
 				var text = doc['meta.source.text'] || "";
-				header = "Twitter: "+text.substring(0, 50);
+				$header.text(text.substring(0, 50));
 				if(text.length > 50){
-					header += "...";
+					$header.append("...");
+				}
+				//Show tweet bird if tweetId
+				if(doc['meta.source.tweetId']){
+					var $twitterLogo = $("<img class='twitter-logo' src='images/Twitter_logo_blue_32.png'>")
+						.prop("data-tweetid",doc['meta.source.tweetId'])
+						.prop("title","Open Tweet");
+					$twitterLogo.click(function(event){
+						UTIL.openTweet( $(event.target).prop("data-tweetid") );
+					});
+					$title.append($twitterLogo)
 				}
 			}
 
-			var $title = $("<p>").attr("id","links_"+doc._id).addClass("links").append( $("<h2>").html(header) );
-			$title.click(function(){
+			$header.attr("id","links_"+doc._id);
+			$header.click(function(){
 				this._showInfo(doc);
 			}.bind(this));
-
-			//Twitter - Tooltip
-			if( doc['source'] && doc['source'].startsWith("Twitter") && doc['meta.source.tweetId']) {
-				$title.prop("title","");
-				$title.tooltip({
-					show: { delay: 1000 },
-					content: function(callback){
-						var $tooltipContent = $("<div>");
-						twttr.widgets.createTweet(doc['meta.source.tweetId'].toString(), $tooltipContent[0],{
-							width: "400px",
-							conversation: true,
-							dnt: true
-						});
-						return $tooltipContent;
-					},
-					open : function(event, ui) {
-						if (typeof(event.originalEvent) === 'undefined') {
-								return false;
-						}
-						var $id = $(ui.tooltip).attr('id');
-						// close any lingering tooltips
-						$('div.ui-tooltip').not('#' + $id).remove();
-					},
-					close: function(event, ui) {
-						ui.tooltip.hover(
-							function() { $(this).stop(true).fadeTo(400, 1); },
-							function() {
-								$(this).fadeOut('400', function() {
-									$(this).remove();
-								});
-							}
-						);
-					}
-				});
-			}
+			$title.append( $header );
 
 			return $title;
 		},
@@ -301,8 +279,10 @@
 			if(text){
 				text = text.replace(/ /g,'');
 				personArray = _.uniq(text.split(","));
-				return UTIL.getWikipediaImages(personArray)
-					.done(this._renderWikipediaImages.bind(this, $content));
+				if(personArray.length > 0){
+					return UTIL.getWikipediaImages(personArray)
+						.done(this._renderWikipediaImages.bind(this, $content));
+				}
 
 				tempValue = "Loading Images..."
 			}

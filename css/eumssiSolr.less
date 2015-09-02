@@ -1,542 +1,559 @@
-@rgb_blue:      #6998f0;
-@rgb_black:     #000;
-@rgb_white:     #fff;
-@rgb_seablue:   #1B2C33;
-@rgb_grey:      #666;
-@rgb_grey7:     #777;
-@rgb_background:    #EEE;
+@rgb_blue: #6998f0;
+@rgb_black: #000;
+@rgb_white: #fff;
+@rgb_seablue: #1B2C33;
+@rgb_grey: #666;
+@rgb_grey7: #777;
+@rgb_background: #EEE;
 @rgb_background_widget: #C7DAE9;
-@rgb_darkgrey:  #333;
-@rgb_orange:    #FF4900;
-@rgb_red:       #FF0000;
+@rgb_darkgrey: #333;
+@rgb_orange: #FF4900;
+@rgb_red: #FF0000;
 
 /*************** MISC **************/
 /*************** ******** **************/
-
-
-
-
 
 /*************** ******** **************/
 /*************** MISC **************/
 
 /*************************** Common ***************************/
 * {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    color: @rgb_darkgrey;
-    font-family: Verdana, Arial, sans-serif;
-    font-size: 12px;
-    line-height: 18px;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: @rgb_darkgrey;
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
 }
 
 img {
-    border: none;
+  border: none;
 }
 
 a {
-    color: @rgb_blue;
-    text-decoration: none;
-    &:hover {
-        color: @rgb_black;
-        text-decoration: underline;
-    }
+  color: @rgb_blue;
+  text-decoration: none;
+  &:hover {
+	color: @rgb_black;
+	text-decoration: underline;
+  }
 }
 
 .clear {
-    clear: both;
+  clear: both;
 }
 
 p {
-    margin-bottom: 5px;
-    text-align: left;
+  margin-bottom: 5px;
+  text-align: left;
 }
 
 video {
-    background-color: black;
+  background-color: black;
 }
 
 .click-menu.ui-menu {
-    position: absolute;
-    width: auto;
-    z-index: 1000;
+  position: absolute;
+  width: auto;
+  z-index: 1000;
 
-    .ui-widget-header:active,
-    .ui-widget-header:hover {
-        font-weight: bold;
-        background: none;
-        border: 1px solid transparent;
-        cursor: default;
-    }
+  .ui-widget-header:active,
+  .ui-widget-header:hover {
+	font-weight: bold;
+	background: none;
+	border: 1px solid transparent;
+	cursor: default;
+  }
 }
 
 /*************************** LAYOUT GENERAL ***************************/
 
 .ui-layout-resizer {
-    background-color: @rgb_grey7;
+  background-color: @rgb_grey7;
 }
+
 .ui-layout-toggler {
-    background-color: @rgb_orange;
+  background-color: @rgb_orange;
 }
 
 .content-panel.ui-layout-center {
-    overflow: visible !important;
+  overflow: visible !important;
 }
 
 .content-panel .ui-layout-resizer-west,
 .content-panel .ui-layout-resizer-east {
-    background-color: @rgb_blue;
-    &:hover{
-        background-color: lighten(@rgb_blue,10%);
-    }
+  background-color: @rgb_blue;
+  &:hover {
+	background-color: lighten(@rgb_blue, 10%);
+  }
 }
 
-.button-pin{
-    position: absolute;
-    top:0;
-    margin: 1px;
-    z-index: 2;
-    width: 18px;
-    height: 18px;
-    &.button-pin-west{
-        right: 0px;
-    }
-    &.button-pin-east{
-        left: 0px;
-    }
-    &.ui-layout-button-pin-up {
-        background-image:url("../lib/jquery/images/ui-icons_222222_256x240.png");
-        background-position:-128px -144px;
-        border: 1px solid @rgb_grey;
-    }
-    &.ui-layout-button-pin-down {
-        background-image:url("../lib/jquery/images/ui-icons_222222_256x240.png");
-        background-position:-144px -144px;
-        border: 1px solid @rgb_orange;
-    }
+.button-pin {
+  position: absolute;
+  top: 0;
+  margin: 1px;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  &.button-pin-west {
+	right: 0px;
+  }
+  &.button-pin-east {
+	left: 0px;
+  }
+  &.ui-layout-button-pin-up {
+	background-image: url("../lib/jquery/images/ui-icons_222222_256x240.png");
+	background-position: -128px -144px;
+	border: 1px solid @rgb_grey;
+  }
+  &.ui-layout-button-pin-down {
+	background-image: url("../lib/jquery/images/ui-icons_222222_256x240.png");
+	background-position: -144px -144px;
+	border: 1px solid @rgb_orange;
+  }
 }
 
-.ui-layout-toggler-none{
-    display: none !important;
+.ui-layout-toggler-none {
+  display: none !important;
 }
+
 .ui-layout-resizer-none {
-    display: none !important;
+  display: none !important;
 }
 
 .ui-loading-modal::before {
-    background-color: rgba(0, 0, 0, 0.25);
-    background-image: url("../images/bar-ajax-loader.gif");
-    background-position: center;
-    background-repeat: no-repeat;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    z-index: 9999;
-    content: " ";
-    width: 100%;
-    height: 100%;
+  background-color: rgba(0, 0, 0, 0.25);
+  background-image: url("../images/bar-ajax-loader.gif");
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 9999;
+  content: " ";
+  width: 100%;
+  height: 100%;
 }
 
 body .advancedSearch-panel {
-    background-color: @rgb_background_widget;
-    opacity: 1;
-    z-index: 1;
+  background-color: @rgb_background_widget;
+  opacity: 1;
+  z-index: 1;
 }
 
 body .widget-panel {
-    background-color: @rgb_background;
-    opacity: 1;
-    z-index: 1;
+  background-color: @rgb_background;
+  opacity: 1;
+  z-index: 1;
 }
 
 body,
 .header-panel,
 .search-panel {
-    background-color: @rgb_background;
+  background-color: @rgb_background;
 }
 
 /*************************** Header ***************************/
 
 .header-panel {
-    h1 {
-        padding: 20px 0 5px 10px;
-        font-size: 20px;
-        color: @rgb_seablue;
-    }
-    h2 {
-        padding-left: 10px;
-        color: @rgb_grey;
-        font-size: 14px;
-        font-weight: 100;
-    }
+  h1 {
+	padding: 20px 0 5px 10px;
+	font-size: 20px;
+	color: @rgb_seablue;
+  }
+  h2 {
+	padding-left: 10px;
+	color: @rgb_grey;
+	font-size: 14px;
+	font-weight: 100;
+  }
 }
 
 img.logo {
-    float: right;
+  float: right;
 }
 
 /*************************** Center (Result) ***************************/
 
 .result-panel-content {
-    text-align: justify;
-    overflow: visible;
-    h2 {
-        padding: 15px 0 5px 0;
-        color: @rgb_seablue;
-        font-size: 20px;
-        font-weight: 100;
-        &:hover {
-            color: @rgb_orange;
-            text-decoration: underline;
-            -webkit-transition: all 200ms;
-            -o-transition: all 200ms;
-            -moz-transition: all 200ms;
-            transition: all 200ms;
-        }
-    }
-    .tab-content {
-        padding: 10px 20px 50px 40px;
-    }
-    .date{
-        font-size: 10px;
-    }
-    .tabs-container {
-        height: 100%;
-        overflow: visible;
-        /* Override jQuery Theme*/
-        border-radius: 0px;
-        padding: 0px;
-    }
+  text-align: justify;
+  overflow: visible;
+  h2 {
+	padding: 15px 0 5px 0;
+	color: @rgb_seablue;
+	font-size: 20px;
+	font-weight: 100;
+	span.links:hover {
+	  color: @rgb_orange;
+	  text-decoration: underline;
+	  -webkit-transition: all 200ms;
+	  -o-transition: all 200ms;
+	  -moz-transition: all 200ms;
+	  transition: all 200ms;
+	}
+  }
+  .tab-content {
+	padding: 10px 20px 50px 40px;
+  }
+  .date {
+	font-size: 10px;
+  }
+  .tabs-container {
+	height: 100%;
+	overflow: visible;
+	/* Override jQuery Theme*/
+	border-radius: 0px;
+	padding: 0px;
+  }
 
-    .ui-tabs {
-        .ui-tabs-nav{
-            position: absolute;
-            top: -35px;
-            left: 0px;
-        }
-        .ui-tabs-panel {
-            overflow: auto;
-            height: 100%;
-            width: 100%;
-            padding: 0px;
-        }
-    }
-    
-    .result-person img{
-        max-height: 80px;
-        max-width: 80px;
-        cursor: pointer;
-    }
+  .ui-tabs {
+	.ui-tabs-nav {
+	  position: absolute;
+	  top: -35px;
+	  left: 0px;
+	}
+	.ui-tabs-panel {
+	  overflow: auto;
+	  height: 100%;
+	  width: 100%;
+	  padding: 0px;
+	}
+  }
+
+  .result-person img {
+	max-height: 80px;
+	max-width: 80px;
+	cursor: pointer;
+  }
+
+  .twitter-logo {
+	max-height: 18px;
+	vertical-align: bottom;
+	margin-right: 5px;
+	cursor: pointer;
+  }
 
 }
 
 .pager,
 .pager-header {
-    display: inline;
+  display: inline;
 }
 
 .pager li,
 .links li {
-    list-style-type: none;
-    display: inline;
+  list-style-type: none;
+  display: inline;
 }
+
 #selection {
-    padding: 10px 15px 0;
-    li {
-        list-style-type: none;
-    }
+  padding: 10px 15px 0;
+  li {
+	list-style-type: none;
+  }
 }
-.resultWidget-placeholder{
-    padding-top: 1px;
+
+.resultWidget-placeholder {
+  padding-top: 1px;
 }
-p.links,
-a.links{
-    cursor: pointer;
+
+.links {
+  cursor: pointer;
 }
 
 /*************************** search-panel (LEFT Side) ***************************/
 
 .search-panel-content,
-.advancedSearch-panel-content{
-    padding: 0 0 10px 10px;
-    overflow: auto;
-    h2 {
-        clear: left;
-        padding-top: 20px;
-        color: @rgb_darkgrey;
-        font-size: 13px;
-    }
-    input.text-widget-input {
-        width: 200px;
-    }
-    select {
-        width: 150px;
-    }
-    .filter-container {
-        position: relative;
-        h2 {
-            display: inline-block;
-        }
-        .ui-checkbox-input {
-            margin: 0px 2px;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .ui-checkbox-label {
-            font-size: 10px;
-            font-style: italic;
-        }
-    }
+.advancedSearch-panel-content {
+  padding: 0 0 10px 10px;
+  overflow: auto;
+  h2 {
+	clear: left;
+	padding-top: 20px;
+	color: @rgb_darkgrey;
+	font-size: 13px;
+  }
+  input.text-widget-input {
+	width: 200px;
+  }
+  select {
+	width: 150px;
+  }
+  .filter-container {
+	position: relative;
+	h2 {
+	  display: inline-block;
+	}
+	.ui-checkbox-input {
+	  margin: 0px 2px;
+	  display: inline-block;
+	  vertical-align: middle;
+	}
+	.ui-checkbox-label {
+	  font-size: 10px;
+	  font-style: italic;
+	}
+  }
 }
 
 /*************************** Dialog ***************************/
-span.info-label{
-    font-weight: bold;
-    color: @rgb_orange;
-    &::after {
-        content: ": ";
-    }
+span.info-label {
+  font-weight: bold;
+  color: @rgb_orange;
+  &::after {
+	content: ": ";
+  }
+}
+
+.ui-dialog.tweet-dialog {
+  border: none;
+  //background: none;
+  .ui-dialog-titlebar{
+	//display: none;
+  }
 }
 
 /*************************** Dialog & New Filter ***************************/
 .dialog-new-filter p {
-    margin-bottom: 1em;
-    label{
-        width: 8em;
-        text-align: right;
-        display: inline-block;
-        margin-right: 0.5em;
-    }
-    input, select{
-        min-width: 15em;
-    }
+  margin-bottom: 1em;
+  label {
+	width: 8em;
+	text-align: right;
+	display: inline-block;
+	margin-right: 0.5em;
+  }
+  input, select {
+	min-width: 15em;
+  }
 }
 
 /*************************** Main Actions Buttons ***************************/
 button.ui-button-main {
-    padding: 5px 10px;
-    margin: 1px 0px;
-    width: 200px;
-    text-align: initial;
-    background-color: @rgb_grey7;
-    color: @rgb_white;
-    font-weight: bold;
-    border-style: solid;
-    border-left: 10px solid @rgb_seablue;
-    border-top: 0px;
-    border-bottom: 0px;
-    border-right: 0px;
-    &:hover {
-        /*border-left: 15px solid @rgb_seablue;*/
-        background-color: @rgb_orange;
-    }
+  padding: 5px 10px;
+  margin: 1px 0px;
+  width: 200px;
+  text-align: initial;
+  background-color: @rgb_grey7;
+  color: @rgb_white;
+  font-weight: bold;
+  border-style: solid;
+  border-left: 10px solid @rgb_seablue;
+  border-top: 0px;
+  border-bottom: 0px;
+  border-right: 0px;
+  &:hover {
+	/*border-left: 15px solid @rgb_seablue;*/
+	background-color: @rgb_orange;
+  }
 }
 
 button.btn-remove-filter {
-    position: absolute;
-    top: 40px;
-    right: 18px;
-    border-radius: 15px;
-    background: none;
-    border: none;
-    opacity: 0.2;
-    &:hover {
-        opacity: 1;
-    }
+  position: absolute;
+  top: 40px;
+  right: 18px;
+  border-radius: 15px;
+  background: none;
+  border: none;
+  opacity: 0.2;
+  &:hover {
+	opacity: 1;
+  }
 }
 
 /*************************** Errors ***************************/
-.ui-error-text{
-    font-size: 20px;
-    font-weight: bold;
-    color: @rgb_red;
+.ui-error-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: @rgb_red;
 }
 
 /*************************** Text Slice more/less ***************************/
 span.more {
-    display: inline-block;
-    vertical-align: sub;
-    cursor: pointer;
+  display: inline-block;
+  vertical-align: sub;
+  cursor: pointer;
 }
+
 .ui-after-points::after {
-    content: "... ";
+  content: "... ";
 }
 
 /*************************** Tag Facet Widget ***************************/
 .tagfacet {
-    padding: 5px 0px;
-    *{
-        display: inline-block;
-    }
-    .tagfacet-item {
-        width: 200px;
-        font-weight: bold;
-    }
-    .tagfacet-item-count {
-        margin-left: 5px;
-        font-weight: normal;
-    }
-    .ui-checkbox-container {
-        margin-bottom: 5px;
-    }
-    .ui-checkbox-container:hover {
-        background-color: rgba(255,77,0,0.1);
-    }
-    .ui-checkbox-container input {
-        vertical-align: top;
-        margin: 2px 2px;
-    }
+  padding: 5px 0px;
+  * {
+	display: inline-block;
+  }
+  .tagfacet-item {
+	width: 200px;
+	font-weight: bold;
+  }
+  .tagfacet-item-count {
+	margin-left: 5px;
+	font-weight: normal;
+  }
+  .ui-checkbox-container {
+	margin-bottom: 5px;
+  }
+  .ui-checkbox-container:hover {
+	background-color: rgba(255, 77, 0, 0.1);
+  }
+  .ui-checkbox-container input {
+	vertical-align: top;
+	margin: 2px 2px;
+  }
 }
 
 /*************************** TAG CLOUD WIDGET ***************************/
 
-.tagCloud-placeholder{
-    width: 90%;
-    margin: auto;
-    margin-top: 50px;
-    position: relative;
+.tagCloud-placeholder {
+  width: 90%;
+  margin: auto;
+  margin-top: 50px;
+  position: relative;
 
-    .tagcloud_item {
-        display: inline-block;
-        vertical-align: middle;
-        margin: 3px;
-        color: @rgb_blue;
-    }
-    .tagcloud_item:hover {
-        color: @rgb_orange;
-        text-decoration: none;
-    }
+  .tagcloud_item {
+	display: inline-block;
+	vertical-align: middle;
+	margin: 3px;
+	color: @rgb_blue;
+  }
+  .tagcloud_item:hover {
+	color: @rgb_orange;
+	text-decoration: none;
+  }
 
-    a.tagcloud_size_0 {
-        font-size: 80%;
-        img {
-            max-width: 60px;
-            max-height: 60px;
-            opacity: 0.5;
-        }
-    }
-    a.tagcloud_size_1 {
-        font-size: 100%;
-        img {
-            max-width: 80px;
-            max-height: 80px;
-            opacity: 0.5;
-        }
-    }
-    a.tagcloud_size_2 {
-        font-size: 120%;
-        img {
-            max-width: 100px;
-            max-height: 100px;
-            opacity: 0.6;
-        }
-    }
-    a.tagcloud_size_3 {
-        font-size: 140%;
-        img {
-            max-width: 120px;
-            max-height: 120px;
-            opacity: 0.6;
-        }
-    }
-    a.tagcloud_size_4 {
-        font-size: 160%;
-        img {
-            max-width: 140px;
-            max-height: 140px;
-            opacity: 0.7;
-        }
-    }
-    a.tagcloud_size_5 {
-        font-size: 180%;
-        img {
-            max-width: 160px;
-            max-height: 160px;
-            opacity: 0.7;
-        }
-    }
-    a.tagcloud_size_6 {
-        font-size: 200%;
-        img {
-            max-width: 180px;
-            max-height: 180px;
-            opacity: 0.8;
-        }
-    }
-    a.tagcloud_size_7 {
-        font-size: 220%;
-        img {
-            max-width: 200px;
-            max-height: 200px;
-            opacity: 0.8;
-        }
-    }
-    a.tagcloud_size_8 {
-        font-size: 240%;
-        img {
-            max-width: 220px;
-            max-height: 220px;
-            opacity: 0.9;
-        }
-    }
-    a.tagcloud_size_9 {
-        font-size: 260%;
-        img {
-            max-width: 240px;
-            max-height: 240px;
-            opacity: 0.9;
-        }
-    }
-    a.tagcloud_size_10 {
-        font-size: 280%;
-        img {
-            max-width: 260px;
-            max-height: 260px;
-            opacity: 1;
-        }
-    }
+  a.tagcloud_size_0 {
+	font-size: 80%;
+	img {
+	  max-width: 60px;
+	  max-height: 60px;
+	  opacity: 0.5;
+	}
+  }
+  a.tagcloud_size_1 {
+	font-size: 100%;
+	img {
+	  max-width: 80px;
+	  max-height: 80px;
+	  opacity: 0.5;
+	}
+  }
+  a.tagcloud_size_2 {
+	font-size: 120%;
+	img {
+	  max-width: 100px;
+	  max-height: 100px;
+	  opacity: 0.6;
+	}
+  }
+  a.tagcloud_size_3 {
+	font-size: 140%;
+	img {
+	  max-width: 120px;
+	  max-height: 120px;
+	  opacity: 0.6;
+	}
+  }
+  a.tagcloud_size_4 {
+	font-size: 160%;
+	img {
+	  max-width: 140px;
+	  max-height: 140px;
+	  opacity: 0.7;
+	}
+  }
+  a.tagcloud_size_5 {
+	font-size: 180%;
+	img {
+	  max-width: 160px;
+	  max-height: 160px;
+	  opacity: 0.7;
+	}
+  }
+  a.tagcloud_size_6 {
+	font-size: 200%;
+	img {
+	  max-width: 180px;
+	  max-height: 180px;
+	  opacity: 0.8;
+	}
+  }
+  a.tagcloud_size_7 {
+	font-size: 220%;
+	img {
+	  max-width: 200px;
+	  max-height: 200px;
+	  opacity: 0.8;
+	}
+  }
+  a.tagcloud_size_8 {
+	font-size: 240%;
+	img {
+	  max-width: 220px;
+	  max-height: 220px;
+	  opacity: 0.9;
+	}
+  }
+  a.tagcloud_size_9 {
+	font-size: 260%;
+	img {
+	  max-width: 240px;
+	  max-height: 240px;
+	  opacity: 0.9;
+	}
+  }
+  a.tagcloud_size_10 {
+	font-size: 280%;
+	img {
+	  max-width: 260px;
+	  max-height: 260px;
+	  opacity: 1;
+	}
+  }
 
-    img:hover {
-        opacity: 1 !important;
-    }
+  img:hover {
+	opacity: 1 !important;
+  }
 
 }
 
 /*************************** TAG CLOUD WIDGET ***************************/
 
 .filterViewer-placeholder {
-    .ui-filters-label{
-        display: none;
-    }
-    .ui-filter *{
-        display: inline-block;
-    }
-    .ui-icon{
-        cursor: pointer;
-        vertical-align: top;
-        margin: 1px 2px;
-    }
-    .filterText {
-        cursor: default;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        width: calc(100% - 20px);
-    }
+  .ui-filters-label {
+	display: none;
+  }
+  .ui-filter * {
+	display: inline-block;
+  }
+  .ui-icon {
+	cursor: pointer;
+	vertical-align: top;
+	margin: 1px 2px;
+  }
+  .filterText {
+	cursor: default;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	width: calc(100% - 20px);
+  }
 }
 
 /*************************** OVERRIDE - jQuery UI ***************************/
 body .ui-widget-header {
-    border: none;
-    background: none;
+  border: none;
+  background: none;
 }
-body .ui-widget-content a{
-    color: @rgb_blue;
+
+body .ui-widget-content a {
+  color: @rgb_blue;
 }

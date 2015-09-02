@@ -152,7 +152,7 @@ img.logo {
   font-size: 20px;
   font-weight: 100;
 }
-.result-panel-content h2:hover {
+.result-panel-content h2 span.links:hover {
   color: #ff4900;
   text-decoration: underline;
   -webkit-transition: all 200ms;
@@ -189,6 +189,12 @@ img.logo {
   max-width: 80px;
   cursor: pointer;
 }
+.result-panel-content .twitter-logo {
+  max-height: 18px;
+  vertical-align: bottom;
+  margin-right: 5px;
+  cursor: pointer;
+}
 .pager,
 .pager-header {
   display: inline;
@@ -207,8 +213,7 @@ img.logo {
 .resultWidget-placeholder {
   padding-top: 1px;
 }
-p.links,
-a.links {
+.links {
   cursor: pointer;
 }
 /*************************** search-panel (LEFT Side) ***************************/
@@ -258,6 +263,9 @@ span.info-label {
 }
 span.info-label::after {
   content: ": ";
+}
+.ui-dialog.tweet-dialog {
+  border: none;
 }
 /*************************** Dialog & New Filter ***************************/
 .dialog-new-filter p {
