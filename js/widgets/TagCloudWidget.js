@@ -25,11 +25,9 @@
 		},
 
 		_renderTagCloud: function(){
-			var facet, count, i, l, size,
+			var facet, count, i, l, size, tabPosition,
 				maxCount = 0,
-				objectedItems = [],
-				tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos"),
-				self = this;
+				objectedItems = [];
 			for ( facet in this.manager.response.facet_counts.facet_fields[this.field]) {
 				count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
 				if (count > maxCount) {
@@ -43,27 +41,44 @@
 
 			$(this.target).empty();
 			for ( i = 0, l = objectedItems.length; i < l; i++) {
-				size = parseInt(objectedItems[i].count / maxCount * 10);
+				size = parseInt(objectedItems[i].count / maxCount * 10, 10);
 				$(this.target).append(this._renderItem(objectedItems[i],size));
 			}
 
-			// Get the Thumbnails
-			function tabChange() {
-				if($(this).tabs( "option", "active") === tabPosition){
-					$(this).off("tabsactivate", tabChange );
-					//self._getWikipediaImages(objectedItems);
-					UTIL.getWikipediaImages(_.pluck(objectedItems,"facet"))
-						.done(self._getWikipediaImages_success.bind(self));
-				}
-			}
-
+			tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				//this._getWikipediaImages(objectedItems);
-				UTIL.getWikipediaImages(_.pluck(objectedItems,"facet"))
+				this._getThumbnails(objectedItems);
+			} else {
+				this.$tabs.off("tabsactivate");
+				this.$tabs.on("tabsactivate", this._tabChange.bind(this, objectedItems));
+			}
+		},
+
+		/**
+		 * Check if the current open tab is this widget tab and then load the thumbnails
+		 * @param objectedItems
+		 * @private
+		 */
+		_tabChange: function(objectedItems){
+			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
+			if(this.$tabs.tabs( "option", "active") === tabPosition) {
+				$(this).off("tabsactivate");
+				this._getThumbnails(objectedItems);
+			}
+		},
+
+		/**
+		 * Load the faceting names Images from wikipedia
+		 * @param objectedItems
+		 * @private
+		 */
+		_getThumbnails: function(objectedItems){
+			if (objectedItems.length > 0) {
+				this.manager._showLoader();
+				UTIL.getWikipediaImages(_.pluck(objectedItems, "facet"))
 					.done(this._getWikipediaImages_success.bind(this));
 			} else {
-				this.$tabs.off( "tabsactivate", tabChange );
-				this.$tabs.on( "tabsactivate", tabChange );
+				this._renderEmpty();
 			}
 		},
 
@@ -81,35 +96,6 @@
 				.addClass('tagcloud_size_' + size)
 				.attr('data-id',item.facet)
 				.click(UTIL.openPeopleActionsMenu.bind(this,item.facet));
-		},
-
-		/**
-		 * Get images from the wikipedia
-		 * example: "http://en.wikipedia.org/w/api.php?action=query&titles=Barack_Obama|Muhammad|John_Kerry&prop=pageimages&format=json&pithumbsize=150&pilimit=50"
-		 * apache.conf proxy: ProxyPass /wikiBridge http://en.wikipedia.org/
-		 * @param {Object} facetes - object that contains the data
-		 * @private
-		 */
-		_getWikipediaImages: function(facetes){
-			if(facetes.length > 0){
-				var urlRoot = "http://en.wikipedia.org/w/api.php?",
-					urlParams = [];
-
-				urlParams.push("action=query");
-				urlParams.push("prop=pageimages");
-				urlParams.push("titles="+_.pluck(facetes,"facet").join("|"));
-				urlParams.push("format=json");
-				urlParams.push("pithumbsize=280");
-				urlParams.push("pilimit=50");
-
-				this.manager._showLoader();
-				$.ajax({
-					crossDomain: true,
-					dataType: 'jsonp',
-					url: urlRoot + urlParams.join("&"),
-					success: this._getWikipediaImages_success.bind(this)
-				});
-			}
 		},
 
 		/**
@@ -197,6 +183,12 @@
 		 */
 		_refreshFreeTile: function(){
 			this.$target.freetile("layout");
+		},
+
+		_renderEmpty: function(){
+			var emptyMSG = $("<h3>").text("No People found on the current search...");
+			this.$target.html(emptyMSG);
+			this.manager._hideLoader();
 		}
 
 	});

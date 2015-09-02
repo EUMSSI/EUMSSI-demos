@@ -31,7 +31,7 @@ _.extend(FilterManager.prototype, {
 	 * @param {String} query - the query
 	 * @returns {Array.<Object>|*}
 	 */
-	getkFilter: function(filterName, widgetId, query){
+	getFilters: function(filterName, widgetId, query){
 		var f = {};
 		if(filterName){ f.filterName = filterName; }
 		if(query){ f.query = query; }
@@ -62,7 +62,7 @@ _.extend(FilterManager.prototype, {
 		};
 
 		this._filters.push(filter);
-		EUMSSI.EventManager.trigger("filterChange", filter);
+		EUMSSI.EventManager.trigger("filterChange:"+filterName, filter);
 		return filter;
 	},
 
@@ -71,21 +71,26 @@ _.extend(FilterManager.prototype, {
 	 * @param {String} filterName - the filter to be removed
 	 * @param {String} widgetId - the widgetId that added the filter to be removed
 	 * @param {String} query - the query for the widgets to be eliminated
+	 * @param {Boolean} [silent] - true, if don't want to trigger the change event
 	 */
-	removeFilter: function(filterName, widgetId, query){
+	removeFilter: function(filterName, widgetId, query, silent){
 		console.log("Manager >  removeFilterByName: "+filterName+" | "+widgetId+" | "+query);
 
-		var f = {};
+		var f = {},
+			removedFilter;
 		if(filterName){ f.filterName = filterName; }
 		if(query){ f.query = query; }
 		if(widgetId){ f.widgetId = widgetId; }
 
 		this._filters = _.reject(this._filters,function(filter){
 			if(_.isMatch(filter,f)){
+				removedFilter = filter;
 				return true;
 			}
 		});
-		EUMSSI.EventManager.trigger("filterChange");
+		if(removedFilter && !silent){
+			EUMSSI.EventManager.trigger("filterChange:"+removedFilter.filterName);
+	}
 	},
 
 	/**
@@ -113,27 +118,27 @@ _.extend(FilterManager.prototype, {
 		this._filters = [];
 	},
 
-	removeFilterByName: function(filterName, widgetId){
+	removeFilterByName: function(filterName, widgetId, silent){
 		if(filterName){
-			this.removeFilter(filterName, widgetId, null);
+			this.removeFilter(filterName, widgetId, null, silent);
 		}
 	},
 
-	removeFilterByWidget: function(widgetId){
+	removeFilterByWidget: function(widgetId, silent){
 		if( widgetId ) {
-			this.removeFilter(null, widgetId, null);
+			this.removeFilter(null, widgetId, null, silent);
 		}
 	},
 
-	removeFilterByQuery: function(query){
+	removeFilterByQuery: function(query, silent){
 		if( query ) {
-			this.removeFilter(null, null, query);
+			this.removeFilter(null, null, query, silent);
 		}
 	},
 
-	removeFilterObject: function(filter){
+	removeFilterObject: function(filter, silent){
 		if( _.isObject(filter) ) {
-			this.removeFilter(filter.filterName, filter.widgetId, filter.query);
+			this.removeFilter(filter.filterName, filter.widgetId, filter.query, silent);
 		}
 	},
 

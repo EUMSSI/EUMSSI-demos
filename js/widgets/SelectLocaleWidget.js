@@ -15,7 +15,7 @@
 			$select.append($('<option value="de">German</option>'));
 			$select.append($('<option value="fr">French</option>'));
 			$select.append($('<option value="es">Spanish</option>'));
-			$select.append($('<option value="others">Others</option>'));
+			//$select.append($('<option value="others">Others</option>'));
 
 			$(this.target).append($select);
 
@@ -29,6 +29,9 @@
 				}
 				self.doRequest();
 			});
+
+			// BIND event filterChange
+			EUMSSI.EventManager.on("filterChange:"+this.attributeName, this._manageFilterChange.bind(this));
 		},
 
 		/**
@@ -36,19 +39,35 @@
 		 * @param {String} value the value for the filter.
 		 */
 		setFilter: function (value) {
-			var prefix = "";
+			var prefix = "",
+				filterText = "Locale: ";
 
 			//Manage others response
-			if(value == "others"){
-				value = "(en,de,es,fr)";
-				prefix = "-"; // Filter for remove
+			//if(value == "others"){
+			//	value = "(en,de,es,fr)";
+			//	prefix = "-"; // Filter for remove
+			//	filterText += "Not (en,de,es,fr)";
+			//} else {
+			//	filterText += value;
+			//}
+
+			switch(value){
+				case "en":	filterText += "English";
+					break;
+				case "de":	filterText += "German";
+					break;
+				case "fr":	filterText += "French";
+					break;
+				case "es":	filterText += "Spanish";
+					break;
+				default : filterText += value;
 			}
 
 			//Remove previous Value
 			this.clearFilter();
 			//Set the current Filter
 			this.storedValue = prefix + this.attributeName + ":" + AjaxSolr.Parameter.escapeValue(value);
-			EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id, "Locale: "+value);
+			EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id, filterText);
 		},
 
 		/**
@@ -57,6 +76,12 @@
 		clearFilter: function () {
 			EUMSSI.FilterManager.removeFilterByWidget(this.id);
 
+		},
+
+		_manageFilterChange: function(){
+			if(!EUMSSI.FilterManager.checkFilterByName(this.attributeName)){
+				$(this.target).find("select").val("");
+			}
 		}
 
 	});

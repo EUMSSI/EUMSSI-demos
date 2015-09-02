@@ -1,9 +1,9 @@
-/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL, FilterManager */
+/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL, FilterManager, EventManager */
 
 window.EUMSSI = {
 	Manager : {},
 	FilterManager : new FilterManager(),
-	EventManager : $({}),
+	EventManager : new EventManager(),
 	CONF : CONF || {},
 	UTIL : UTIL || {},
 	pageLayout : undefined,
