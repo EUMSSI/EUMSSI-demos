@@ -24,6 +24,9 @@ _.extend(EventManager.prototype, {
 
 	on: function(type, data, handler){
 		this._bindingModel.on(type, data, handler);
-	}
+	},
 
+	off: function(type, data, handler){
+		this._bindingModel.off(type, data, handler);
+	}
 });

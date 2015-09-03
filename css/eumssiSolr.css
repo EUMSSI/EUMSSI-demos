@@ -217,10 +217,17 @@ img.logo {
   cursor: pointer;
 }
 /*************************** search-panel (LEFT Side) ***************************/
+.search-panel-content {
+  overflow: hidden;
+}
+.advancedSearch-panel-content {
+  overflow: auto;
+}
 .search-panel-content,
 .advancedSearch-panel-content {
   padding: 0 0 10px 10px;
-  overflow: auto;
+  height: 100%;
+  position: relative;
 }
 .search-panel-content h2,
 .advancedSearch-panel-content h2 {
@@ -333,12 +340,9 @@ span.more {
 /*************************** Tag Facet Widget ***************************/
 .tagfacet {
   padding: 5px 0px;
-}
-.tagfacet * {
-  display: inline-block;
+  overflow-y: auto;
 }
 .tagfacet .tagfacet-item {
-  width: 200px;
   font-weight: bold;
 }
 .tagfacet .tagfacet-item-count {
@@ -347,6 +351,7 @@ span.more {
 }
 .tagfacet .ui-checkbox-container {
   margin-bottom: 5px;
+  width: 100%;
 }
 .tagfacet .ui-checkbox-container:hover {
   background-color: rgba(255, 77, 0, 0.1);

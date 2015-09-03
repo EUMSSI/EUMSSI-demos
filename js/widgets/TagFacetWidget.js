@@ -16,13 +16,14 @@
 				var $label = $("<h2>").text(this.label);
 				this.$target.before($label);
 			}
+			//Recalculate height when filter change (Only visual behaivor)
+			EUMSSI.EventManager.on("filterChange",this._recalculateHeight.bind(this));
 		},
 
 		beforeRequest: function() {
 			if(!this.flag_TagFacetRequest) {
 				//Clean FQ - if the call don't activate the holdFacetNames
 				EUMSSI.FilterManager.removeFilterByWidget(this.id);
-
 			}
 		},
 
@@ -88,8 +89,23 @@
 				$checkboxContainer.find("input").click(this._onClickCheckbox.bind(this));
 
 				this.$target.append($checkboxContainer);
-
 			}
+
+			//Force recalculate height
+			this._recalculateHeight();
+		},
+
+		/**
+		 * Calculate and set to this widget the remaining space of his parent on height
+		 * @private
+		 */
+		_recalculateHeight: function(){
+			var siblings = this.$target.siblings();
+			var height = 10;
+			siblings.each(function(){
+				height += $(this).outerHeight();
+			});
+			this.$target.css("height", "calc(100% - "+height+"px)");
 		},
 
 		/**

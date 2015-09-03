@@ -128,7 +128,7 @@ window.EUMSSI = {
 			//'facet.limit': 20,	// Tagclud Size
 			'facet.mincount': 1,	// Min count to appear
 
-			'f.source.facet.limit': 10,
+			'f.source.facet.limit': 20,
 			//'f.meta.extracted.text.dbpedia.PERSON.facet.limit' : 50,
 			//'f.meta.extracted.text.ner.LOCATION.facet.prefix': 'LOCATION',
 
