@@ -49,8 +49,8 @@
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
 				this._getThumbnails(objectedItems);
 			} else {
-				this.$tabs.off("tabsactivate");
-				this.$tabs.on("tabsactivate", this._tabChange.bind(this, objectedItems));
+				this.$tabs.off("tabsactivate.tagcloudwidget");
+				this.$tabs.on("tabsactivate.tagcloudwidget", this._tabChange.bind(this, objectedItems));
 			}
 		},
 
@@ -62,7 +62,7 @@
 		_tabChange: function(objectedItems){
 			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				$(this).off("tabsactivate");
+				this.$tabs.off("tabsactivate.tagcloudwidget");
 				this._getThumbnails(objectedItems);
 			}
 		},
