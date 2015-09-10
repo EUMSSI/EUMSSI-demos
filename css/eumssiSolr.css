@@ -1,5 +1,14 @@
 /*************** MISC **************/
 /*************** ******** **************/
+.tab-content.mapChart {
+  position: relative;
+  width: calc(100% - 60px);
+  height: calc(100% - 60px);
+}
+.tab-content.mapChart .mapChart-placeholder {
+  width: 100%;
+  height: 100%;
+}
 /*************** ******** **************/
 /*************** MISC **************/
 /*************************** Common ***************************/
@@ -485,7 +494,7 @@ span.more {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  width: calc(80%);
+  width: calc(100% - 20px);
 }
 /*************************** OVERRIDE - jQuery UI ***************************/
 body .ui-widget-header {

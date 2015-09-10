@@ -123,7 +123,12 @@ window.EUMSSI = {
 		//Faceting Parametres
 		var params = {
 			'facet': true,
-			'facet.field': [ 'source', EUMSSI.CONF.MAP_LOCATION_FIELD_NAME, EUMSSI.CONF.PERSON_FIELD_NAME ],
+			'facet.field': [
+				'source',
+				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME,
+				EUMSSI.CONF.MAP_CITIES_FIELD_NAME,
+				EUMSSI.CONF.PERSON_FIELD_NAME
+			],
 
 			//'facet.limit': 20,	// Tagclud Size
 			'facet.mincount': 1,	// Min count to appear
@@ -140,6 +145,7 @@ window.EUMSSI = {
 			//'timeAllowed': 100		// Tiempo límite para la consulta (ms)
 		};
 		params['f.' + EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
+		params['f.' + EUMSSI.CONF.MAP_CITIES_FIELD_NAME + '.facet.limit'] = 25;
 		params['f.' + EUMSSI.CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
 
 		for (var name in params) {
