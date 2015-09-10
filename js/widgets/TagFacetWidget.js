@@ -62,7 +62,7 @@
 			//Clean the items count
 			this.$target.find(".ui-checkbox-container .tagfacet-item-count").html("");
 			for (var i = 0; i < items.length ; i++) {
-				this.$target.find(".ui-checkbox-container."+items[i].facet+" .tagfacet-item-count").text("("+ items[i].count +")");
+				this.$target.find(".ui-checkbox-container[data-facet='"+items[i].facet+"'] .tagfacet-item-count").text("("+ items[i].count +")");
 			}
 		},
 
@@ -79,8 +79,8 @@
 				var count = items[i].count;
 				var checkboxID = "guid-"+$.guid++;
 
-				var $checkboxContainer = $("<div class='ui-checkbox-container'>")
-				$checkboxContainer.addClass(facet);
+				var $checkboxContainer = $("<div class='ui-checkbox-container'>");
+				$checkboxContainer.attr("data-facet",facet);
 				$checkboxContainer.append($("<input type='checkbox'>").prop("data-value",facet).prop("id",checkboxID));
 				$checkboxContainer.append($('<label class="tagfacet-item"></label>').html( facet +"<span class='tagfacet-item-count'> ("+count+")</span>").prop("for",checkboxID));
 				$checkboxContainer.append($("<br>"));
@@ -126,7 +126,7 @@
 
 			if(checkedKeys.length > 0){
 				//Add FQ
-				this._lastfq = this.field + ":(" + checkedKeys.join(" OR ") + ")";
+				this._lastfq = this.field + ':("' + checkedKeys.join('" OR "') + '")';
 				EUMSSI.FilterManager.addFilter(this.field, this._lastfq, this.id);
 
 				this.flag_TagFacetRequest = true;
