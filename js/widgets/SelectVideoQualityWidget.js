@@ -10,7 +10,7 @@
 			this.storedValue = "";
 
 			$select = $("<select>").addClass("videoQualitySelector");
-			$select.append($('<option value="" selected="selected">Video no required</option>'));
+			$select.append($('<option value="" selected="selected">Video not required</option>'));
 			$select.append($('<option value="allvideo">Any quality</option>'));			// Has a video in any quality
 			//$select.append($('<option value="low">Low Quality</option>'));		// Has a video only in Medium quality
 			$select.append($('<option value="hd">HD quality</option>'));				// Has a video in High quality
