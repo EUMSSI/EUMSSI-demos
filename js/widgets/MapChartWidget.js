@@ -53,7 +53,7 @@
 
 			//Region Selector
 			this.$target.find(".mapChart-region-selector").selectmenu({
-				change: function( event, data ) {
+				select: function( event, data ) {
 					this._chartOptions.region = data.item.value;
 					this._refreshChartData();
 				}.bind(this)
@@ -202,6 +202,8 @@
 				});
 
 				EUMSSI.UTIL.showContextMenu($menu);
+			} else if(regionCode){
+				this.$target.find(".mapChart-region-selector").val(regionCode).selectmenu("refresh");
 			}
 		},
 
