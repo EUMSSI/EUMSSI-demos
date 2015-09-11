@@ -72,6 +72,7 @@
 			var text = doc['meta.source.text'] || "...",
 				date = doc['meta.source.datePublished'],
 				videoLink = doc['meta.source.httpHigh'],
+				urlLink = doc['meta.source.url'],
 				audio_transcript = doc['meta.extracted.audio_transcript'];
 
 			text = this._sliceTextMore(text,300);
@@ -100,6 +101,13 @@
 				$play.click(function(){
 					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, doc]);
 				});
+			}
+
+			//Link webpage
+			if(urlLink){
+				var $link = $('<div class="icon-link" title="Open link">');
+				$output.find("h2").append($link);
+				$link.click(UTIL.openNewPage.bind(this, urlLink));
 			}
 
 			return $output;
