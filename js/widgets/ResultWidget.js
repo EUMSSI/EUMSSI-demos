@@ -95,10 +95,9 @@
 
 			//Link Video
 			if(videoLink) {
-				var $a = $('<a>').text("Play Video");
-				$output.append($("<p>").html($a));
-				$a.addClass("links");
-				$a.click(function(){
+				var $play = $('<div class="icon-play" title="Play Video">');
+				$output.find("h2").prepend($play);
+				$play.click(function(){
 					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, doc]);
 				});
 			}
