@@ -17,7 +17,7 @@
 			displayMode: 'regions', // "regions", "markers"
 			enableRegionInteractivity: 'true',
 			resolution: 'countries',
-			region: 'world',
+			region: 'world', // 001 World, 002 Africa, 005 South America, 013 Central America, 021 Northern America, 019 Americas, 142 Asia, 150 Europe, 009 Oceania
 			//sizeAxis: {minValue: 1, maxValue:1,minSize:10,  maxSize: 10},
 			//magnifyingGlass: {enable: true, zoomFactor: 7.5},
 			//tooltip: {textStyle: {color: '#444444'}, trigger:'focus'},
@@ -50,6 +50,14 @@
 				this._chartOptions.displayMode = event.target.value;
 				this._refreshChartData();
 			}.bind(this));
+
+			//Region Selector
+			this.$target.find(".mapChart-region-selector").selectmenu({
+				change: function( event, data ) {
+					this._chartOptions.region = data.item.value;
+					this._refreshChartData();
+				}.bind(this)
+			});
 
 			//Export Button
 			this.$target.find(".mapChart-export-btn").button({
@@ -177,22 +185,24 @@
 				regionName = EUMSSI.UTIL.countryCode_SWAP[regionCode],
 				$menu = $('<ul>');
 
-			$menu.append('<div class="ui-widget-header">'+regionName+'</div>');
-			if( EUMSSI.FilterManager.checkFilterByWidgetId(this.id) ){
-				$menu.append('<li class="filter"><span class="ui-icon ui-icon-plusthick"></span>Add country to filter</li>');
-				$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
-			} else {
-				$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by country</li>');
+			if(regionName){
+				$menu.append('<div class="ui-widget-header">'+regionName+'</div>');
+				if( EUMSSI.FilterManager.checkFilterByWidgetId(this.id) ){
+					$menu.append('<li class="filter"><span class="ui-icon ui-icon-plusthick"></span>Add country to filter</li>');
+					$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
+				} else {
+					$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by country</li>');
+				}
+				$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
+
+				$menu.on("click",".filter",this._addContryFilter.bind(this,regionCode));
+				$menu.on("click",".filter-clear",this._cleanCountryFilter.bind(this,true));
+				$menu.on("click",".open-wikipedia",function(){
+					window.open("http://wikipedia.org/wiki/"+regionName,"_blank");
+				});
+
+				EUMSSI.UTIL.showContextMenu($menu);
 			}
-			$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
-
-			$menu.on("click",".filter",this._addContryFilter.bind(this,regionCode));
-			$menu.on("click",".filter-clear",this._cleanCountryFilter.bind(this,true));
-			$menu.on("click",".open-wikipedia",function(){
-				window.open("http://wikipedia.org/wiki/"+regionName,"_blank");
-			});
-
-			EUMSSI.UTIL.showContextMenu($menu);
 		},
 
 		/**
