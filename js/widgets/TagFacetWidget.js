@@ -21,13 +21,18 @@
 		},
 
 		beforeRequest: function() {
-			if(!this.flag_TagFacetRequest) {
+			if(!this.flag_TagFacetRequest && !this.manager.flag_PaginationRequest) {
 				//Clean FQ - if the call don't activate the holdFacetNames
 				EUMSSI.FilterManager.removeFilterByWidget(this.id);
 			}
 		},
 
 		afterRequest: function(){
+			//Pagination reguest don't refresh the Faceting
+			if(this.manager.flag_PaginationRequest){
+				return;
+			}
+
 			if (this.manager.response.facet_counts.facet_fields[this.field] === undefined) {
 				this.$target.html('no items found in current selection');
 				return;
