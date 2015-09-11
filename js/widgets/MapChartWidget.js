@@ -203,6 +203,10 @@
 
 				EUMSSI.UTIL.showContextMenu($menu);
 			} else if(regionCode){
+				var $option = this.$target.find(".mapChart-region-selector option[value='"+regionCode+"']");
+				if($option.length == 0){
+					regionCode = "world";
+				}
 				this.$target.find(".mapChart-region-selector").val(regionCode).selectmenu("refresh");
 			}
 		},
