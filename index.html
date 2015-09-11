@@ -137,8 +137,18 @@
                     </div>
                     <div id="fragment-2" data-tabpos="1">
                         <div class="tab-content mapChart">
-                            <!--## TAB 2 CONTENT ##-->
-                            <div class='mapChart-placeholder'></div>
+                            <!--## TAB 2 MAP CHART CONTENT ##-->
+                            <div class='mapChart-placeholder'>
+                                <div class='mapChart-toolbar ui-widget-header ui-corner-all'>
+                                    <div id="mapChart-displayMode-btn">
+                                        <input type="radio" id="mapChart-displayMode-regions" value="regions" name="displayMode-radio" checked="checked"><label for="mapChart-displayMode-regions">Countries</label>
+                                        <input type="radio" id="mapChart-displayMode-markers" value="markers" name="displayMode-radio"><label for="mapChart-displayMode-markers">Cities</label>
+                                    </div>
+                                    <a class="mapChart-export-btn" download="chart.png" title="Download map as image">Export</a>
+                                    <img class="mapChart-loading" style="display:none;" src="images/circular-loader.gif" title="Loading Map...">
+                                </div>
+                                <div class="mapChart-chart"></div>
+                            </div>
                             <!--####-->
                         </div>
                     </div>

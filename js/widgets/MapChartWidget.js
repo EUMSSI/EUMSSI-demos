@@ -17,7 +17,7 @@
 			displayMode: 'regions', // "regions", "markers"
 			enableRegionInteractivity: 'true',
 			resolution: 'countries',
-			region:'world',
+			region: 'world',
 			//sizeAxis: {minValue: 1, maxValue:1,minSize:10,  maxSize: 10},
 			//magnifyingGlass: {enable: true, zoomFactor: 7.5},
 			//tooltip: {textStyle: {color: '#444444'}, trigger:'focus'},
@@ -41,7 +41,22 @@
 				}.bind(this))
 				.fail(function( jqxhr, settings, exception ) {
 					this.$target.text( "Error when try to load Google API." );
-				}.bind(this));
+				}.bind(this)
+			);
+
+			//Cange MapType Radio Buttons
+			this.$target.find("#mapChart-displayMode-btn").buttonset();
+			this.$target.find("#mapChart-displayMode-btn input[type=radio]").change(function(event) {
+				this._chartOptions.displayMode = event.target.value;
+				this._refreshChartData();
+			}.bind(this));
+
+			//Export Button
+			this.$target.find(".mapChart-export-btn").button({
+				icons: {
+					primary: "ui-icon-extlink"
+				}
+			});
 		},
 
 		beforeRequest: function(){
@@ -74,6 +89,11 @@
 		 */
 		_refreshChartData: function(){
 			var facet, countryCode, data, facetCount, dataArray = [];
+
+			this.$target.find(".mapChart-export-btn")
+				.removeAttr("href")
+				.addClass("ui-state-disabled");
+			this.$target.find(".mapChart-loading").show();
 
 			if( this._chartOptions.displayMode == "regions" ){
 				facetCount = this.manager.response.facet_counts.facet_fields[EUMSSI.CONF.MAP_LOCATION_FIELD_NAME];
@@ -108,12 +128,12 @@
 		 * @private
 		 */
 		_initChart : function(){
-			this.chart = new google.visualization.GeoChart(this.$target[0]);
+			this.chart = new google.visualization.GeoChart(this.$target.find(".mapChart-chart")[0]);
 
 			//Chart Events
 			google.visualization.events.addListener(this.chart, 'regionClick', this._onRegionClick.bind(this));
 			//google.visualization.events.addListener(this.chart, 'select', this._onRegionClick.bind(this));
-			google.visualization.events.addListener(this.chart, 'ready', this._renderExportBtn.bind(this));
+			google.visualization.events.addListener(this.chart, 'ready', this._refreshExportBtn.bind(this));
 
 			var data = google.visualization.arrayToDataTable([ ['Country', 'Count'] ]);
 			this.chart.draw(data, this._chartOptions);
@@ -140,16 +160,11 @@
 		 * Adds a button to Export a image of the map
 		 * @private
 		 */
-		_renderExportBtn: function(){
-			var imgUri = this.chart.getImageURI(),
-				$exportBtn = $("<a class='export_link'>EXPORT</a>");
-
-			//imgUri = imgUri.replace(/^data:image\/png/, 'data:application/octet-stream');
-			$exportBtn.attr("href", imgUri);
-			$exportBtn.attr("download", "chart.png");
-
-			this.$target.parent().find("a.export_link").remove();
-			this.$target.parent().append($exportBtn);
+		_refreshExportBtn: function(){
+			this.$target.find(".mapChart-export-btn")
+				.attr("href", this.chart.getImageURI())
+				.removeClass("ui-state-disabled");
+			this.$target.find(".mapChart-loading").hide();
 		},
 
 		/**
