@@ -152,7 +152,7 @@ img.logo {
   font-size: 20px;
   font-weight: 100;
 }
-.result-panel-content h2:hover {
+.result-panel-content h2 span.links:hover {
   color: #ff4900;
   text-decoration: underline;
   -webkit-transition: all 200ms;
@@ -189,6 +189,43 @@ img.logo {
   max-width: 80px;
   cursor: pointer;
 }
+.result-panel-content .twitter-logo {
+  max-height: 18px;
+  vertical-align: bottom;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.result-panel-content .icon-play {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: text-bottom;
+  margin-right: 5px;
+  margin-bottom: 1px;
+  cursor: pointer;
+  background-image: url(../images/icon-play-32.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.result-panel-content .icon-play:hover {
+  background-image: url(../images/icon-play-32-hover.png);
+}
+.result-panel-content .icon-link {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: text-bottom;
+  margin-left: 5px;
+  cursor: pointer;
+  background-image: url(../images/icon-link-32.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.result-panel-content .icon-link:hover {
+  background-image: url(../images/icon-link-32-hover.png);
+}
 .pager,
 .pager-header {
   display: inline;
@@ -207,15 +244,21 @@ img.logo {
 .resultWidget-placeholder {
   padding-top: 1px;
 }
-p.links,
-a.links {
+.links {
   cursor: pointer;
 }
 /*************************** search-panel (LEFT Side) ***************************/
+.search-panel-content {
+  overflow: hidden;
+}
+.advancedSearch-panel-content {
+  overflow: auto;
+}
 .search-panel-content,
 .advancedSearch-panel-content {
   padding: 0 0 10px 10px;
-  overflow: auto;
+  height: 100%;
+  position: relative;
 }
 .search-panel-content h2,
 .advancedSearch-panel-content h2 {
@@ -258,6 +301,12 @@ span.info-label {
 }
 span.info-label::after {
   content: ": ";
+}
+.ui-dialog.tweet-dialog {
+  border: none;
+  -webkit-box-shadow: 0 0 5px 2px #5ea9dd;
+  -moz-box-shadow: 0 0 5px 2px #5ea9dd;
+  box-shadow: 0 0 5px 2px #5ea9dd;
 }
 /*************************** Dialog & New Filter ***************************/
 .dialog-new-filter p {
@@ -322,12 +371,9 @@ span.more {
 /*************************** Tag Facet Widget ***************************/
 .tagfacet {
   padding: 5px 0px;
-}
-.tagfacet * {
-  display: inline-block;
+  overflow-y: auto;
 }
 .tagfacet .tagfacet-item {
-  width: 200px;
   font-weight: bold;
 }
 .tagfacet .tagfacet-item-count {
@@ -336,6 +382,7 @@ span.more {
 }
 .tagfacet .ui-checkbox-container {
   margin-bottom: 5px;
+  width: 100%;
 }
 .tagfacet .ui-checkbox-container:hover {
   background-color: rgba(255, 77, 0, 0.1);
@@ -469,7 +516,29 @@ span.more {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  width: calc(80%);
+  width: calc(100% - 20px);
+}
+/************************ MAP GEOCHART WIDGET **************************/
+.tab-content.mapChart {
+  position: relative;
+  width: calc(100% - 60px);
+  height: calc(100% - 60px);
+}
+.tab-content.mapChart .mapChart-toolbar {
+  margin-bottom: 5px;
+}
+.tab-content.mapChart .mapChart-toolbar * {
+  display: inline-block;
+  vertical-align: middle;
+}
+.tab-content.mapChart .mapChart-placeholder {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 30px);
+}
+.tab-content.mapChart .mapChart-chart {
+  width: 100%;
+  height: 100%;
 }
 /*************************** OVERRIDE - jQuery UI ***************************/
 body .ui-widget-header {

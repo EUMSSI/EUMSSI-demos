@@ -1,9 +1,9 @@
-/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL, FilterManager */
+/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL, FilterManager, EventManager */
 
 window.EUMSSI = {
 	Manager : {},
 	FilterManager : new FilterManager(),
-	EventManager : $({}),
+	EventManager : new EventManager(),
 	CONF : CONF || {},
 	UTIL : UTIL || {},
 	pageLayout : undefined,
@@ -82,7 +82,7 @@ window.EUMSSI = {
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.MapChartWidget({
 			id: "MapChartWidget",
-			target: '.mapChart-placeholder'
+			target: '.mapChart'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.TagcloudWidget({
@@ -123,12 +123,17 @@ window.EUMSSI = {
 		//Faceting Parametres
 		var params = {
 			'facet': true,
-			'facet.field': [ 'source', EUMSSI.CONF.MAP_LOCATION_FIELD_NAME, EUMSSI.CONF.PERSON_FIELD_NAME ],
+			'facet.field': [
+				'source',
+				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME,
+				EUMSSI.CONF.MAP_CITIES_FIELD_NAME,
+				EUMSSI.CONF.PERSON_FIELD_NAME
+			],
 
 			//'facet.limit': 20,	// Tagclud Size
 			'facet.mincount': 1,	// Min count to appear
 
-			'f.source.facet.limit': 10,
+			'f.source.facet.limit': 20,
 			//'f.meta.extracted.text.dbpedia.PERSON.facet.limit' : 50,
 			//'f.meta.extracted.text.ner.LOCATION.facet.prefix': 'LOCATION',
 
@@ -140,6 +145,7 @@ window.EUMSSI = {
 			//'timeAllowed': 100		// Tiempo límite para la consulta (ms)
 		};
 		params['f.' + EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
+		params['f.' + EUMSSI.CONF.MAP_CITIES_FIELD_NAME + '.facet.limit'] = 25;
 		params['f.' + EUMSSI.CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
 
 		for (var name in params) {

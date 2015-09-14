@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="lib/jquery/jquery-ui.min.css">
 
     <script src="js/Utils.js"></script>
+    <script src="js/EventManager.js"></script>
     <script src="js/FilterManager.js"></script>
     <script src="js/eumssiSolr.js"></script>
 
@@ -80,9 +81,9 @@
 
             <div class="mainSearch-placeholder"></div>
 
-            <h2>Locale</h2>
+            <h2>Language</h2>
             <div class="localeWidget-placeholder"></div>
-            <h2>Video</h2>
+            <h2>Video Quality</h2>
             <div class="videoQualityWidget-placeholder"></div>
 
             <div class="source-placeholder tagfacet" ></div>
@@ -135,9 +136,30 @@
                         </div>
                     </div>
                     <div id="fragment-2" data-tabpos="1">
-                        <div class="tab-content">
-                            <!--## TAB 2 CONTENT ##-->
-                            <div class='mapChart-placeholder'></div>
+                        <div class="tab-content mapChart">
+                            <!--## TAB 2 MAP CHART CONTENT ##-->
+                            <div class='mapChart-placeholder'>
+                                <div class='mapChart-toolbar ui-widget-header ui-corner-all'>
+                                    <div id="mapChart-displayMode-btn">
+                                        <input type="radio" id="mapChart-displayMode-regions" value="regions" name="displayMode-radio" checked="checked"><label for="mapChart-displayMode-regions">Countries</label>
+                                        <input type="radio" id="mapChart-displayMode-markers" value="markers" name="displayMode-radio"><label for="mapChart-displayMode-markers">Cities</label>
+                                    </div>
+                                    <select style="width: 160px;" title="Select Region" class="mapChart-region-selector">
+                                        <option value="world">World</option>
+                                        <option value="002">Africa</option>
+                                        <option value="019">Americas</option>
+                                        <option value="013">America (Central)</option>
+                                        <option value="021">America (Northern)</option>
+                                        <option value="005">America (South)</option>
+                                        <option value="142">Asia</option>
+                                        <option value="150">Europe</option>
+                                        <option value="009">Oceania</option>
+                                    </select>
+                                    <a class="mapChart-export-btn" download="chart.png" title="Download map as image">Export</a>
+                                    <img class="mapChart-loading" style="display:none;" src="images/circular-loader.gif" title="Loading Map...">
+                                </div>
+                                <div class="mapChart-chart"></div>
+                            </div>
                             <!--####-->
                         </div>
                     </div>
@@ -160,12 +182,9 @@
                         </div>
                     </div>
 
-                     <div id="wordcloudtab" data-tabpos="4">
+                    <div id="wordcloudtab" data-tabpos="4">
                         <div class="tab-content">
-                           
-                            <div id="my-wordcloud"> </div>
-                           
-                            <!--####-->
+                            <div id="my-wordcloud"></div>
                         </div>
                     </div>
 

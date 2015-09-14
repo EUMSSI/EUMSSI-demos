@@ -74,6 +74,9 @@
 
 				this.$target.find(".text-widget-input").after($("<br>"),$checkbox);
 			}
+
+			// Bind listener to Event Manager
+			EUMSSI.EventManager.on("filterChange:"+this.attributeName, this._manageFilterChange.bind(this));
 		},
 
 		/**Sets the main Solr query to the given string.
@@ -82,7 +85,7 @@
 		 */
 		setFilter: function (attributeName, value) {
 			//Remove previous Value
-			this.clearFilter();
+			this.clearFilter(true);
 			//Set the current Filter
 			this.storedValue = attributeName + ":" + AjaxSolr.Parameter.escapeValue(value);
 			EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id);
@@ -90,9 +93,21 @@
 
 		/**
 		 * Sets the main Solr query to the empty string.
+		 * @param {Boolean} [silent] true, if don't want to trigger the change event
 		 */
-		clearFilter: function () {
-			EUMSSI.FilterManager.removeFilterByWidget(this.id);
+		clearFilter: function (silent) {
+			EUMSSI.FilterManager.removeFilterByWidget(this.id, silent);
+		},
+
+		/**
+		 * Clean the input value if the filter is removed
+		 * @param event
+		 * @private
+		 */
+		_manageFilterChange: function(event){
+			if(!EUMSSI.FilterManager.checkFilterByName(this.attributeName)){
+				this.$input.val("");
+			}
 		}
 
 	});

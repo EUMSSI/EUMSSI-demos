@@ -2,7 +2,8 @@
 window.CONF = {};
 window.UTIL = {};
 
-CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text.ner.LOCATION";
+CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text.dbpedia.Country";
+CONF.MAP_CITIES_FIELD_NAME = "meta.extracted.text.dbpedia.City";
 CONF.PERSON_FIELD_NAME = "meta.extracted.text.dbpedia.PERSON";
 
 
@@ -334,9 +335,9 @@ UTIL.getWikipediaImages = function(facetes){
 		//this.manager._showLoader();
 		return $.ajax({
 			crossDomain: true,
+			cache: true,
 			dataType: 'jsonp',
 			url: urlRoot + urlParams.join("&")
-			//success: this._getWikipediaImages_success.bind(this)
 		});
 	}
 };
@@ -435,3 +436,34 @@ window.twttr = (function(d, s, id) {
 
 	return t;
 }(document, "script", "twitter-wjs"));
+
+UTIL.openTweet = function(tweetId){
+	var $tooltipContent = $("<div>");
+	twttr.widgets.createTweet(tweetId, $tooltipContent[0],{
+		dnt: true
+	}).then(function (el) {
+		$tooltipContent.dialog("option", "position",{my: "center", at: "center", of: window});
+		if(el !== undefined){
+			var $card = $(el.contentDocument).find(".Tweet-card [data-scribe='component:card']");
+			if($card.length > 0){
+				var interval = setInterval(function(){
+					if($card.hasClass("is-ready")){
+						$tooltipContent.dialog("option", "position",{my: "center", at: "center", of: window});
+						clearInterval(interval);
+					}
+				},500)
+			}
+		} else {
+			var $error = $("<h3 class='ui-state-error-text'>")
+				.text("The tweet can't be loaded.");
+			$tooltipContent.append($error);
+		}
+	});
+	$tooltipContent.dialog({
+		width: 500,
+		maxHeight: $(window).height()-50,
+		modal:true,
+		dialogClass: "tweet-dialog",
+		resizable: false
+	});
+};

@@ -16,17 +16,23 @@
 				var $label = $("<h2>").text(this.label);
 				this.$target.before($label);
 			}
+			//Recalculate height when filter change (Only visual behaivor)
+			EUMSSI.EventManager.on("filterChange",this._recalculateHeight.bind(this));
 		},
 
 		beforeRequest: function() {
-			if(!this.flag_TagFacetRequest) {
+			if(!this.flag_TagFacetRequest && !this.manager.flag_PaginationRequest) {
 				//Clean FQ - if the call don't activate the holdFacetNames
 				EUMSSI.FilterManager.removeFilterByWidget(this.id);
-
 			}
 		},
 
 		afterRequest: function(){
+			//Pagination reguest don't refresh the Faceting
+			if(this.manager.flag_PaginationRequest){
+				return;
+			}
+
 			if (this.manager.response.facet_counts.facet_fields[this.field] === undefined) {
 				this.$target.html('no items found in current selection');
 				return;
@@ -61,7 +67,7 @@
 			//Clean the items count
 			this.$target.find(".ui-checkbox-container .tagfacet-item-count").html("");
 			for (var i = 0; i < items.length ; i++) {
-				this.$target.find(".ui-checkbox-container."+items[i].facet+" .tagfacet-item-count").text("("+ items[i].count +")");
+				this.$target.find(".ui-checkbox-container[data-facet='"+items[i].facet+"'] .tagfacet-item-count").text("("+ items[i].count +")");
 			}
 		},
 
@@ -78,8 +84,8 @@
 				var count = items[i].count;
 				var checkboxID = "guid-"+$.guid++;
 
-				var $checkboxContainer = $("<div class='ui-checkbox-container'>")
-				$checkboxContainer.addClass(facet);
+				var $checkboxContainer = $("<div class='ui-checkbox-container'>");
+				$checkboxContainer.attr("data-facet",facet);
 				$checkboxContainer.append($("<input type='checkbox'>").prop("data-value",facet).prop("id",checkboxID));
 				$checkboxContainer.append($('<label class="tagfacet-item"></label>').html( facet +"<span class='tagfacet-item-count'> ("+count+")</span>").prop("for",checkboxID));
 				$checkboxContainer.append($("<br>"));
@@ -88,8 +94,23 @@
 				$checkboxContainer.find("input").click(this._onClickCheckbox.bind(this));
 
 				this.$target.append($checkboxContainer);
-
 			}
+
+			//Force recalculate height
+			this._recalculateHeight();
+		},
+
+		/**
+		 * Calculate and set to this widget the remaining space of his parent on height
+		 * @private
+		 */
+		_recalculateHeight: function(){
+			var siblings = this.$target.siblings();
+			var height = 10;
+			siblings.each(function(){
+				height += $(this).outerHeight();
+			});
+			this.$target.css("height", "calc(100% - "+height+"px)");
 		},
 
 		/**
@@ -110,7 +131,7 @@
 
 			if(checkedKeys.length > 0){
 				//Add FQ
-				this._lastfq = this.field + ":(" + checkedKeys.join(" OR ") + ")";
+				this._lastfq = this.field + ':("' + checkedKeys.join('" OR "') + '")';
 				EUMSSI.FilterManager.addFilter(this.field, this._lastfq, this.id);
 
 				this.flag_TagFacetRequest = true;

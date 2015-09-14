@@ -15,20 +15,25 @@
 		},
 
 		afterRequest: function () {
-			var self = this,
-				tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
-			function tabChange() {
-				if($(this).tabs( "option", "active") === tabPosition){
-					$(this).off("tabsactivate", tabChange );
-					self._renderTimeline();
-				}
-			}
+			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
 
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
 				this._renderTimeline();
 			} else {
-				this.$tabs.off( "tabsactivate", tabChange );
-				this.$tabs.on( "tabsactivate", tabChange );
+				this.$tabs.off("tabsactivate.timelinewidget");
+				this.$tabs.on("tabsactivate.timelinewidget", this._tabChange.bind(this) );
+			}
+		},
+
+		/**
+		 * Check if the current open tab is this widget tab and then load the timeline
+		 * @private
+		 */
+		_tabChange: function(){
+			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
+			if(this.$tabs.tabs( "option", "active") === tabPosition) {
+				this.$tabs.off("tabsactivate.timelinewidget");
+				this._renderTimeline();
 			}
 		},
 

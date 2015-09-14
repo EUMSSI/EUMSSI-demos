@@ -33,6 +33,7 @@
 			 */
 			executeRequest: function(servlet, string, handler, errorHandler){
 				var self = this, options = {dataType: 'json'};
+				this._regenFilter();
 				string = string || this.store.string();
 
 				handler = handler || function(data){
@@ -60,6 +61,21 @@
 			},
 
 			/**
+			 * Refresh the Filter query
+			 * @private
+			 */
+			_regenFilter: function(){
+				var fq = EUMSSI.FilterManager.getFilterQueryString();
+				this.store.removeByValue("fq",this._lastfq);
+				if(fq.length > 0){
+					this.store.addByValue("fq",fq);
+					this._lastfq = fq;
+				} else {
+					this._lastfq = "";
+				}
+			},
+
+			/**
 			 * Fetch the current indexed fields on Solr
 			 * and save it in Manager._solrFields
 			 */
@@ -70,25 +86,6 @@
 						this._solrFields = response.split(",").sort();
 					}.bind(this)
 				});
-			},
-
-			/**
-			 * Refresh the Filter query and perform the request
-			 * @override AjaxSolr.AbstractManager.doRequest
-			 * @param start
-			 * @param servlet
-			 */
-			doRequest: function(start, servlet){
-				var fq = EUMSSI.FilterManager.getFilterQueryString();
-				this.store.removeByValue("fq",this._lastfq);
-				if(fq.length > 0){
-					this.store.addByValue("fq",fq);
-					this._lastfq = fq;
-				} else {
-					this._lastfq = "";
-				}
-
-				AjaxSolr.AbstractManager.prototype.doRequest.call(this, start, servlet);
 			},
 
 			_showLoader: function(){
