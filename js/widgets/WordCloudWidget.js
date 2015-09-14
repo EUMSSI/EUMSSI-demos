@@ -50,7 +50,7 @@
     			var w = keys[j];
     			var obj = {};
     			obj["text"] = w;
-    			obj["size"] = words[w];
+    			obj["size"] = 3*words[w];
     			tf.push(obj);	
     			if (tf.length>wcmaxwords) {break;}
 			}
