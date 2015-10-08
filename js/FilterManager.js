@@ -163,7 +163,7 @@ _.extend(FilterManager.prototype, {
 					q.push(this._parseGeneralFilter(filterObj.query.replace("GENERAL_SEARCH"+":","")));
 					break;
 				default:
-					q.push(_.escape(filterObj.query));
+					q.push(filterObj.query);
 			}
 		},this);
 
