@@ -157,7 +157,14 @@ _.extend(FilterManager.prototype, {
 	getFilterQueryString: function(){
 		var fq = "", q = [];
 		_.each(this._filters,function(filterObj){
-			q.push(filterObj.query);
+			//Detect special cases
+			switch(filterObj.filterName){
+				case "GENERAL_SEARCH" :
+					q.push(this._parseGeneralFilter(filterObj.query.replace("GENERAL_SEARCH"+":","")));
+					break;
+				default:
+					q.push(_.escape(filterObj.query));
+			}
 		},this);
 
 		if(q.length > 0){
@@ -165,10 +172,37 @@ _.extend(FilterManager.prototype, {
 		}
 
 		return fq;
-	}
+	},
 
 	/* end FILTERS API end */
 
+	/**
+	 * Creates a Query with the general search fields with the given value.
+	 * @param {string} value - the value of the search
+	 * @returns {string} "field1:value OR field2:value OR field3:value ..."
+	 * @private
+	 */
+	_parseGeneralFilter : function(value){
+		var searchQueries = [];
+		var searchFields = [
+			"meta.source.text",
+			"meta.source.description",
+			"meta.source.category",
+			"meta.source.headline",
+			"meta.source.author",
+			"meta.extracted.audio_transcript",
+			"meta.extracted.video_ocr.best",
+			"meta.source.keywords"
+		];
+
+		if(value){
+			_.each(searchFields,function(val){
+				searchQueries.push(val + ":" + _.escape(value));
+			});
+		}
+
+		return searchQueries.join(" OR ");
+	}
 
 });
 

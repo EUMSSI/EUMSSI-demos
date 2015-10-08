@@ -64,148 +64,160 @@
 </head>
 <body>
 
-    <div class="header-panel ui-layout-north">
-    <!--## HEADER PANEL ##-->
-        <img class="logo" src="images/eumssi-logo.png" alt="Logo">
-        <h1>EUMSSI Project - Demonstration</h1>
-    <!--####-->
-    </div>
-
-    <div class="search-panel ui-layout-west">
-        <div class="search-panel-content panel-content">
-        <!--## SEARCH PANEL ##-->
-
-            <button class="btn-do-search ui-button-main">Search</button>
-
-            <div class="filterViewer-placeholder"></div>
-
+    <div class="ui-section-initpage">
+        <a href="http://www.eumssi.eu/" target="_blank" title="Open Eumssi home page"><img class="logo" src="images/eumssi-logo.png" alt="Logo"></a>
+        <div>
             <div class="mainSearch-placeholder"></div>
-
-            <h2>Language</h2>
-            <div class="localeWidget-placeholder"></div>
-            <h2>Video Quality</h2>
-            <div class="videoQualityWidget-placeholder"></div>
-
-            <div class="source-placeholder tagfacet" ></div>
-
-            <div class="clear"></div>
-        <!--####-->
+            <button class="btn-do-search-initpage ui-button-main" title="Search">
+                <div class="icon-search"></div>
+            </button>
         </div>
     </div>
 
-    <div class="content-panel ui-layout-center">
-
-        <div class="advancedSearch-panel ui-layout-west">
-            <div class="advancedSearch-panel-content panel-content">
-            <!--## ADVANCED SEARCH PANEL ##-->
-
-                <!--<h3>Advanced Filter</h3>-->
-                <button class="btn-do-add-filter ui-button-main">Add Filter</button></br>
-                <div class="generatedFilters-placeholder"></div>
-
+    <div class="ui-section-mainlayout" style="display:none">
+        <div class="header-panel ui-layout-north">
+            <!--## HEADER PANEL ##-->
+            <img class="logo" src="images/eumssi-logo.png" alt="Logo">
+            <h1>EUMSSI Project - Demonstration</h1>
             <!--####-->
-            </div>
-            <button class="button-pin button-pin-west"></button>
         </div>
 
-        <div class="result-panel ui-layout-center">
-            <div class="result-panel-content panel-content ui-layout-content">
-                <div class="tabs-container">
-                    <ul>
-                        <li><a href="#fragment-1">Result</a></li>
-                        <li><a href="#fragment-2">Map</a></li>
-                        <li><a href="#fragment-3">People</a></li>
-						<li><a href="#timelinetab">Timeline</a></li> 
-                        <li><a href="#wordcloudtab">Word Cloud</a></li>
-                    </ul>
-                    <div id="fragment-1" data-tabpos="0">
-                        <div class="tab-content">
-                            <!--## RESULT TAB ##-->
+        <div class="search-panel ui-layout-west">
+            <div class="search-panel-content panel-content">
+                <!--## SEARCH PANEL ##-->
 
-                            <div class="navigation">
-                                <ul class="pager"></ul>
-                                <div class="pager-header"></div>
-                            </div>
-                            <div class="resultWidget-placeholder"></div>
-                            <br>
-                            <div class="navigation">
-                                <ul class="pager"></ul>
-                            </div>
+                <button class="btn-do-search ui-button-main">Search</button>
 
-                            <!--####-->
-                        </div>
-                    </div>
-                    <div id="fragment-2" data-tabpos="1">
-                        <div class="tab-content mapChart">
-                            <!--## TAB 2 MAP CHART CONTENT ##-->
-                            <div class='mapChart-placeholder'>
-                                <div class='mapChart-toolbar ui-widget-header ui-corner-all'>
-                                    <div id="mapChart-displayMode-btn">
-                                        <input type="radio" id="mapChart-displayMode-regions" value="regions" name="displayMode-radio" checked="checked"><label for="mapChart-displayMode-regions">Countries</label>
-                                        <input type="radio" id="mapChart-displayMode-markers" value="markers" name="displayMode-radio"><label for="mapChart-displayMode-markers">Cities</label>
-                                    </div>
-                                    <select style="width: 160px;" title="Select Region" class="mapChart-region-selector">
-                                        <option value="world">World</option>
-                                        <option value="002">Africa</option>
-                                        <option value="019">Americas</option>
-                                        <option value="013">America (Central)</option>
-                                        <option value="021">America (Northern)</option>
-                                        <option value="005">America (South)</option>
-                                        <option value="142">Asia</option>
-                                        <option value="150">Europe</option>
-                                        <option value="009">Oceania</option>
-                                    </select>
-                                    <a class="mapChart-export-btn" download="chart.png" title="Download map as image">Export</a>
-                                    <img class="mapChart-loading" style="display:none;" src="images/circular-loader.gif" title="Loading Map...">
+                <div class="filterViewer-placeholder"></div>
+
+                <!--<div class="mainSearch-placeholder"></div>-->
+
+                <h2>Language</h2>
+                <div class="localeWidget-placeholder"></div>
+                <h2>Video Quality</h2>
+                <div class="videoQualityWidget-placeholder"></div>
+
+                <div class="source-placeholder tagfacet" ></div>
+
+                <div class="clear"></div>
+                <!--####-->
+            </div>
+        </div>
+
+        <div class="content-panel ui-layout-center">
+
+            <div class="advancedSearch-panel ui-layout-west">
+                <div class="advancedSearch-panel-content panel-content">
+                    <!--## ADVANCED SEARCH PANEL ##-->
+
+                    <!--<h3>Advanced Filter</h3>-->
+                    <button class="btn-do-add-filter ui-button-main">Add Filter</button></br>
+                    <div class="generatedFilters-placeholder"></div>
+
+                    <!--####-->
+                </div>
+                <button class="button-pin button-pin-west"></button>
+            </div>
+
+            <div class="result-panel ui-layout-center">
+                <div class="result-panel-content panel-content ui-layout-content">
+                    <div class="tabs-container">
+                        <ul>
+                            <li><a href="#fragment-1">Result</a></li>
+                            <li><a href="#fragment-2">Map</a></li>
+                            <li><a href="#fragment-3">People</a></li>
+                            <li><a href="#timelinetab">Timeline</a></li>
+                            <li><a href="#wordcloudtab">Word Cloud</a></li>
+                        </ul>
+                        <div id="fragment-1" data-tabpos="0">
+                            <div class="tab-content">
+                                <!--## RESULT TAB ##-->
+
+                                <div class="navigation">
+                                    <ul class="pager"></ul>
+                                    <div class="pager-header"></div>
                                 </div>
-                                <div class="mapChart-chart"></div>
+                                <div class="resultWidget-placeholder"></div>
+                                <br>
+                                <div class="navigation">
+                                    <ul class="pager"></ul>
+                                </div>
+
+                                <!--####-->
                             </div>
-                            <!--####-->
                         </div>
-                    </div>
-                    <div id="fragment-3" data-tabpos="2">
-                        <div class="tab-content">
-                            <!--## TAB 3 CONTENT ##-->
-                            <!--<h1>PERSONS TAG CLOUD</h1>-->
-                            <div class="tagCloud-placeholder"></div>
-                            <!--####-->
+                        <div id="fragment-2" data-tabpos="1">
+                            <div class="tab-content mapChart">
+                                <!--## TAB 2 MAP CHART CONTENT ##-->
+                                <div class='mapChart-placeholder'>
+                                    <div class='mapChart-toolbar ui-widget-header ui-corner-all'>
+                                        <div id="mapChart-displayMode-btn">
+                                            <input type="radio" id="mapChart-displayMode-regions" value="regions" name="displayMode-radio" checked="checked"><label for="mapChart-displayMode-regions">Countries</label>
+                                            <input type="radio" id="mapChart-displayMode-markers" value="markers" name="displayMode-radio"><label for="mapChart-displayMode-markers">Cities</label>
+                                        </div>
+                                        <select style="width: 160px;" title="Select Region" class="mapChart-region-selector">
+                                            <option value="world">World</option>
+                                            <option value="002">Africa</option>
+                                            <option value="019">Americas</option>
+                                            <option value="013">America (Central)</option>
+                                            <option value="021">America (Northern)</option>
+                                            <option value="005">America (South)</option>
+                                            <option value="142">Asia</option>
+                                            <option value="150">Europe</option>
+                                            <option value="009">Oceania</option>
+                                        </select>
+                                        <a class="mapChart-export-btn" download="chart.png" title="Download map as image">Export</a>
+                                        <img class="mapChart-loading" style="display:none;" src="images/circular-loader.gif" title="Loading Map...">
+                                    </div>
+                                    <div class="mapChart-chart"></div>
+                                </div>
+                                <!--####-->
+                            </div>
                         </div>
-                    </div>
-
-                     <div id="timelinetab" data-tabpos="3">
-                        <div class="tab-content">
-                            
-                        
-                            <div id="my-timeline"> </div>
-                            
-                        
+                        <div id="fragment-3" data-tabpos="2">
+                            <div class="tab-content">
+                                <!--## TAB 3 CONTENT ##-->
+                                <!--<h1>PERSONS TAG CLOUD</h1>-->
+                                <div class="tagCloud-placeholder"></div>
+                                <!--####-->
+                            </div>
                         </div>
-                    </div>
 
-                    <div id="wordcloudtab" data-tabpos="4">
-                        <div class="tab-content">
-                            <div id="my-wordcloud"></div>
+                        <div id="timelinetab" data-tabpos="3">
+                            <div class="tab-content">
+
+
+                                <div id="my-timeline"> </div>
+
+
+                            </div>
                         </div>
+
+                        <div id="wordcloudtab" data-tabpos="4">
+                            <div class="tab-content">
+                                <div id="my-wordcloud"></div>
+                            </div>
+                        </div>
+
+
                     </div>
-
-
                 </div>
             </div>
-        </div>
 
 
-        <div class="widget-panel ui-layout-east">
-            <div class="widget-panel-content panel-content ui-layout-content">
+            <div class="widget-panel ui-layout-east">
+                <div class="widget-panel-content panel-content ui-layout-content">
 
-                <!--<h2>AuxWidgets</h2>-->
+                    <!--<h2>AuxWidgets</h2>-->
 
+                </div>
+                <button class="button-pin button-pin-east"></button>
             </div>
-            <button class="button-pin button-pin-east"></button>
+
         </div>
 
+        <div class="footer-panel ui-layout-south"></div>
     </div>
-
-    <div class="footer-panel ui-layout-south"></div>
 
 </body>
 </html>

@@ -54,7 +54,7 @@ window.EUMSSI = {
 			id: 'mainFilter',
 			target: '.mainSearch-placeholder',
 			preload: [
-				{key:"meta.source.text",label:"Content Search", showInResultCheck: false}
+				{key:"GENERAL_SEARCH",label:"Content Search", showInResultCheck: false}
 			]
 		}));
 
@@ -153,91 +153,111 @@ window.EUMSSI = {
 		}
 
 		//Perform an initial Search
-		EUMSSI.Manager.doRequest();
+		//EUMSSI.Manager.doRequest();
 
 		/** ADDITIONAL FUNCTIONS **/
+		$(".ui-section-initpage input").focus().bind('keydown', function(e) {
+			if (e.which == $.ui.keyCode.ENTER) {
+				$("button.btn-do-search-initpage").focus().click();
+			}
+		});
 
 		//Search Button
 		$("button.btn-do-search").click(function(){
 			EUMSSI.Manager.doRequest(0);
 		});
 
+		$("button.btn-do-search-initpage").click(function(){
+			//Move the input to search
+			var $mainSearchInput = $(".ui-section-initpage .mainSearch-placeholder").detach();
+			$(".ui-section-mainlayout .filterViewer-placeholder").after($mainSearchInput);
+			//Change the panels and initialize the layout
+			$(".ui-section-initpage").hide();
+			$(".ui-section-mainlayout").show();
+			initLayout();
+			//Make the initial request
+			EUMSSI.Manager.doRequest(0);
+		});
+
+
 		/******************** JQUERY.TABS ********************/
 		$(".tabs-container").tabs({
 			active: 0
 		});
 
-		/******************** <JQUERY.LAYOUT> ********************/
-		/*
-			NORTH	HEADER (TITLE + LOGO)
-			WEST	SIMPLE SEARCH
-			CENTER	CONTENT LAYOUT
-			EAST	-void-
-			SOUTH	FOOTER (HIDDEN)
-		 */
-		EUMSSI.pageLayout = $("body").layout({
-			defaults:{
-				//applyDefaultStyles: true
-			},
-			north: {
-				size: 85,
-				resizable: false,
-				closable: false,
-				slidable: false,
-				resizerClass: "ui-layout-resizer-none" // displayNone
+		function initLayout(){
+			/******************** <JQUERY.LAYOUT> ********************/
+			/*
+			 NORTH	HEADER (TITLE + LOGO)
+			 WEST	SIMPLE SEARCH
+			 CENTER	CONTENT LAYOUT
+			 EAST	-void-
+			 SOUTH	FOOTER (HIDDEN)
+			 */
+			EUMSSI.pageLayout = $("div.ui-section-mainlayout").layout({
+				defaults:{
+					//applyDefaultStyles: true
+				},
+				north: {
+					size: 85,
+					resizable: false,
+					closable: false,
+					slidable: false,
+					resizerClass: "ui-layout-resizer-none" // displayNone
 
-			},
-			south: {
-				size: 45,
-				initHidden: true
-			},
-			west: {
-				size: 230,
-				resizable: false,
-				resizerClass: "ui-layout-resizer-none" // displayNone
-			}
-		});
+				},
+				south: {
+					size: 45,
+					initHidden: true
+				},
+				west: {
+					size: 230,
+					resizable: false,
+					resizerClass: "ui-layout-resizer-none" // displayNone
+				}
+			});
 
-		EUMSSI.pageLayout.allowOverflow("center");
+			EUMSSI.pageLayout.allowOverflow("center");
 
-		/*
-			NORTH	-void-
-			WEST	ADVANCED FILTER
-			CENTER	RESULT CONTENT
-			EAST	AUXILIAR WIDGETS
-			FOOTER	-void-
-		 */
-		EUMSSI.contentLayout = $("body .content-panel").layout({
-			west: {
-				size: 230,
-				initClosed: true,
-				resizable: false,
-				closable: true,
-				slidable: true,
-				togglerClass: "ui-layout-toggler-none",
-				sliderTip: "Advanced Filter"
-			},
-			east: {
-				size: 420,
-				initClosed: true,
-				resizable: false,
-				closable: true,
-				slidable: true,
-				togglerClass: "ui-layout-toggler-none",
-				sliderTip: "Auxiliar Widgets"
+			/*
+			 NORTH	-void-
+			 WEST	ADVANCED FILTER
+			 CENTER	RESULT CONTENT
+			 EAST	AUXILIAR WIDGETS
+			 FOOTER	-void-
+			 */
+			EUMSSI.contentLayout = $("body .content-panel").layout({
+				west: {
+					size: 230,
+					initClosed: true,
+					resizable: false,
+					closable: true,
+					slidable: true,
+					togglerClass: "ui-layout-toggler-none",
+					sliderTip: "Advanced Filter"
+				},
+				east: {
+					size: 420,
+					initClosed: true,
+					resizable: false,
+					closable: true,
+					slidable: true,
+					togglerClass: "ui-layout-toggler-none",
+					sliderTip: "Auxiliar Widgets"
 
-				// pseudoClose Option Syntax
-				//onclose: $.layout.callbacks.pseudoClose
+					// pseudoClose Option Syntax
+					//onclose: $.layout.callbacks.pseudoClose
 
-				// assign the 'slideOffscreen' effect to any pane(s) you wish
-				//fxName:   "slideOffscreen",
-				//fxSpeed:  500 // optional
-			}
-		});
+					// assign the 'slideOffscreen' effect to any pane(s) you wish
+					//fxName:   "slideOffscreen",
+					//fxSpeed:  500 // optional
+				}
+			});
 
-		EUMSSI.contentLayout.addPinBtn(".button-pin-west", "west");
-		EUMSSI.contentLayout.addPinBtn(".button-pin-east", "east");
-		/***************** </JQUERY.LAYOUT> *******************/
+			EUMSSI.contentLayout.addPinBtn(".button-pin-west", "west");
+			EUMSSI.contentLayout.addPinBtn(".button-pin-east", "east");
+			/***************** </JQUERY.LAYOUT> *******************/
+		}
 
 		// Record mouse position in order to display contextual menus
 		$(document).mousemove(function(e) {
