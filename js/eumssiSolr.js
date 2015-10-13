@@ -155,19 +155,9 @@ window.EUMSSI = {
 		//Perform an initial Search
 		//EUMSSI.Manager.doRequest();
 
+
 		/** ADDITIONAL FUNCTIONS **/
-		$(".ui-section-initpage input").focus().bind('keydown', function(e) {
-			if (e.which == $.ui.keyCode.ENTER) {
-				$("button.btn-do-search-initpage").focus().click();
-			}
-		});
-
-		//Search Button
-		$("button.btn-do-search").click(function(){
-			EUMSSI.Manager.doRequest(0);
-		});
-
-		$("button.btn-do-search-initpage").click(function(){
+		function showMainLayout(){
 			//Move the input to search
 			var $mainSearchInput = $(".ui-section-initpage .mainSearch-placeholder").detach();
 			$(".ui-section-mainlayout .filterViewer-placeholder").after($mainSearchInput);
@@ -175,7 +165,22 @@ window.EUMSSI = {
 			$(".ui-section-initpage").hide();
 			$(".ui-section-mainlayout").show();
 			initLayout();
+		}
+
+		$(".ui-section-initpage input").focus().bind('keydown', function(e) {
+			if (e.which == $.ui.keyCode.ENTER) {
+				showMainLayout();
+			}
+		});
+
+		$("button.btn-do-search-initpage").click(function(){
+			showMainLayout();
 			//Make the initial request
+			EUMSSI.Manager.doRequest(0);
+		});
+
+		//Search Button
+		$("button.btn-do-search").click(function(){
 			EUMSSI.Manager.doRequest(0);
 		});
 
