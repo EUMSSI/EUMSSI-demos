@@ -64,6 +64,19 @@
   padding: 0;
 }
 
+.info-block{
+  .info-label{
+    cursor: pointer;
+    &::after {
+      content: "";
+    }
+  }
+
+  .ui-icon{
+    display: inline-block;
+    vertical-align: bottom;
+  }
+}
 
 /*************** ******** **************/
 /*************** MISC **************/
@@ -113,6 +126,10 @@ p {
 
 video {
   background-color: black;
+}
+
+li {
+  list-style-type: none;
 }
 
 .click-menu.ui-menu {

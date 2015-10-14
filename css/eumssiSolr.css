@@ -43,6 +43,16 @@
   margin: 0;
   padding: 0;
 }
+.info-block .info-label {
+  cursor: pointer;
+}
+.info-block .info-label::after {
+  content: "";
+}
+.info-block .ui-icon {
+  display: inline-block;
+  vertical-align: bottom;
+}
 /*************** ******** **************/
 /*************** MISC **************/
 /*************************** Common ***************************/
@@ -83,6 +93,9 @@ p {
 }
 video {
   background-color: black;
+}
+li {
+  list-style-type: none;
 }
 .click-menu.ui-menu {
   position: absolute;

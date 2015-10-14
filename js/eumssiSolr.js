@@ -2,6 +2,7 @@
 
 window.EUMSSI = {
 	Manager : {},
+	SegmentManager : {},
 	FilterManager : new FilterManager(),
 	EventManager : new EventManager(),
 	CONF : CONF || {},
@@ -14,8 +15,11 @@ window.EUMSSI = {
 
 	$(function () {
 
+		//<editor-fold desc="MAIN CORE MANAGER">
+
 		EUMSSI.Manager = new AjaxSolr.Manager({
-			solrUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/'
+			solrUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/',
+			segmentsCoreUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/segments/'
 		});
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.FilterViewerWidget({
@@ -154,41 +158,19 @@ window.EUMSSI = {
 
 		//Perform an initial Search
 		//EUMSSI.Manager.doRequest();
+		//</editor-fold>
 
 
-		/** ADDITIONAL FUNCTIONS **/
-		function showMainLayout(){
-			//Move the input to search
-			var $mainSearchInput = $(".ui-section-initpage .mainSearch-placeholder").detach();
-			$(".ui-section-mainlayout .filterViewer-placeholder").after($mainSearchInput);
-			//Change the panels and initialize the layout
-			$(".ui-section-initpage").hide();
-			$(".ui-section-mainlayout").show();
-			initLayout();
-		}
+		//<editor-fold desc="JQUERY.TABS">
 
-		$(".ui-section-initpage input").focus().bind('keydown', function(e) {
-			if (e.which == $.ui.keyCode.ENTER) {
-				showMainLayout();
-			}
-		});
-
-		$("button.btn-do-search-initpage").click(function(){
-			showMainLayout();
-			//Make the initial request
-			EUMSSI.Manager.doRequest(0);
-		});
-
-		//Search Button
-		$("button.btn-do-search").click(function(){
-			EUMSSI.Manager.doRequest(0);
-		});
-
-
-		/******************** JQUERY.TABS ********************/
 		$(".tabs-container").tabs({
 			active: 0
 		});
+
+		//</editor-fold>
+
+
+		//<editor-fold desc="JQUERY.LAYOUT">
 
 		function initLayout(){
 			/******************** <JQUERY.LAYOUT> ********************/
@@ -264,11 +246,45 @@ window.EUMSSI = {
 			/***************** </JQUERY.LAYOUT> *******************/
 		}
 
+		//</editor-fold>
+
+
+		//<editor-fold desc="MISC">
+
+		function showMainLayout(){
+			//Move the input to search
+			var $mainSearchInput = $(".ui-section-initpage .mainSearch-placeholder").detach();
+			$(".ui-section-mainlayout .filterViewer-placeholder").after($mainSearchInput);
+			//Change the panels and initialize the layout
+			$(".ui-section-initpage").hide();
+			$(".ui-section-mainlayout").show();
+			initLayout();
+		}
+
+		$(".ui-section-initpage input").focus().bind('keydown', function(e) {
+			if (e.which == $.ui.keyCode.ENTER) {
+				showMainLayout();
+			}
+		});
+
+		$("button.btn-do-search-initpage").click(function(){
+			showMainLayout();
+			//Make the initial request
+			EUMSSI.Manager.doRequest(0);
+		});
+
+		//Search Button
+		$("button.btn-do-search").click(function(){
+			EUMSSI.Manager.doRequest(0);
+		});
+
 		// Record mouse position in order to display contextual menus
 		$(document).mousemove(function(e) {
 			window.mouse_x = e.pageX;
 			window.mouse_y = e.pageY;
 		});
+
+		//</editor-fold>
 
 	});
 

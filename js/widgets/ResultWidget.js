@@ -71,7 +71,8 @@
 		defaultTemplate: function (doc) {
 			var text = doc['meta.source.text'] || "...",
 				date = doc['meta.source.datePublished'],
-				videoLink = doc['meta.source.httpHigh'],
+				videoLink = doc['meta.source.httpHigh'] || doc['meta.source.httpMedium'],
+				//videoLink = doc['meta.source.httpHigh'],
 				urlLink = doc['meta.source.url'],
 				audio_transcript = doc['meta.extracted.audio_transcript'];
 
@@ -101,6 +102,13 @@
 				$play.click(function(){
 					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, doc]);
 				});
+
+				//Segments
+				var $segment = $('<div class="info-block collapsed">')
+					.append('<span class="info-label">Segments<span class="ui-icon ui-icon-triangle-1-e"></span></span>')
+					.append('<span class="info-value" style="display: none;"><img src="images/ajax-loader.gif"></span>');
+				$output.append($segment);
+				$segment.find(".info-label").click(this._expandSegments.bind(this,doc["_id"],$segment));
 			}
 
 			//Link webpage
@@ -111,6 +119,49 @@
 			}
 
 			return $output;
+		},
+
+		_expandSegments: function(parentId, $el, event){
+			if($el.hasClass("collapsed")){
+				//EXPAND
+				if(!$el.hasClass("info-loaded")){
+					//Retrieve the segments Data
+					//XXX TEMPORAL FIX
+					parentId = parentId.replace(/-/g, '');
+					//XXX TEMPORAL FIX
+					EUMSSI.Manager.getSegmentsByParentId(parentId).done(function(response){
+						$el.find(".info-value").html(this._renderSegments(JSON.parse(response)));
+						$el.addClass("info-loaded");
+					}.bind(this));
+				}
+				$el.removeClass("collapsed");
+				$el.addClass("expanded");
+				$el.find(".info-value").show();
+				$el.find(".info-label .ui-icon")
+					.removeClass("ui-icon-triangle-1-e")
+					.addClass("ui-icon-triangle-1-s");
+			} else {
+				//COLLAPSE
+				$el.removeClass("expanded");
+				$el.addClass("collapsed");
+				$el.find(".info-value").hide();
+				$el.find(".info-label .ui-icon")
+					.removeClass("ui-icon-triangle-1-s")
+					.addClass("ui-icon-triangle-1-e");
+			}
+		},
+
+		_renderSegments: function(segmentsResponse){
+			var html = $("<ul>");
+			for (var i = 0, l = segmentsResponse.response.docs.length; i < l; i++) {
+				var segmentDoc = segmentsResponse.response.docs[i];
+				var $li = $("<li>");
+				$li.html("\nbeginOffset: " + new Date(segmentDoc.beginOffset).toLocaleTimeString()
+					+ " - endOffset: " + new Date(segmentDoc.endOffset).toLocaleTimeString());
+				html.append($li);
+			}
+
+			return html;
 		},
 
 		_renderTitle: function(doc){

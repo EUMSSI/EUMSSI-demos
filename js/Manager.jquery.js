@@ -88,6 +88,24 @@
 				});
 			},
 
+			/**
+			 * Obtain the Segments of the given Item
+			 * @param parentId
+			 */
+			getSegmentsByParentId: function(parentId){
+				var url = this.segmentsCoreUrl +
+					this.servlet + '?' +
+					"q=*%3A*&wt=json&indent=true" +
+					"&rows=15&fq=parent_id%3A"+AjaxSolr.Parameter.escapeValue(parentId)
+					+"&fq="+this._lastfq;
+				return $.ajax({
+					url: url,
+					success: function(response){
+						this._solrFields = response.split(",").sort();
+					}.bind(this)
+				});
+			},
+
 			_showLoader: function(){
 				$(".result-panel-content").addClass("ui-loading-modal");
 			},
