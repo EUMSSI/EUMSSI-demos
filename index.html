@@ -14,10 +14,15 @@
     <script type="text/javascript" src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
     <!---->
     <!-- d3js -->
-    <script src="lib/d3/d3.js"></script>
-    <script src="lib/d3/d3.layout.cloud.js"></script>
-    <script src="lib/stopwords/stopwordsEnglish.js"></script>
+    <!--<script src="lib/d3/d3.js"></script>-->
+    <!--<script src="lib/d3/d3.layout.js"></script>-->
 
+    <!--<script src="lib/d3/d3.geom.js"></script>-->
+    <!--<script src="lib/stopwords/stopwordsEnglish.js"></script>-->
+
+    <!--<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>-->
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
+    <script src="lib/d3/d3.layout.cloud.js"></script>
 
     <script src="lib/underscore/underscore-min.js"></script>
     <script src="lib/jquery/jquery-1.11.2.min.js"></script>
@@ -28,6 +33,13 @@
     <!--<script src="lib/jquery/jquery.layout.pseudoClose.min-1.1.js"></script>-->
     <!--<script src="lib/jquery/jquery.layout.slideOffscreen.min-1.1.js"></script>-->
     <link rel="stylesheet" href="lib/jquery/jquery-ui.min.css">
+
+    <!-- amalia.js -->
+    <script src="lib/amalia.js-1.3.0/components/raphael/raphael.js"></script>
+    <script src="lib/amalia.js-1.3.0/js/amalia.js.min.js"></script>
+    <link rel="stylesheet" href="lib/amalia.js-1.3.0/css/amalia.js.min.css">
+    <script type="text/javascript" src="lib/amalia.js-1.3.0/js/i18n/amalia.js-message-en.js"></script>
+    <script type="text/javascript" src="lib/amalia.js-1.3.0/js/amalia.js-plugin-text-sync.min.js"></script>
 
     <script src="js/Utils.js"></script>
     <script src="js/EventManager.js"></script>
@@ -49,8 +61,10 @@
     <script src="js/widgets/TextWidget.js"></script>
     
     <script src="js/widgets/TimelineWidget.js"></script>
-    
+    <script src="js/widgets/WikipediaEventWidget.js"></script>
+
     <script src="js/widgets/WordCloudWidget.js"></script>
+    <script src="js/widgets/WordGraphWidget.js"></script>
 
     <script src="js/widgets/SelectLocaleWidget.js"></script>
     <script src="js/widgets/SelectVideoQualityWidget.js"></script>
@@ -128,6 +142,8 @@
                             <li><a href="#fragment-3">People</a></li>
                             <li><a href="#timelinetab">Timeline</a></li>
                             <li><a href="#wordcloudtab">Word Cloud</a></li>
+                            <li><a href="#wordgraphtab">Word Graph</a></li>
+                            <li><a href="#wikieventtab">Wikipedia Event</a></li>
                         </ul>
                         <div id="fragment-1" data-tabpos="0">
                             <div class="tab-content">
@@ -185,17 +201,27 @@
 
                         <div id="timelinetab" data-tabpos="3">
                             <div class="tab-content">
-
-
                                 <div id="my-timeline"> </div>
-
-
+                                <div class="event-placeholder"> </div>
                             </div>
                         </div>
 
                         <div id="wordcloudtab" data-tabpos="4">
                             <div class="tab-content">
-                                <div id="my-wordcloud"></div>
+                                <div id="my-wordcloud" class="wordcloud"></div>
+                            </div>
+                        </div>
+
+                        <div id="wordgraphtab" data-tabpos="5">
+                            <div class="tab-content">
+                                <div id="my-wordgraph" class="wordgraph"></div>
+                            </div>
+                        </div>
+
+                        <div id="wikieventtab" data-tabpos="6">
+                            <div class="tab-content">
+                                <div id="my-wikievent" class="wikievent"></div>
+                                <div class="wikievent-placeholder"></div>
                             </div>
                         </div>
 

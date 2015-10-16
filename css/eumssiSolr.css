@@ -53,6 +53,26 @@
   display: inline-block;
   vertical-align: bottom;
 }
+.wordcloud text {
+  cursor: pointer;
+}
+.wordgraph .link {
+  fill: none;
+  stroke: #cccccc;
+  stroke-width: 1.1px;
+}
+.wordgraph .node {
+  cursor: pointer;
+}
+.wordgraph .node circle {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+.wordgraph text {
+  font: 10px sans-serif;
+  pointer-events: none;
+}
 /*************** ******** **************/
 /*************** MISC **************/
 /*************************** Common ***************************/
@@ -77,6 +97,7 @@ img {
   border: none;
 }
 a {
+  cursor: pointer;
   color: #6998f0;
   text-decoration: none;
 }

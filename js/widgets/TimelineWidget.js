@@ -6,6 +6,8 @@
 
 		init: function(){
 			this.$tabs = $(this.target).parents(".tabs-container");
+			this.apiURL = "http://eumssi.cloudapp.net/EumssiEventExplorer/webresources/API/";
+			this.rowsNumber = 100;
 		},
 
 		/** adding libs for timeline
@@ -38,36 +40,48 @@
 		},
 
 		_renderTimeline: function(){
+			this.getImportantEvents();
+		},
+
+		/**
+		 * Error Management
+		 * @param message
+		 */
+		afterRequestError: function(message) {
+			$(this.target).html($("<div>").addClass("ui-error-text").text(message));
+		},
+
+		getImportantEvents: function(){
+			$.ajax({
+				url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( EUMSSI.Manager._lastfq || "*%3A*"),
+				success: this._renderTimelineAPI.bind(this)
+			});
+		},
+
+		_renderTimelineAPI: function(response){
 			$(this.target).empty();
+			$(".event-placeholder").empty();
 			var tlobj = {};
-			//tlobj["headline"] = "Timeline";
 			tlobj["type"] = "default";
 
-			//tlobj["text"] = "Timeline summaries";
-
 			var dateObj = [];
-			var timelinesize = 100;
 
-			for (var i = 0, l = this.manager.response.response.docs.length; i < l; i++) {
-				var doc = this.manager.response.response.docs[i];
+			for (var i = 0, l = response.length; i < l; i++) {
+				var doc = response[i];
 				var output= {};
 
-				output["headline"] = doc['meta.source.headline_html'];
-				//output["headline"] = this._renderTitle(doc);
-				output["text"] = doc['meta.source.text'];
-				var dateIn = new Date(doc['meta.source.datePublished']);
-				var yyyy = dateIn.getFullYear();
-				var mm = dateIn.getMonth()+1; // getMonth() is zero-based
-				var dd  = dateIn.getDate();
-				var datetljs = yyyy.toString() + "," + mm.toString() + "," + dd.toString();
-				output["endDate"] = datetljs;
-				output["startDate"] = datetljs;
-				if (!!output["headline"] && output["headline"].length>0) {
+				output["headline"] = doc['headline'];
+				output["text"] = doc['description'];
+				output["endDate"] = doc['date'].replace(/-/g,",");
+				output["startDate"] =  doc['date'].replace(/-/g,",");
 
-					if (dateObj.length == timelinesize) { break; }
+				if (!!output["headline"] && output["headline"].length>0) {
+					if (dateObj.length == this.rowsNumber) { break; }
 					if (!!output["text"]) {output["text"] = output["text"].substring(0,200);}
 					dateObj.push(output);
 				}
+
+				this._renderEvent(doc);
 			}
 
 			if (dateObj.length==0) {return;}
@@ -84,15 +98,17 @@
 				source:  timelineobject,
 				embed_id: 'my-timeline'
 			});
+
 		},
 
-		/**
-		 * Error Management
-		 * @param message
-		 */
-		afterRequestError: function(message) {
-			$(this.target).html($("<div>").addClass("ui-error-text").text(message));
+		_renderEvent: function(event){
+			var $event = $("<div>");
+			$event.append($('<h2>').text(event.headline));
+			$event.append($('<p class="date">').html(event.date));
+			$event.append($('<p>').html(event.description));
+			$(".event-placeholder").append($event);
 		}
+
 
 	});
 

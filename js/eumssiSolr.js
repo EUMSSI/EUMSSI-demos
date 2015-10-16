@@ -33,9 +33,19 @@ window.EUMSSI = {
 			target: '#my-timeline'
 		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.WikipediaEventWidget({
+			id: 'my-wikievent',
+			target: '#my-wikievent'
+		}));
+
 		EUMSSI.Manager.addWidget(new AjaxSolr.WordCloudWidget({
 			id: 'my-wordcloud',
 			target: '#my-wordcloud'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.WordGraphWidget({
+			id: 'my-wordgraph',
+			target: '#my-wordgraph'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.ResultWidget({

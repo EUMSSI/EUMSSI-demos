@@ -78,6 +78,34 @@
   }
 }
 
+.wordcloud {
+  text {
+    cursor: pointer;
+  }
+}
+
+.wordgraph {
+  .link {
+    fill: none;
+    stroke: #cccccc;
+    stroke-width: 1.1px;
+  }
+
+  .node{
+    cursor: pointer;
+    circle {
+      fill: #ccc;
+      stroke: #fff;
+      stroke-width: 1.5px;
+    }
+  }
+
+  text {
+    font: 10px sans-serif;
+    pointer-events: none;
+  }
+}
+
 /*************** ******** **************/
 /*************** MISC **************/
 
@@ -107,6 +135,7 @@ img {
 }
 
 a {
+  cursor: pointer;
   color: @rgb_blue;
   text-decoration: none;
   &:hover {
