@@ -40,6 +40,7 @@
 		},
 
 		_renderTimeline: function(){
+			$(this.target).addClass("ui-loading-modal");
 			this.getImportantEvents();
 		},
 
@@ -53,7 +54,7 @@
 
 		getImportantEvents: function(){
 			$.ajax({
-				url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( EUMSSI.Manager._lastfq || "*%3A*"),
+				url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( EUMSSI.Manager.getLastQuery() || "*%3A*"),
 				success: this._renderTimelineAPI.bind(this)
 			});
 		},
@@ -61,6 +62,7 @@
 		_renderTimelineAPI: function(response){
 			$(this.target).empty();
 			$(".event-placeholder").empty();
+			$(this.target).removeClass("ui-loading-modal");
 			var tlobj = {};
 			tlobj["type"] = "default";
 

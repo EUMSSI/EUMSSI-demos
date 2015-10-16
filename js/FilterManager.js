@@ -151,6 +151,20 @@ _.extend(FilterManager.prototype, {
 	},
 
 	/**
+	 * Generate a query String with the current filters
+	 * @private
+	 */
+	getQueryString: function(){
+		var q = "*:*"; // Default query
+		_.each(this._filters,function(filterObj){
+			if(filterObj.filterName == "GENERAL_SEARCH"){
+				q = this._parseGeneralFilter(filterObj.query.replace("GENERAL_SEARCH"+":",""));
+			}
+		},this);
+		return q;
+	},
+
+	/**
 	 * Generate a filter query String with the current filters
 	 * @private
 	 */
@@ -160,7 +174,8 @@ _.extend(FilterManager.prototype, {
 			//Detect special cases
 			switch(filterObj.filterName){
 				case "GENERAL_SEARCH" :
-					q.push(this._parseGeneralFilter(filterObj.query.replace("GENERAL_SEARCH"+":","")));
+					//General search is now a Query
+					//q.push(this._parseGeneralFilter(filterObj.query.replace("GENERAL_SEARCH"+":","")));
 					break;
 				default:
 					q.push(filterObj.query);

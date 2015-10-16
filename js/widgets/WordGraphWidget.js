@@ -5,9 +5,7 @@
 		init: function() {
 			this.$target = $(this.target);
 			this.apiURL = "http://eumssi.cloudapp.net/EumssiEventExplorer/webresources/API/";
-			this.wordNumber = 100;
-
-
+			this.wordNumber = 50;
 		},
 
 		afterRequest: function () {
@@ -19,7 +17,7 @@
 			if(filterWord){
 				q = ""+filterWord;
 			} else {
-				q = EUMSSI.Manager._lastfq || "*%3A*";
+				q = EUMSSI.Manager.getLastQuery() || "*%3A*";
 			}
 			//Loading
 			$(this.target).addClass("ui-loading-modal");
@@ -202,7 +200,7 @@
 						return d.name != selectedVal;
 					});
 					selected.style("opacity", "0");
-					var link = svg.selectAll(".link")
+					var link = svg.selectAll(".link");
 					link.style("opacity", "0");
 					d3.selectAll(".node, .link").transition()
 						.duration(5000)

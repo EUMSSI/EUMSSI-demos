@@ -65,7 +65,12 @@
 			 * @private
 			 */
 			_regenFilter: function(){
+				var q = EUMSSI.FilterManager.getQueryString();
 				var fq = EUMSSI.FilterManager.getFilterQueryString();
+
+				this.store.addByValue("q",q);
+				this._lastq = q;
+
 				this.store.removeByValue("fq",this._lastfq);
 				if(fq.length > 0){
 					this.store.addByValue("fq",fq);
@@ -125,6 +130,14 @@
 
 			removeFilterByWidget: function(widgetId){
 				EUMSSI.FilterManager.removeFilterByWidget(widgetId);
+			},
+
+			getLastFilterQuery: function(){
+				return this._lastfq || "";
+			},
+
+			getLastQuery: function(){
+				return this._lastq || "*:*";
 			}
 
 		});

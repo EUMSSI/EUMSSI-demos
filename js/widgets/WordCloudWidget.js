@@ -17,7 +17,7 @@
 			if(filterWord){
 				q = ""+filterWord;
 			} else {
-				q = EUMSSI.Manager._lastfq || "*%3A*";
+				q = EUMSSI.Manager.getLastQuery() || "*%3A*";
 			}
 			//Loading
 			$(this.target).addClass("ui-loading-modal");

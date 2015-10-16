@@ -60,6 +60,7 @@
 				url = "getWikipediaEvents/json/2000-01-01/2015-12-31/" + q;
 			}
 
+			$(this.target).addClass("ui-loading-modal");
 			$.ajax({
 				url: this.apiURL + url,
 				success: this._renderTimeline.bind(this)
@@ -69,6 +70,7 @@
 		_renderTimeline: function(response){
 			$(this.target).empty();
 			$(".wikievent-placeholder").empty();
+			$(this.target).removeClass("ui-loading-modal");
 			var tlobj = {};
 			tlobj["type"] = "default";
 
