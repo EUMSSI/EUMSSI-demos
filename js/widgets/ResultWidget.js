@@ -71,7 +71,7 @@
 		defaultTemplate: function (doc) {
 			var text = doc['meta.source.text'] || "...",
 				date = doc['meta.source.datePublished'],
-				videoLink = doc['meta.source.httpHigh'] || doc['meta.source.mediaurl'] || doc['meta.source.httpMedium'],
+				videoLink = doc['meta.source.mediaurl'] || doc['meta.source.httpHigh'] || doc['meta.source.httpMedium'],
 				urlLink = doc['meta.source.url'],
 				audio_transcript = doc['meta.extracted.audio_transcript'];
 

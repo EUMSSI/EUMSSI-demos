@@ -96,10 +96,30 @@
 		},
 
 		_onWordClick: function(d){
-			var fq = "GENERAL_SEARCH:" + d.text;
-			EUMSSI.FilterManager.removeFilterByName("GENERAL_SEARCH");
-			EUMSSI.FilterManager.addFilter("GENERAL_SEARCH", fq, this.id);
+			//Remove previous Value
+			//this.clearFilter(true);
+			this.setFilter(d.text);
+
 			EUMSSI.Manager.doRequest(0);
+		},
+
+		/**
+		 * Sets the main Solr query to the given string.
+		 * @param {String} attributeName The name of the filter key.
+		 * @param {String} value the value for the filter.
+		 */
+		setFilter: function (value) {
+			//Set the current Filter
+			this.storedValue = "meta.source.keywords" + ":" + value;
+			EUMSSI.FilterManager.addFilter("meta.source.keywords", this.storedValue, this.id, "Keyword: "+value);
+		},
+
+		/**
+		 * Sets the main Solr query to the empty string.
+		 * @param {Boolean} [silent] true, if don't want to trigger the change event
+		 */
+		clearFilter: function (silent) {
+			EUMSSI.FilterManager.removeFilterByWidget(this.id, silent);
 		}
 
 	});
