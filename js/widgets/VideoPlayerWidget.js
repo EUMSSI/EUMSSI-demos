@@ -52,6 +52,7 @@
 
 			if(isYoutube){
 				// YOUTUBE
+				videoLink = "http://www.youtube.com/v/{ID}?version=3".replace("{ID}",videoLink);
 				embedHtml = '<embed width="420" height="315"src="'+videoLink+'&autoplay=1">';
 				container.html(embedHtml);
 			} else {

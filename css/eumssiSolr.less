@@ -359,6 +359,21 @@ img.logo {
     }
   }
 
+  .icon-play-youtube{
+    width: 32px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: text-bottom;
+    cursor: pointer;
+    background-image:  url(../images/play-youtube.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    &:hover{
+      background-image:  url(../images/play-youtube-hover.png);
+    }
+  }
+
   .icon-play-segment {
     width: 22px;
     height: 22px;
@@ -429,9 +444,11 @@ img.logo {
     &.element-tweet{
       background-image: url("../images/element-back-tweet.png");
     }
-
     &.result-element-video{
       background-image: url("../images/element-back-video.png");
+    }
+    &.result-element-youtube{
+      background-image: url("../images/element-back-youtube.png");
     }
 
   }

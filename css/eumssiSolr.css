@@ -291,6 +291,20 @@ img.logo {
 .result-panel-content .icon-play:hover {
   background-image: url(../images/play-circle-hover.png);
 }
+.result-panel-content .icon-play-youtube {
+  width: 32px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: text-bottom;
+  cursor: pointer;
+  background-image: url(../images/play-youtube.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.result-panel-content .icon-play-youtube:hover {
+  background-image: url(../images/play-youtube-hover.png);
+}
 .result-panel-content .icon-play-segment {
   width: 22px;
   height: 22px;
@@ -356,6 +370,9 @@ img.logo {
 }
 .resultWidget-placeholder div.result-element.result-element-video {
   background-image: url("../images/element-back-video.png");
+}
+.resultWidget-placeholder div.result-element.result-element-youtube {
+  background-image: url("../images/element-back-youtube.png");
 }
 .links {
   cursor: pointer;

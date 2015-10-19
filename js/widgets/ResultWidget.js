@@ -71,6 +71,7 @@
 		defaultTemplate: function (doc) {
 			var text = doc['meta.source.text'] || "...",
 				date = doc['meta.source.datePublished'],
+				youtubeID = doc['meta.source.youtubeVideoID'],
 				videoLink = doc['meta.source.mediaurl'] || doc['meta.source.httpHigh'] || doc['meta.source.httpMedium'],
 				urlLink = doc['meta.source.url'],
 				audio_transcript = doc['meta.extracted.audio_transcript'];
@@ -94,8 +95,17 @@
 			//Dynamic Fields
 			$output.append(this._renderKeyArray(this.getEnabledDynamicAttributesKeyArray(),doc,200));
 
+			//Youtube Link
+			if(youtubeID){
+				var $play = $('<div class="icon-play-youtube" title="Play Video">');
+				$output.find("h2").prepend($play);
+				$play.click(function(){
+					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [youtubeID, doc]);
+				});
+			}
+
 			//Link Video
-			if(videoLink) {
+			if(videoLink && !youtubeID) {
 				var $play = $('<div class="icon-play" title="Play Video">');
 				$output.find("h2").prepend($play);
 				$play.click(function(){
@@ -121,7 +131,10 @@
 			if(doc['meta.source.tweetId']){
 				$output.addClass("element-tweet");
 			}
-			if(videoLink){
+			if(youtubeID){
+				$output.addClass("result-element-youtube");
+			}
+			if(videoLink && !youtubeID){
 				$output.addClass("result-element-video");
 			}
 
