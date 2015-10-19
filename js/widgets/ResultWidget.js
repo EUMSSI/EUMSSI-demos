@@ -71,8 +71,7 @@
 		defaultTemplate: function (doc) {
 			var text = doc['meta.source.text'] || "...",
 				date = doc['meta.source.datePublished'],
-				videoLink = doc['meta.source.httpHigh'] || doc['meta.source.httpMedium'],
-				//videoLink = doc['meta.source.httpHigh'],
+				videoLink = doc['meta.source.httpHigh'] || doc['meta.source.mediaurl'] || doc['meta.source.httpMedium'],
 				urlLink = doc['meta.source.url'],
 				audio_transcript = doc['meta.extracted.audio_transcript'];
 
@@ -151,17 +150,49 @@
 			}
 		},
 
+		/**
+		 * Creates the content html for segments
+		 * @param {object} segmentsResponse - the JSON object with the server response.
+		 * @returns {*|HTMLElement} html output with the segments data
+		 * @private
+		 */
 		_renderSegments: function(segmentsResponse){
 			var html = $("<ul>");
 			for (var i = 0, l = segmentsResponse.response.docs.length; i < l; i++) {
 				var segmentDoc = segmentsResponse.response.docs[i];
 				var $li = $("<li>");
-				$li.html("\nbeginOffset: " + new Date(segmentDoc.beginOffset).toLocaleTimeString()
-					+ " - endOffset: " + new Date(segmentDoc.endOffset).toLocaleTimeString());
+				var $playSegment = $('<span class="icon-play-segment">').attr("title","Play Segment");
+				$li.append($playSegment);
+				$li.append(new Date(segmentDoc.beginOffset).toLocaleTimeString(undefined,{timeZone:"UTC"})
+					+ " - " + new Date(segmentDoc.endOffset).toLocaleTimeString(undefined,{timeZone:"UTC"}));
+				$li.append(" <i>..."+segmentDoc["meta.extracted.audio_transcript"]+"...<i>");
 				html.append($li);
+
+				$playSegment.click(this._onClickPlaySegment.bind(this,segmentDoc));
+			}
+			return html;
+		},
+
+		/**
+		 * Open player with the segment time as init time
+		 * @param segmentDoc
+		 * @private
+		 */
+		_onClickPlaySegment: function(segmentDoc){
+			//Get videoLink from parent result on general Search
+			var parentDoc, videoLink = "";
+			var parentId = "{0}-{1}-{2}-{3}-{4}".replace("{0}",segmentDoc.parent_id.substr(0,8))
+				.replace("{1}",segmentDoc.parent_id.substr(8,4))
+				.replace("{2}",segmentDoc.parent_id.substr(12,4))
+				.replace("{3}",segmentDoc.parent_id.substr(16,4))
+				.replace("{4}",segmentDoc.parent_id.substr(20));
+			parentDoc = _.findWhere(this.manager.response.response.docs, {"_id": parentId});
+
+			if(parentDoc){
+				videoLink = parentDoc['meta.source.httpHigh'] || parentDoc['meta.source.mediaurl'] || parentDoc['meta.source.httpMedium'];
 			}
 
-			return html;
+			EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, segmentDoc, parseFloat(segmentDoc.beginOffset), parseFloat(segmentDoc.endOffset) ]);
 		},
 
 		_renderTitle: function(doc){

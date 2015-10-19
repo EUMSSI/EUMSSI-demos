@@ -117,6 +117,7 @@ video {
 }
 li {
   list-style-type: none;
+  margin-top: 0.2em;
 }
 .click-menu.ui-menu {
   position: absolute;
@@ -276,19 +277,34 @@ img.logo {
   cursor: pointer;
 }
 .result-panel-content .icon-play {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   display: inline-block;
   vertical-align: text-bottom;
   margin-right: 5px;
-  margin-bottom: 1px;
+  cursor: pointer;
+  background-image: url(../images/play-circle.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.result-panel-content .icon-play:hover {
+  background-image: url(../images/play-circle-hover.png);
+}
+.result-panel-content .icon-play-segment {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  margin-top: -2px;
   cursor: pointer;
   background-image: url(../images/icon-play-32.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
 }
-.result-panel-content .icon-play:hover {
+.result-panel-content .icon-play-segment:hover {
   background-image: url(../images/icon-play-32-hover.png);
 }
 .result-panel-content .icon-link {

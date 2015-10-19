@@ -39,7 +39,7 @@
 		 * @private
 		 * @listens videoPlayer:loadVideo
 		 */
-		_openVideoPlayer: function(event, videoLink, doc){
+		_openVideoPlayer: function(event, videoLink, doc, tcin, tcout){
 			var container, embedHtml;
 			var isYoutube = !!doc['meta.source.youtubeVideoID'];
 			var amaliaData = !!doc['meta.extracted.video_persons.amalia'];
@@ -48,6 +48,7 @@
 			}
 
 			container = EUMSSI.contentLayout.east.pane.find(".panel-content");
+			container.empty();
 
 			if(isYoutube){
 				// YOUTUBE
@@ -66,6 +67,7 @@
 					autoplay: true,
 					src: videoLink
 				};
+
 				if(amaliaData){
 					_.extend(amaliaConfig, {
 						plugins: {
@@ -89,6 +91,12 @@
 					});
 				}
 				$amaliacontainer.mediaPlayer(amaliaConfig);
+				var amaliaPlayer = $amaliacontainer.data("fr.ina.amalia.player").player;
+
+				// When want to Start the video with custom init time
+				if(tcin){
+					amaliaPlayer.seek(parseFloat(tcin)/1000);
+				}
 			}
 
 			var $a = $('<a>').attr("target","_blank").attr("href",videoLink).text("Video Link");
