@@ -78,7 +78,7 @@
 			text = this._sliceTextMore(text,300);
 
 			// Render HTML Code
-			var $output = $("<div>");
+			var $output = $('<div class="result-element">');
 
 			//Title
 			$output.append(this._renderTitle(doc));
@@ -115,6 +115,14 @@
 				var $link = $('<div class="icon-link" title="Open link">');
 				$output.find("h2").append($link);
 				$link.click(UTIL.openNewPage.bind(this, urlLink));
+			}
+
+			//Background Images
+			if(doc['meta.source.tweetId']){
+				$output.addClass("element-tweet");
+			}
+			if(videoLink){
+				$output.addClass("result-element-video");
 			}
 
 			return $output;

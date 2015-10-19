@@ -228,7 +228,7 @@ img.logo {
   overflow: visible;
 }
 .result-panel-content h2 {
-  padding: 15px 0 5px 0;
+  margin-bottom: 5px;
   color: #1b2c33;
   font-size: 20px;
   font-weight: 100;
@@ -339,6 +339,23 @@ img.logo {
 }
 .resultWidget-placeholder {
   padding-top: 1px;
+}
+.resultWidget-placeholder div.result-element {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.75);
+  border: 1px solid black;
+  background-image: url("../images/element-back-news.png");
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-origin: content-box;
+}
+.resultWidget-placeholder div.result-element.element-tweet {
+  background-image: url("../images/element-back-tweet.png");
+}
+.resultWidget-placeholder div.result-element.result-element-video {
+  background-image: url("../images/element-back-video.png");
 }
 .links {
   cursor: pointer;
