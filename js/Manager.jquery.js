@@ -100,9 +100,9 @@
 			getSegmentsByParentId: function(parentId){
 				var url = this.segmentsCoreUrl +
 					this.servlet + '?' +
-					"q=*%3A*&wt=json&indent=true" +
-					"&rows=15&fq=parent_id%3A"+AjaxSolr.Parameter.escapeValue(parentId)
-					+"&fq="+this._lastfq;
+					"q=" + this.getLastQuery() +
+					"&wt=json&indent=true" +
+					"&rows=15&fq=parent_id%3A"+AjaxSolr.Parameter.escapeValue(parentId);
 				return $.ajax({
 					url: url,
 					success: function(response){
