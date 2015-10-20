@@ -111,8 +111,10 @@
 				$play.click(function(){
 					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, doc]);
 				});
+			}
 
-				//Segments
+			//Segments
+			if(videoLink || youtubeID){
 				var $segment = $('<div class="info-block collapsed">')
 					.append('<span class="info-label">Segments<span class="ui-icon ui-icon-triangle-1-e"></span></span>')
 					.append('<span class="info-value" style="display: none;"><img src="images/ajax-loader.gif"></span>');
@@ -179,18 +181,23 @@
 		 */
 		_renderSegments: function(segmentsResponse){
 			var html = $("<ul>");
-			for (var i = 0, l = segmentsResponse.response.docs.length; i < l; i++) {
-				var segmentDoc = segmentsResponse.response.docs[i];
-				var $li = $("<li>");
-				var $playSegment = $('<span class="icon-play-segment">').attr("title","Play Segment");
-				$li.append($playSegment);
-				$li.append(new Date(segmentDoc.beginOffset).toLocaleTimeString(undefined,{timeZone:"UTC"})
-					+ " - " + new Date(segmentDoc.endOffset).toLocaleTimeString(undefined,{timeZone:"UTC"}));
-				$li.append(" <i>..."+segmentDoc["meta.extracted.audio_transcript"]+"...<i>");
-				html.append($li);
+			if(segmentsResponse.response.docs.length > 0){
+				for (var i = 0, l = segmentsResponse.response.docs.length; i < l; i++) {
+					var segmentDoc = segmentsResponse.response.docs[i];
+					var $li = $("<li>");
+					var $playSegment = $('<span class="icon-play-segment">').attr("title","Play Segment");
+					$li.append($playSegment);
+					$li.append(new Date(segmentDoc.beginOffset).toLocaleTimeString(undefined,{timeZone:"UTC"})
+						+ " - " + new Date(segmentDoc.endOffset).toLocaleTimeString(undefined,{timeZone:"UTC"}));
+					$li.append(" <i>..."+segmentDoc["meta.extracted.audio_transcript"]+"...<i>");
+					html.append($li);
 
-				$playSegment.click(this._onClickPlaySegment.bind(this,segmentDoc));
+					$playSegment.click(this._onClickPlaySegment.bind(this,segmentDoc));
+				}
+			} else {
+				html = " No segments were found."
 			}
+
 			return html;
 		},
 

@@ -52,8 +52,12 @@
 
 			if(isYoutube){
 				// YOUTUBE
-				videoLink = "http://www.youtube.com/v/{ID}?version=3".replace("{ID}",videoLink);
-				embedHtml = '<embed width="420" height="315"src="'+videoLink+'&autoplay=1">';
+				videoLink = "http://www.youtube.com/v/{ID}?autoplay=1".replace("{ID}",videoLink);
+				if(tcin){
+					videoLink += "&start="+parseFloat(tcin)/1000;
+				}
+				embedHtml = '<embed width="420" height="315"src="'+videoLink+'">';
+
 				container.html(embedHtml);
 			} else {
 				// OTHER - AMALIA
