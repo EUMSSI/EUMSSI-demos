@@ -4,15 +4,35 @@
 
 		init: function() {
 			this.$target = $(this.target);
+			this.$tabs = $(this.target).parents(".tabs-container");
 			this.apiURL = "http://eumssi.cloudapp.net/EumssiEventExplorer/webresources/API/";
 			this.wordNumber = 50;
 		},
 
 		afterRequest: function () {
-			this.getGraph();
+			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
+
+			if(this.$tabs.tabs( "option", "active") === tabPosition) {
+				this._getGraph();
+			} else {
+				this.$tabs.off("tabsactivate.wordgraphwidget");
+				this.$tabs.on("tabsactivate.wordgraphwidget", this._tabChange.bind(this) );
+			}
 		},
 
-		getGraph: function(filterWord){
+		/**
+		 * Check if the current open tab is this widget tab and then load the widget
+		 * @private
+		 */
+		_tabChange: function(){
+			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
+			if(this.$tabs.tabs( "option", "active") === tabPosition) {
+				this.$tabs.off("tabsactivate.wordgraphwidget");
+				this._getGraph();
+			}
+		},
+
+		_getGraph: function(filterWord){
 			var q = "";
 			if(filterWord){
 				q = ""+filterWord;
