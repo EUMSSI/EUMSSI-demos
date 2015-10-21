@@ -467,3 +467,13 @@ UTIL.openTweet = function(tweetId){
 		resizable: false
 	});
 };
+
+UTIL.serializeCurrentState = function(){
+	return {
+		filters : EUMSSI.FilterManager._filters,
+		lastq : EUMSSI.Manager.getLastQuery(),
+		lastfq : EUMSSI.Manager.getLastFilterQuery(),
+		currentTab : $(".tabs-container").tabs("option", "active"),
+		widgets : []
+	};
+};

@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8">
     <title>EUMSSI</title>
-    <link rel="icon"
-          type="image/png"
-          href="images/favicon-2.png" />
+    <link rel="icon" type="image/png" href="images/favicon-2.png" />
+
+    <!--POLYFILLS-->
+    <script type="text/javascript" src="lib/webcomponentsjs-0.7.15/HTMLImports.min.js"></script>
 
     <link rel="stylesheet" href="css/eumssiSolr.css">
     <!--ONLINE APIs-->
@@ -75,6 +76,14 @@
     <script src="js/widgets/VideoPlayerWidget.js"></script>
     <script src="js/widgets/FilterViewerWidget.js"></script>
 
+    <!-- TEMPLATES -->
+    <script>
+        function onImport() {
+            $('#templates-container').append($(document.querySelector('link[rel="import"]').import).find("script"));
+        }
+    </script>
+    <link rel="import" href="templates/templates.html" onload="onImport(event)" >
+
 </head>
 <body>
 
@@ -91,8 +100,9 @@
     <div class="ui-section-mainlayout" style="display:none">
         <div class="header-panel ui-layout-north">
             <!--## HEADER PANEL ##-->
-            <img class="logo" src="images/eumssi-logo.png" alt="Logo">
             <h1>EUMSSI Project - Demonstration</h1>
+            <img class="logo" src="images/eumssi-logo.png" alt="Logo">
+            <button class="btn-do-feedback" title="Send Feedback Message">Feedback</button>
             <!--####-->
         </div>
 
@@ -244,6 +254,8 @@
 
         <div class="footer-panel ui-layout-south"></div>
     </div>
+
+    <div id="templates-container" style="display:none;"></div>
 
 </body>
 </html>

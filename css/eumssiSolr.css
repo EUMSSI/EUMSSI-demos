@@ -119,6 +119,34 @@ li {
   list-style-type: none;
   margin-top: 0.2em;
 }
+form {
+  padding: 10px;
+}
+form p {
+  width: auto;
+  position: relative;
+  margin-bottom: 1em;
+}
+form p > label {
+  width: calc(30% - 0.5em);
+  float: left;
+  text-align: right;
+  margin-right: 0.5em;
+  padding-top: 0.4em;
+}
+form p > input,
+form p > textarea,
+form p > select {
+  font-size: 1.2em !important;
+  width: calc(70% - 1em);
+  padding: 0.2em;
+}
+form p > select {
+  width: auto;
+}
+form.feedback-form {
+  width: 600px;
+}
 .click-menu.ui-menu {
   position: absolute;
   width: auto;
@@ -212,6 +240,7 @@ body,
   padding: 20px 0 5px 10px;
   font-size: 20px;
   color: #1b2c33;
+  float: left;
 }
 .header-panel h2 {
   padding-left: 10px;
@@ -219,8 +248,27 @@ body,
   font-size: 14px;
   font-weight: 100;
 }
+.header-panel .btn-do-feedback {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  height: 26px;
+  border: none;
+  width: 100px;
+  font-size: larger;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 1px 1px;
+  opacity: 0.5;
+}
+.header-panel .btn-do-feedback:hover {
+  opacity: 1;
+  background-color: #97b8f5;
+  transition: all 200ms ease-in;
+}
 img.logo {
   float: right;
+  margin-right: 70px;
 }
 /*************************** Center (Result) ***************************/
 .result-panel-content {
@@ -358,8 +406,7 @@ img.logo {
   margin-top: 15px;
   padding: 10px;
   border-radius: 5px;
-  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.75);
-  border: 1px solid black;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.75);
   background-image: url("../images/element-back-news.png");
   background-repeat: no-repeat;
   background-position: right top;
@@ -677,4 +724,11 @@ body .ui-widget-header {
 }
 body .ui-widget-content a {
   color: #6998f0;
+}
+body .ui-dialog.ui-widget {
+  border: none;
+  box-shadow: 1px 1px 4px black;
+}
+body .ui-dialog.ui-widget .ui-dialog-title {
+  font-size: large;
 }

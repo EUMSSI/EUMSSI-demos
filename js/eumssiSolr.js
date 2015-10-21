@@ -79,7 +79,7 @@ window.EUMSSI = {
 			preload: [
 				// Place here the infor to create TextWidgets Automatically
 				//{key:"meta.source.text",label:"Content Search", showInResultCheck: false},
-				{key:"meta.extracted.audio_transcript",label:"Audio Transcript", showInResultCheck: true},
+				{key:"meta.extracted.audio_transcript",label:"Audio Transcript", showInResultCheck: false},
 				{key:"meta.extracted.video_ocr.best",label:"OCR", showInResultCheck: true},
 				{key:"meta.extracted.text.dbpedia.PERSON",label:"Person", showInResultCheck: true},
 				{key:"meta.extracted.text.dbpedia.LOCATION",label:"Location", showInResultCheck: true}
@@ -293,6 +293,46 @@ window.EUMSSI = {
 			window.mouse_x = e.pageX;
 			window.mouse_y = e.pageY;
 		});
+
+		//</editor-fold>
+
+		//<editor-fold desc="FEEDBACK">
+
+		function sendFeedback(event){
+			var $form = $(this).find("form");
+			var formData = {
+				user : $form.find(".user").val(),
+				//email : $form.find(".email").val(),
+				type : $form.find(".type").val(),
+				comment : $form.find(".comment").val(),
+				state : UTIL.serializeCurrentState()
+			};
+
+			$.ajax({
+				url: 'http://eumssi.cloudapp.net/EumssiApi/webapp/feedback/report?' + $.param(formData),
+				success: function(response){
+					$(this).dialog("destroy").remove();
+				}.bind(this)
+			});
+
+		}
+
+		//Open feedback dialog
+		$("button.btn-do-feedback").click(function(){
+			var $dialogContent = $($("#feedback-dialog-tpl").html());
+			var dialog = $dialogContent.dialog({
+				title: "Post Feedback",
+				modal: true,
+				width: 'auto',
+				buttons: {
+					"Submit": sendFeedback,
+					Cancel: function() {
+						dialog.dialog( "close" );
+					}
+				}
+			});
+		});
+
 
 		//</editor-fold>
 
