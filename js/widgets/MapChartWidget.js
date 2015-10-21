@@ -53,6 +53,7 @@
 
 			//Region Selector
 			this.$target.find(".mapChart-region-selector").selectmenu({
+				width: 170,
 				select: function( event, data ) {
 					this._chartOptions.region = data.item.value;
 					this._refreshChartData();
