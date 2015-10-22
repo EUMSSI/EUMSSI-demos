@@ -10,11 +10,12 @@
 			this.rowsNumber = 100;
 
 			//Bind events click
-
+			//Avoid timeline go to 404 page when click on a tag on it.
+			$("#my-wikievent").click(".slider-item a",this._onDescriptionLinkClick.bind(this));
 		},
 
 		/** adding libs for timeline
-		 */
+		*/
 		beforeRequest: function () {
 			//donothing
 		},
@@ -110,7 +111,9 @@
 				embed_id: 'my-wikievent'
 			});
 
-			$("#my-wikievent .slider-container .slider-item .container a").click(this._onDescriptionLinkClick.bind(this));
+			//_.delay(function(){
+			//
+			//}.bind(this),1000);
 		},
 
 		_renderEvent: function(event){
@@ -159,19 +162,18 @@
 
 		_onLocationClick: function(locationId){
 			this._onStoryListLinkClick(locationId);
-			//this.getWikipediaEvents("getWikipediaEventsByStory/json/"+eventLink);
 		},
 
 		_onCategoryClick: function(categoryId){
 			this._onStoryListLinkClick(categoryId);
-			//this.getWikipediaEvents("getWikipediaEventsByStory/json/"+eventLink);
 		},
 
 		_onDescriptionLinkClick: function(event){
-			event.preventDefault();
-			var linkRef = $(event.target).attr("href");
-			this._onStoryListLinkClick(linkRef);
-			//this.getWikipediaEvents("getWikipediaEventsByStory/json/"+eventLink);
+			if(event.target.tagName == "A"){
+				event.preventDefault();
+				var linkRef = $(event.target).attr("href");
+				this._onStoryListLinkClick(linkRef);
+			}
 		},
 
 		/**
