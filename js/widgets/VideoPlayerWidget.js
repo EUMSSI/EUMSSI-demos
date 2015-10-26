@@ -12,19 +12,7 @@
 		start:0,	//Reset the pagination with doRequest on this Widget
 
 		init: function(){
-			this.$player = $("<div class='video-dialog-content'>");
-			this.dialog = this.$player.dialog({
-				autoOpen: false,
-				resizable: false,
-				dialogClass: "video-dialog",
-				close: function( event, ui ){
-					//Remove de content player when close
-					$(this).empty();
-				}
-			});
-
 			this._initAmaliaJSONLoader();
-
 			/**
 			 * @event videoPlayer:loadVideo
 			 * @property {String} videoLink - Link to the video
@@ -41,30 +29,40 @@
 			return true;
 		},
 
+		_initDialogConfiguration: function(){
+			this.dialog = $($("#player-dialog-tpl").html()).dialog({
+				autoOpen: false,
+				resizable: false,
+				dialogClass: "video-dialog",
+				close: function( event, ui ){
+					//Remove de content player when close
+					this.$player.empty();
+				}.bind(this)
+			});
+			this.$player = this.dialog.find(".player-placeholder");
+			// Dialog Buttons Actions
+			this.dialog.find(".player-minimize").on("click", this._minimizePlayer.bind(this));
+			this.dialog.find(".player-maximize").on("click", this._maximizePlayer.bind(this));
+		},
+
 		/**
-		 * Loads a Video Player on the right panel
+		 * Loads a Video Player
 		 * @param {String} videoLink - Link to the video or URL of youtube video
 		 * @param {Object} doc - the document data
 		 * @private
 		 * @listens videoPlayer:loadVideo
 		 */
 		_openVideoPlayer: function(event, videoLink, doc, tcin, tcout){
-			var container;
+			if(!this.dialog){
+				this._initDialogConfiguration();
+			}
 			var isYoutube = !!doc['meta.source.youtubeVideoID'];
-
-			//if(EUMSSI.contentLayout.east.state.isClosed){
-			//	EUMSSI.contentLayout.open("east");
-			//}
-			//container = EUMSSI.contentLayout.east.pane.find(".panel-content");
-			//container.empty();
-
-			container = this.$player;
-			container.empty();
+			this.$player.empty();
 
 			if(isYoutube){
-				this._loadYoutubePlayer(container, videoLink, tcin);
+				this._loadYoutubePlayer(this.$player, videoLink, tcin);
 			} else {
-				this._loadAmaliaPlayer(container, videoLink, doc, tcin);
+				this._loadAmaliaPlayer(this.$player, videoLink, doc, tcin);
 			}
 
 			//Set dialog Title
@@ -78,10 +76,8 @@
 				this.dialog.parents(".ui-dialog").removeClass("plugin-on");
 			}
 
-			//Video Link
-			var $a = $('<a>').attr("target","_blank").attr("href",videoLink).text("Video Link");
-			container.append("<br>");
-			container.append($("<p style='margin: 5px;'>").html($a));
+			// Update Video Link
+			this.dialog.find("a.video-link").attr("href",videoLink);
 		},
 
 		_loadYoutubePlayer: function($container, videoLink, tcin){
@@ -135,6 +131,16 @@
 			if(tcin){
 				amaliaPlayer.seek(parseFloat(tcin)/1000);
 			}
+		},
+
+		_minimizePlayer: function(){
+			this.dialog.parents(".ui-dialog").addClass("minimized-player");
+			this.dialog.dialog( "option", "position", { my: "right bottom", at: "right bottom", of: window } );
+		},
+
+		_maximizePlayer: function(){
+			this.dialog.parents(".ui-dialog").removeClass("minimized-player");
+			this.dialog.dialog( "option", "position", { my: "center", at: "center", of: window } );
 		},
 
 		/**

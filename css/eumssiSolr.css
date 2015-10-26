@@ -739,6 +739,62 @@ span.more {
   overflow: visible;
 }
 /************************ VIDEO PLAYER WIDGET **************************/
+.player-minimize {
+  background-image: url("../images/arrow-player-mini.png");
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.player-maximize {
+  display: none;
+  background-image: url("../images/arrow-player-max.png");
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 5px;
+  cursor: pointer;
+  opacity: 0.2;
+}
+.player-maximize:hover {
+  opacity: 1;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player {
+  width: 320px !important;
+  height: 240px !important;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .ui-dialog-titlebar {
+  display: none;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .player-minimize {
+  display: none;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .player-maximize {
+  display: block;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .youtube-placeholder {
+  padding: 0;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .youtube-placeholder embed {
+  width: 320px;
+  height: 240px;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .amalia-placeholder .amalia-player-placeholder {
+  width: 320px;
+  height: 240px;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .amalia-placeholder .amalia-player-row {
+  padding: 0;
+}
 body .ui-dialog.video-dialog.ui-widget {
   background: #333333;
   overflow: visible;
