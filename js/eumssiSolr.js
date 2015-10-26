@@ -43,6 +43,11 @@ window.EUMSSI = {
 			target: '#my-wordcloud'
 		}));
 
+		//EUMSSI.Manager.addWidget(new AjaxSolr.TwitterPolarityWidget({
+		//	id: 'twitterPolarity',
+		//	target: '.polarity-placeholder'
+		//}));
+
 		EUMSSI.Manager.addWidget(new AjaxSolr.WordGraphWidget({
 			id: 'my-wordgraph',
 			target: '#my-wordgraph'
@@ -232,27 +237,20 @@ window.EUMSSI = {
 					slidable: true,
 					togglerClass: "ui-layout-toggler-none",
 					sliderTip: "Advanced Filter"
-				},
-				east: {
-					size: 420,
-					initClosed: true,
-					resizable: false,
-					closable: true,
-					slidable: true,
-					togglerClass: "ui-layout-toggler-none",
-					sliderTip: "Auxiliar Widgets"
-
-					// pseudoClose Option Syntax
-					//onclose: $.layout.callbacks.pseudoClose
-
-					// assign the 'slideOffscreen' effect to any pane(s) you wish
-					//fxName:   "slideOffscreen",
-					//fxSpeed:  500 // optional
 				}
+				//east: {
+				//	size: 420,
+				//	initClosed: true,
+				//	resizable: false,
+				//	closable: true,
+				//	slidable: true,
+				//	togglerClass: "ui-layout-toggler-none",
+				//	sliderTip: "Auxiliar Widgets"
+				//}
 			});
 
 			EUMSSI.contentLayout.addPinBtn(".button-pin-west", "west");
-			EUMSSI.contentLayout.addPinBtn(".button-pin-east", "east");
+			//EUMSSI.contentLayout.addPinBtn(".button-pin-east", "east");
 			/***************** </JQUERY.LAYOUT> *******************/
 		}
 
