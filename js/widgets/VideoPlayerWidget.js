@@ -1,4 +1,4 @@
-/*global jQuery, $, _, AjaxSolr, EUMSSI*/
+/*global jQuery, $, _, AjaxSolr, EUMSSI, fr*/
 (function ($) {
 
 	/**
@@ -11,11 +11,20 @@
 
 		start:0,	//Reset the pagination with doRequest on this Widget
 
-		_options : {
-
-		},
-
 		init: function(){
+			this.$player = $("<div class='video-dialog-content'>");
+			this.dialog = this.$player.dialog({
+				autoOpen: false,
+				resizable: false,
+				dialogClass: "video-dialog",
+				close: function( event, ui ){
+					//Remove de content player when close
+					$(this).empty();
+				}
+			});
+
+			this._initAmaliaJSONLoader();
+
 			/**
 			 * @event videoPlayer:loadVideo
 			 * @property {String} videoLink - Link to the video
@@ -40,73 +49,138 @@
 		 * @listens videoPlayer:loadVideo
 		 */
 		_openVideoPlayer: function(event, videoLink, doc, tcin, tcout){
-			var container, embedHtml;
+			var container;
 			var isYoutube = !!doc['meta.source.youtubeVideoID'];
-			var amaliaData = !!doc['meta.extracted.video_persons.amalia'];
-			if(EUMSSI.contentLayout.east.state.isClosed){
-				EUMSSI.contentLayout.open("east");
-			}
 
-			container = EUMSSI.contentLayout.east.pane.find(".panel-content");
+			//if(EUMSSI.contentLayout.east.state.isClosed){
+			//	EUMSSI.contentLayout.open("east");
+			//}
+			//container = EUMSSI.contentLayout.east.pane.find(".panel-content");
+			//container.empty();
+
+			container = this.$player;
 			container.empty();
 
 			if(isYoutube){
-				// YOUTUBE
-				videoLink = "http://www.youtube.com/v/{ID}?autoplay=1".replace("{ID}",videoLink);
-				if(tcin){
-					videoLink += "&start="+parseFloat(tcin)/1000;
-				}
-				embedHtml = '<embed width="420" height="315"src="'+videoLink+'">';
-
-				container.html(embedHtml);
+				this._loadYoutubePlayer(container, videoLink, tcin);
 			} else {
-				// OTHER - AMALIA
-				//embedHtml = '<video width="420" height="315"src="'+videoLink+'" controls></video>';
-				//New container
-				var $amaliacontainer = $('<div class="amalia-placeholder">');
-				var $amaliaTextSync = $('<div id="myplayer-tsync-tsync">');
-				container.html($('<div style="width:420px; height:315px;">').append($amaliacontainer));
-				container.append($('<div style="width:420px; height:315px;">').append($amaliaTextSync));
-
-				var amaliaConfig = {
-					autoplay: true,
-					src: videoLink
-				};
-
-				if(amaliaData){
-					_.extend(amaliaConfig, {
-						plugins: {
-							dataServices: [
-								"http://www.json-generator.com/api/json/get/ccUAvUYXjC"
-								//{"localisation":[{"tcout":"00:04:32.6000","tclevel":0,"type":"text","tcin":"00:00:00.0000","sublocalisations":{"localisation":[{"tcout":"00:00:32.2000","tclevel":1,"data":{"text":["Gerald_Czajka"]},"thumb":"http://eumssi.cloudapp.net/images/16489336-2585-15cd-27a0-9c68d49943ad/face_thumbnails/Gerald_Czajka.jpg","tcin":"00:00:30.6799"},{"tcout":"00:00:33.8800","tclevel":1,"data":{"text":["Gerald_Czajka"]},"thumb":"http://eumssi.cloudapp.net/images/16489336-2585-15cd-27a0-9c68d49943ad/face_thumbnails/Gerald_Czajka.jpg","tcin":"00:00:32.6000"},{"tcout":"00:00:48.9600","tclevel":1,"data":{"text":["Gerald_Czajka"]},"thumb":"http://eumssi.cloudapp.net/images/16489336-2585-15cd-27a0-9c68d49943ad/face_thumbnails/Gerald_Czajka.jpg","tcin":"00:00:39.5200"},{"tcout":"00:03:10.5999","tclevel":1,"data":{"text":["Gerald_Czajka"]},"thumb":"http://eumssi.cloudapp.net/images/16489336-2585-15cd-27a0-9c68d49943ad/face_thumbnails/Gerald_Czajka.jpg","tcin":"00:03:06.6800"},{"tcout":"00:03:29.0399","tclevel":1,"data":{"text":["Gerald_Czajka"]},"thumb":"http://eumssi.cloudapp.net/images/16489336-2585-15cd-27a0-9c68d49943ad/face_thumbnails/Gerald_Czajka.jpg","tcin":"00:03:16.4799"},{"tcout":"00:04:32.6000","tclevel":1,"data":{"text":["Gerald_Czajka"]},"thumb":"http://eumssi.cloudapp.net/images/16489336-2585-15cd-27a0-9c68d49943ad/face_thumbnails/Gerald_Czajka.jpg","tcin":"00:04:12.5999"}]}}],"type":"segment","id":"speaker_labellabel_shot"}
-							],
-							list: [{
-								'className': 'fr.ina.amalia.player.plugins.TextSyncPlugin',
-								'container': '#myplayer-tsync-tsync',
-								'parameters': {
-									metadataId: 'speaker_labellabel_shot',
-									title: 'My title',
-									description: 'A description I may have to put here',
-									level: 1,
-									displayLevel: 1,
-									scrollAuto: true
-								}
-							}]
-						}
-					});
-				}
-				$amaliacontainer.mediaPlayer(amaliaConfig);
-				var amaliaPlayer = $amaliacontainer.data("fr.ina.amalia.player").player;
-
-				// When want to Start the video with custom init time
-				if(tcin){
-					amaliaPlayer.seek(parseFloat(tcin)/1000);
-				}
+				this._loadAmaliaPlayer(container, videoLink, doc, tcin);
 			}
 
+			//Set dialog Title
+			this.dialog.dialog("option", "title", doc["meta.source.headline"]);
+			this.dialog.dialog("open");
+
+			//Class for dialog width
+			if(this.dialog.find(".amalia-plugin-tsync-placeholder:visible").length > 0){
+				this.dialog.parents(".ui-dialog").addClass("plugin-on");
+			} else {
+				this.dialog.parents(".ui-dialog").removeClass("plugin-on");
+			}
+
+			//Video Link
 			var $a = $('<a>').attr("target","_blank").attr("href",videoLink).text("Video Link");
 			container.append("<br>");
 			container.append($("<p style='margin: 5px;'>").html($a));
+		},
+
+		_loadYoutubePlayer: function($container, videoLink, tcin){
+			var embedHtml;
+			videoLink = "http://www.youtube.com/v/{ID}?autoplay=1".replace("{ID}",videoLink);
+			if(tcin){
+				videoLink += "&start="+parseFloat(tcin)/1000;
+			}
+			embedHtml = '<div class="youtube-placeholder"><embed width="520" height="320" src="'+videoLink+'"></div>';
+
+			$container.html(embedHtml);
+		},
+
+		_loadAmaliaPlayer: function($container, videoLink, doc, tcin){
+			$container.html($("#amalia-placeholder-tpl").html());
+			var $amaliacontainer = $container.find(".amalia-player");
+			var amaliaConfig = {
+				autoplay: true,
+				src: videoLink
+			};
+
+			if(!!doc['meta.extracted.video_persons.amalia']){
+				_.extend(amaliaConfig, {
+					plugins: {
+						dataServices: [{
+							//Custom Loader
+							protocol : "fr.ina.amalia.player.JSONLoader",
+							parameters: JSON.parse(doc['meta.extracted.video_persons.amalia'].replace(/'/g,"\""))
+						}],
+						list: [{
+							'className': 'fr.ina.amalia.player.plugins.TextSyncPlugin',
+							'container': '#myplayer-tsync-tsync',
+							'parameters': {
+								metadataId: 'video_persons', // 'speaker_labellabel_shot'
+								//title: 'My title',
+								//description: 'A description I may have to put here',
+								level: 1,
+								displayLevel: 1,
+								scrollAuto: true
+							}
+						}]
+					}
+				});
+				$container.find(".amalia-plugin-tsync-placeholder").show();
+			}
+
+			$amaliacontainer.mediaPlayer(amaliaConfig);
+			var amaliaPlayer = $amaliacontainer.data("fr.ina.amalia.player").player;
+
+			// When want to Start the video with custom init time
+			if(tcin){
+				amaliaPlayer.seek(parseFloat(tcin)/1000);
+			}
+		},
+
+		/**
+		 * Custom Loader for Amalia Player
+		 * Accepts direct JSON object
+		 *
+		 *  dataServices: [{
+		 *		//Custom Loader
+		 *		protocol : "fr.ina.amalia.player.JSONLoader",
+		 *		parameters: JSON.parse(doc['meta.extracted.video_persons.amalia'].replace(/'/g,"\""))
+		 *	}],
+		 * @private
+		 */
+		_initAmaliaJSONLoader: function(){
+			if(fr && fr.ina.amalia.player.BaseLoader){
+				fr.ina.amalia.player.BaseLoader.extend("fr.ina.amalia.player.JSONLoader", {}, {
+					requestType: "GET",
+					dataType: "json",
+					sendData: {},
+					timeout: 12e4,
+					init: function(a, b, c, d){
+						this._super(a, b, c, d);
+						this.waitLoadEvent = true;
+					},
+					initialize: function(){
+						this._super();
+						this.load(this.settings);
+					},
+					load: function(a){
+						_.delay( function(){
+							this.onSuccess(a.parameters, "success");
+						}.bind(this),500);
+					},
+					onSuccess: function(a, b){
+						this._super(a, b);
+						this.data = null;
+						if(this.parser){
+							this.data = this.parser.processParserData(a);
+							this.player.addAllMetadata(this.data);
+						}
+						if("function" == typeof this.completeHandler) {
+							this.completeHandler(this.handlerData, b);
+						}
+					}
+				});
+			}
 		}
 
 	});

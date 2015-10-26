@@ -36,11 +36,11 @@
     <link rel="stylesheet" href="lib/jquery/jquery-ui.min.css">
 
     <!-- amalia.js -->
-    <script src="lib/amalia.js-1.3.0/components/raphael/raphael.js"></script>
-    <script src="lib/amalia.js-1.3.0/js/amalia.js.min.js"></script>
-    <link rel="stylesheet" href="lib/amalia.js-1.3.0/css/amalia.js.min.css">
-    <script type="text/javascript" src="lib/amalia.js-1.3.0/js/i18n/amalia.js-message-en.js"></script>
-    <script type="text/javascript" src="lib/amalia.js-1.3.0/js/amalia.js-plugin-text-sync.min.js"></script>
+    <script src="lib/amalia.js-1.3.1/components/raphael/raphael.js"></script>
+    <script src="lib/amalia.js-1.3.1/js/amalia.js.min.js"></script>
+    <link rel="stylesheet" href="lib/amalia.js-1.3.1/css/amalia.js.min.css">
+    <script type="text/javascript" src="lib/amalia.js-1.3.1/js/i18n/amalia.js-message-en.js"></script>
+    <script type="text/javascript" src="lib/amalia.js-1.3.1/js/amalia.js-plugin-text-sync.min.js"></script>
 
     <script src="js/Utils.js"></script>
     <script src="js/EventManager.js"></script>
@@ -66,6 +66,7 @@
 
     <script src="js/widgets/WordCloudWidget.js"></script>
     <script src="js/widgets/WordGraphWidget.js"></script>
+    <!--<script src="js/widgets/TwitterPolarityWidget.js"></script>-->
 
     <script src="js/widgets/SelectLocaleWidget.js"></script>
     <script src="js/widgets/SelectVideoQualityWidget.js"></script>
@@ -154,6 +155,7 @@
                             <li><a href="#wordcloudtab">Word Cloud</a></li>
                             <li><a href="#wordgraphtab">Word Graph</a></li>
                             <li><a href="#wikieventtab">Wikipedia Event</a></li>
+                            <!--<li><a href="#twitterpolarity">Polarity</a></li>-->
                         </ul>
                         <div id="fragment-1" data-tabpos="0">
                             <div class="tab-content">
@@ -173,7 +175,7 @@
                             </div>
                         </div>
                         <div id="fragment-2" data-tabpos="1">
-                            <div class="tab-content mapChart">
+                            <div class="tab-content expanded mapChart">
                                 <!--## TAB 2 MAP CHART CONTENT ##-->
                                 <div class='mapChart-placeholder'>
                                     <div class='mapChart-toolbar ui-widget-header ui-corner-all'>
@@ -234,6 +236,12 @@
                                 <div class="wikievent-placeholder"></div>
                             </div>
                         </div>
+
+                        <!--<div id="twitterpolarity" data-tabpos="7">-->
+                            <!--<div class="tab-content expanded polarity">-->
+                                <!--<div class="polarity-placeholder"></div>-->
+                            <!--</div>-->
+                        <!--</div>-->
 
 
                     </div>
