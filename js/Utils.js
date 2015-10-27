@@ -5,6 +5,7 @@ window.UTIL = {};
 CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text.dbpedia.Country";
 CONF.MAP_CITIES_FIELD_NAME = "meta.extracted.text.dbpedia.City";
 CONF.PERSON_FIELD_NAME = "meta.extracted.text.dbpedia.PERSON";
+CONF.CLOUD_FIELD_NAME = "meta.source.keywords";
 
 
 // Country Code ISO-3166-2
