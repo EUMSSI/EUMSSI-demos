@@ -43,6 +43,11 @@ window.EUMSSI = {
 			target: '#my-wordcloud'
 		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.GenericWordCloudWidget({
+			id: 'my-genericwordcloud',
+			target: '#my-genericwordcloud'
+		}));
+
 		//EUMSSI.Manager.addWidget(new AjaxSolr.TwitterPolarityWidget({
 		//	id: 'twitterPolarity',
 		//	target: '.polarity-placeholder'
@@ -146,7 +151,8 @@ window.EUMSSI = {
 				'source',
 				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME,
 				EUMSSI.CONF.MAP_CITIES_FIELD_NAME,
-				EUMSSI.CONF.PERSON_FIELD_NAME
+				EUMSSI.CONF.PERSON_FIELD_NAME,
+				EUMSSI.CONF.CLOUD_FIELD_NAME
 			],
 
 			//'facet.limit': 20,	// Tagclud Size
@@ -166,6 +172,7 @@ window.EUMSSI = {
 		params['f.' + EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
 		params['f.' + EUMSSI.CONF.MAP_CITIES_FIELD_NAME + '.facet.limit'] = 25;
 		params['f.' + EUMSSI.CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
+		params['f.' + EUMSSI.CONF.CLOUD_FIELD_NAME + '.facet.limit'] = 100;
 
 		for (var name in params) {
 			EUMSSI.Manager.store.addByValue(name, params[name]);

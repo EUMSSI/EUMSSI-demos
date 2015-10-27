@@ -63,6 +63,9 @@
 .wordcloud text {
   cursor: pointer;
 }
+.genericwordcloud text {
+  cursor: pointer;
+}
 .wordgraph .link {
   fill: none;
   stroke: #cccccc;
