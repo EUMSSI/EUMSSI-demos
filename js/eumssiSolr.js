@@ -147,36 +147,13 @@ window.EUMSSI = {
 		//Faceting Parametres
 		var params = {
 			'facet': true,
-			'facet.field': [
-				'source',
-				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME,
-				EUMSSI.CONF.MAP_CITIES_FIELD_NAME,
-				EUMSSI.CONF.PERSON_FIELD_NAME,
-				EUMSSI.CONF.CLOUD_FIELD_NAME
-			],
-
-			//'facet.limit': 20,	// Tagclud Size
 			'facet.mincount': 1,	// Min count to appear
-
-			'f.source.facet.limit': 20,
-			//'f.meta.extracted.text.dbpedia.PERSON.facet.limit' : 50,
-			//'f.meta.extracted.text.ner.LOCATION.facet.prefix': 'LOCATION',
-
-			//'facet.date': 'date',
-			//'facet.date.start': '1987-02-26T00:00:00.000Z/DAY',
-			//'facet.date.end': '1987-10-20T00:00:00.000Z/DAY+1DAY',
-			//'facet.date.gap': '+1DAY',
 			'json.nl': 'map'
-			//'timeAllowed': 100		// Tiempo límite para la consulta (ms)
 		};
-		params['f.' + EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
-		params['f.' + EUMSSI.CONF.MAP_CITIES_FIELD_NAME + '.facet.limit'] = 25;
-		params['f.' + EUMSSI.CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
-		params['f.' + EUMSSI.CONF.CLOUD_FIELD_NAME + '.facet.limit'] = 100;
-
 		for (var name in params) {
 			EUMSSI.Manager.store.addByValue(name, params[name]);
 		}
+		EUMSSI.CONF.updateFacetingFields();
 
 		//Perform an initial Search
 		//EUMSSI.Manager.doRequest();

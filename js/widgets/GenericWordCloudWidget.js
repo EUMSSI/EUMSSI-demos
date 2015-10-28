@@ -8,6 +8,16 @@
 			this.wordNumber = 100;
 			this.maxCount = 1;
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
+
+			//Key Selector
+			this.$target.parent().find(".genericwordcloud-key-selector").selectmenu({
+				width: 200,
+				select: function( event, data ) {
+					if(this.field != data.item.value){
+						this._onSelectKey(data.item.value);
+					}
+				}.bind(this)
+			});
 		},
 
 		afterRequest: function () {
@@ -113,6 +123,21 @@
 			//this.clearFilter(true);
 			this.setFilter(d.text);
 
+			EUMSSI.Manager.doRequest(0);
+		},
+
+		/**
+		 * Change the value to the Global and local parameter.
+		 * Update the Facet fields to retrieve the new one.
+		 * Clear the filter and do a new request.
+		 * @param {string} keyValue - the selected option value
+		 * @private
+		 */
+		_onSelectKey: function(keyValue){
+			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME = keyValue;
+			//this.field = keyValue;
+			EUMSSI.CONF.updateFacetingFields();
+			this.clearFilter();
 			EUMSSI.Manager.doRequest(0);
 		},
 

@@ -440,6 +440,16 @@ img.logo {
 .links {
   cursor: pointer;
 }
+.content-toolbar {
+  margin-bottom: 5px;
+}
+.content-toolbar * {
+  display: inline-block;
+  vertical-align: middle;
+}
+.content-toolbar label {
+  margin-right: 0.5em;
+}
 /*************************** search-panel (LEFT Side) ***************************/
 .search-panel-content {
   overflow: hidden;
@@ -712,13 +722,6 @@ span.more {
   width: calc(100% - 20px);
 }
 /************************ MAP GEOCHART WIDGET **************************/
-.tab-content.mapChart .mapChart-toolbar {
-  margin-bottom: 5px;
-}
-.tab-content.mapChart .mapChart-toolbar * {
-  display: inline-block;
-  vertical-align: middle;
-}
 .tab-content.mapChart .mapChart-placeholder {
   position: relative;
   width: 100%;

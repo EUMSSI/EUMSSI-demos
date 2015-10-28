@@ -6,6 +6,247 @@ CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text.dbpedia.Country";
 CONF.MAP_CITIES_FIELD_NAME = "meta.extracted.text.dbpedia.City";
 CONF.PERSON_FIELD_NAME = "meta.extracted.text.dbpedia.PERSON";
 CONF.CLOUD_FIELD_NAME = "meta.source.keywords";
+CONF.SOURCE_FIELD_NAME = "source";
+
+/**
+ * Update the facet.field items with the current value of the Fields Names
+ */
+CONF.updateFacetingFields = function(){
+	// Clean previous facet configuration
+	EUMSSI.Manager.store.remove('facet.field');
+
+	var params = {
+		'facet.field': [
+			CONF.SOURCE_FIELD_NAME,
+			CONF.MAP_LOCATION_FIELD_NAME,
+			CONF.MAP_CITIES_FIELD_NAME,
+			CONF.PERSON_FIELD_NAME,
+			CONF.CLOUD_FIELD_NAME
+		]
+	};
+	params['f.' + CONF.SOURCE_FIELD_NAME + '.facet.limit'] = 20;
+	params['f.' + CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
+	params['f.' + CONF.MAP_CITIES_FIELD_NAME + '.facet.limit'] = 25;
+	params['f.' + CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
+	params['f.' + CONF.CLOUD_FIELD_NAME + '.facet.limit'] = 100;
+
+	for (var name in params) {
+		EUMSSI.Manager.store.addByValue(name, params[name]);
+	}
+};
+
+/**
+ * !!! CORS PROBLEM
+ * Check if an url exist, used to check if video links are online or not
+ * @param {String} url - link
+ * @param {Function} callback - this function will be called with (true:exist/false:broken link) as param when the request is DONE
+ */
+UTIL.checkUrlExists = function(url, callback){
+	var http = new XMLHttpRequest();
+	http.open('HEAD', url);
+	http.onreadystatechange = function() {
+		if (this.readyState == this.DONE) {
+			callback(this.status != 404);
+		}
+	};
+	http.send();
+};
+
+/**
+ * Create a jQuery menu with the passed structure in the $menu jquery selector.
+ * The menu is placed on the mouse and disappear when click or take of the mouse from it.
+ * @param {JQuery} $menu - jquery element that contains the list with the menu items $(<ul>)
+ * @returns {JQuery}
+ */
+UTIL.showContextMenu = function($menu){
+	var timeoutFunction;
+	if($menu){
+		$menu.addClass("click-menu");
+		$("body").append($menu);
+		$menu.menu({
+			position: { my: "left top", at: "left+"+window.mouse_x + " top+" + window.mouse_y, of:"window"}
+		});
+		$menu.css("left",window.mouse_x - 10);
+		$menu.css("top",window.mouse_y - 10);
+
+		function removeMenu(){
+			$menu.remove();
+		}
+		$menu.on("click",removeMenu);
+		$menu.on("mouseleave",function(){
+			timeoutFunction= setTimeout(removeMenu, 500);
+		});
+		$menu.on("mouseenter",function(){
+			clearTimeout(timeoutFunction);
+		});
+	}
+	return $menu;
+};
+
+/**
+ * Get images from the wikipedia
+ * example: "http://en.wikipedia.org/w/api.php?action=query&titles=Barack_Obama|Muhammad|John_Kerry&prop=pageimages&format=json&pithumbsize=150&pilimit=50"
+ * apache.conf proxy: ProxyPass /wikiBridge http://en.wikipedia.org/
+ * @param {Array<String>} facetes - Array with the Facet Names to look for on th wikipedia
+ * @private
+ */
+UTIL.getWikipediaImages = function(facetes){
+	if(facetes.length > 0){
+		var urlRoot = "http://en.wikipedia.org/w/api.php?",
+			urlParams = [];
+
+		urlParams.push("action=query");
+		urlParams.push("prop=pageimages");
+		urlParams.push("titles="+facetes.join("|"));
+		urlParams.push("format=json");
+		urlParams.push("pithumbsize=280");
+		urlParams.push("pilimit=50");
+
+		//this.manager._showLoader();
+		return $.ajax({
+			crossDomain: true,
+			cache: true,
+			dataType: 'jsonp',
+			url: urlRoot + urlParams.join("&")
+		});
+	}
+};
+
+/**
+ * When click on a photo display a menu to perform some actions.
+ * @param {String} facetName - name of the item
+ * @private
+ */
+UTIL.openPeopleActionsMenu = function(facetName){
+	var $menu = $('<ul>');
+	$menu.append('<div class="ui-widget-header">'+facetName.replace(/_/g,"&nbsp;")+'</div>');
+	if(EUMSSI.FilterManager.checkFilterByName(EUMSSI.CONF.PERSON_FIELD_NAME)){
+		$menu.append('<li class="filter"><span class="ui-icon ui-icon-plusthick"></span>Add person to filter</li>');
+		$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
+	} else {
+		$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by person</li>');
+	}
+	$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
+	$menu.append('<li class="open-dbpedia"><span class="ui-icon ui-icon-newwin"></span>Open DBpedia page</li>');
+
+	function addPersonFilter(facetName){
+		var fq = EUMSSI.CONF.PERSON_FIELD_NAME + ':("' + facetName + '")';
+		EUMSSI.FilterManager.addFilter(EUMSSI.CONF.PERSON_FIELD_NAME, fq, this.id,"People: "+facetName.replace(/_/g, " "));
+		this.doRequest();
+	}
+	function cleanPersonFilter(){
+		EUMSSI.FilterManager.removeFilterByName(EUMSSI.CONF.PERSON_FIELD_NAME);
+		this.doRequest();
+	}
+
+	$menu.on("click", ".open-wikipedia", UTIL.openNewPage.bind(this, "http://wikipedia.org/wiki/"+facetName));
+	$menu.on("click", ".open-dbpedia", UTIL.openNewPage.bind(this, "http://dbpedia.org/resource/"+facetName));
+	$menu.on("click", ".filter", addPersonFilter.bind(this,facetName));
+	$menu.on("click", ".filter-clear", cleanPersonFilter.bind(this));
+
+	EUMSSI.UTIL.showContextMenu($menu);
+};
+
+/**
+ * Open link on a new page
+ * @param {String} url - the link
+ */
+UTIL.openNewPage = function(url){
+	window.open(url,"_blank");
+};
+
+/**
+ * Splits with espaces the current camelCase string.
+ * Capitalize the first letter.
+ * ex:  "myVarIsAwesome".unCamelCase() -> "My Var Is Awesome"
+ * 		"myVxrIsWTF".unCamelCase() ->	"My Vxg Is WTF"
+ * @returns {string}
+ */
+String.prototype.unCamelCase = function(){
+	return this
+		// insert a space between lower & upper
+		.replace(/([a-z])([A-Z])/g, '$1 $2')
+		// space before last upper in a sequence followed by lower
+		.replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3')
+		// uppercase the first character
+		.replace(/^./, function(str){ return str.toUpperCase(); });
+};
+
+/**
+ * Check if the string starts with a string
+ * ex:
+ *	 "Twitter-DW".startsWith("Twitt") -> true
+ *	 "Tweet-DW".startsWith("Twitt") -> false
+ * @param {String} s - String to look for on the start
+ * @returns {boolean} true if the current String starts with the param 's' string
+ */
+String.prototype.startsWith = function(s){
+	if( s && this.length >= s.length ){
+		var a = this.slice(0, s.length);
+		return (a === s) ? true : false;
+	}
+	return false;
+};
+
+
+//LOAD TWITTER widgets API
+window.twttr = (function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0],
+		t = window.twttr || {};
+	if (d.getElementById(id)) return;
+	js = d.createElement(s);
+	js.id = id;
+	js.src = "https://platform.twitter.com/widgets.js";
+	fjs.parentNode.insertBefore(js, fjs);
+
+	t._e = [];
+	t.ready = function(f) {
+		t._e.push(f);
+	};
+
+	return t;
+}(document, "script", "twitter-wjs"));
+
+UTIL.openTweet = function(tweetId){
+	var $tooltipContent = $("<div>");
+	twttr.widgets.createTweet(tweetId, $tooltipContent[0],{
+		dnt: true
+	}).then(function (el) {
+		$tooltipContent.dialog("option", "position",{my: "center", at: "center", of: window});
+		if(el !== undefined){
+			var $card = $(el.contentDocument).find(".Tweet-card [data-scribe='component:card']");
+			if($card.length > 0){
+				var interval = setInterval(function(){
+					if($card.hasClass("is-ready")){
+						$tooltipContent.dialog("option", "position",{my: "center", at: "center", of: window});
+						clearInterval(interval);
+					}
+				},500)
+			}
+		} else {
+			var $error = $("<h3 class='ui-state-error-text'>")
+				.text("The tweet can't be loaded.");
+			$tooltipContent.append($error);
+		}
+	});
+	$tooltipContent.dialog({
+		width: 500,
+		maxHeight: $(window).height()-50,
+		modal:true,
+		dialogClass: "tweet-dialog",
+		resizable: false
+	});
+};
+
+UTIL.serializeCurrentState = function(){
+	return {
+		filters : EUMSSI.FilterManager._filters,
+		lastq : EUMSSI.Manager.getLastQuery(),
+		lastfq : EUMSSI.Manager.getLastFilterQuery(),
+		currentTab : $(".tabs-container").tabs("option", "active"),
+		widgets : []
+	};
+};
 
 
 // Country Code ISO-3166-2
@@ -265,216 +506,3 @@ UTIL.countryCode_SWAP = [];
 for(var name in UTIL.countryCode){
 	UTIL.countryCode_SWAP[UTIL.countryCode[name]] = name;
 }
-
-/**
- * !!! CORS PROBLEM
- * Check if an url exist, used to check if video links are online or not
- * @param {String} url - link
- * @param {Function} callback - this function will be called with (true:exist/false:broken link) as param when the request is DONE
- */
-UTIL.checkUrlExists = function(url, callback){
-	var http = new XMLHttpRequest();
-	http.open('HEAD', url);
-	http.onreadystatechange = function() {
-		if (this.readyState == this.DONE) {
-			callback(this.status != 404);
-		}
-	};
-	http.send();
-};
-
-/**
- * Create a jQuery menu with the passed structure in the $menu jquery selector.
- * The menu is placed on the mouse and disappear when click or take of the mouse from it.
- * @param {JQuery} $menu - jquery element that contains the list with the menu items $(<ul>)
- * @returns {JQuery}
- */
-UTIL.showContextMenu = function($menu){
-	var timeoutFunction;
-	if($menu){
-		$menu.addClass("click-menu");
-		$("body").append($menu);
-		$menu.menu({
-			position: { my: "left top", at: "left+"+window.mouse_x + " top+" + window.mouse_y, of:"window"}
-		});
-		$menu.css("left",window.mouse_x - 10);
-		$menu.css("top",window.mouse_y - 10);
-
-		function removeMenu(){
-			$menu.remove();
-		}
-		$menu.on("click",removeMenu);
-		$menu.on("mouseleave",function(){
-			timeoutFunction= setTimeout(removeMenu, 500);
-		});
-		$menu.on("mouseenter",function(){
-			clearTimeout(timeoutFunction);
-		});
-	}
-	return $menu;
-};
-
-/**
- * Get images from the wikipedia
- * example: "http://en.wikipedia.org/w/api.php?action=query&titles=Barack_Obama|Muhammad|John_Kerry&prop=pageimages&format=json&pithumbsize=150&pilimit=50"
- * apache.conf proxy: ProxyPass /wikiBridge http://en.wikipedia.org/
- * @param {Array<String>} facetes - Array with the Facet Names to look for on th wikipedia
- * @private
- */
-UTIL.getWikipediaImages = function(facetes){
-	if(facetes.length > 0){
-		var urlRoot = "http://en.wikipedia.org/w/api.php?",
-			urlParams = [];
-
-		urlParams.push("action=query");
-		urlParams.push("prop=pageimages");
-		urlParams.push("titles="+facetes.join("|"));
-		urlParams.push("format=json");
-		urlParams.push("pithumbsize=280");
-		urlParams.push("pilimit=50");
-
-		//this.manager._showLoader();
-		return $.ajax({
-			crossDomain: true,
-			cache: true,
-			dataType: 'jsonp',
-			url: urlRoot + urlParams.join("&")
-		});
-	}
-};
-
-/**
- * When click on a photo display a menu to perform some actions.
- * @param {String} facetName - name of the item
- * @private
- */
-UTIL.openPeopleActionsMenu = function(facetName){
-	var $menu = $('<ul>');
-	$menu.append('<div class="ui-widget-header">'+facetName.replace(/_/g,"&nbsp;")+'</div>');
-	if(EUMSSI.FilterManager.checkFilterByName(EUMSSI.CONF.PERSON_FIELD_NAME)){
-		$menu.append('<li class="filter"><span class="ui-icon ui-icon-plusthick"></span>Add person to filter</li>');
-		$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
-	} else {
-		$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by person</li>');
-	}
-	$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
-	$menu.append('<li class="open-dbpedia"><span class="ui-icon ui-icon-newwin"></span>Open DBpedia page</li>');
-
-	function addPersonFilter(facetName){
-		var fq = EUMSSI.CONF.PERSON_FIELD_NAME + ':("' + facetName + '")';
-		EUMSSI.FilterManager.addFilter(EUMSSI.CONF.PERSON_FIELD_NAME, fq, this.id,"People: "+facetName.replace(/_/g, " "));
-		this.doRequest();
-	}
-	function cleanPersonFilter(){
-		EUMSSI.FilterManager.removeFilterByName(EUMSSI.CONF.PERSON_FIELD_NAME);
-		this.doRequest();
-	}
-
-	$menu.on("click", ".open-wikipedia", UTIL.openNewPage.bind(this, "http://wikipedia.org/wiki/"+facetName));
-	$menu.on("click", ".open-dbpedia", UTIL.openNewPage.bind(this, "http://dbpedia.org/resource/"+facetName));
-	$menu.on("click", ".filter", addPersonFilter.bind(this,facetName));
-	$menu.on("click", ".filter-clear", cleanPersonFilter.bind(this));
-
-	EUMSSI.UTIL.showContextMenu($menu);
-};
-
-/**
- * Open link on a new page
- * @param {String} url - the link
- */
-UTIL.openNewPage = function(url){
-	window.open(url,"_blank");
-};
-
-/**
- * Splits with espaces the current camelCase string.
- * Capitalize the first letter.
- * ex:  "myVarIsAwesome".unCamelCase() -> "My Var Is Awesome"
- * 		"myVxrIsWTF".unCamelCase() ->	"My Vxg Is WTF"
- * @returns {string}
- */
-String.prototype.unCamelCase = function(){
-	return this
-		// insert a space between lower & upper
-		.replace(/([a-z])([A-Z])/g, '$1 $2')
-		// space before last upper in a sequence followed by lower
-		.replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3')
-		// uppercase the first character
-		.replace(/^./, function(str){ return str.toUpperCase(); });
-};
-
-/**
- * Check if the string starts with a string
- * ex:
- *	 "Twitter-DW".startsWith("Twitt") -> true
- *	 "Tweet-DW".startsWith("Twitt") -> false
- * @param {String} s - String to look for on the start
- * @returns {boolean} true if the current String starts with the param 's' string
- */
-String.prototype.startsWith = function(s){
-	if( s && this.length >= s.length ){
-		var a = this.slice(0, s.length);
-		return (a === s) ? true : false;
-	}
-	return false;
-};
-
-
-//LOAD TWITTER widgets API
-window.twttr = (function(d, s, id) {
-	var js, fjs = d.getElementsByTagName(s)[0],
-		t = window.twttr || {};
-	if (d.getElementById(id)) return;
-	js = d.createElement(s);
-	js.id = id;
-	js.src = "https://platform.twitter.com/widgets.js";
-	fjs.parentNode.insertBefore(js, fjs);
-
-	t._e = [];
-	t.ready = function(f) {
-		t._e.push(f);
-	};
-
-	return t;
-}(document, "script", "twitter-wjs"));
-
-UTIL.openTweet = function(tweetId){
-	var $tooltipContent = $("<div>");
-	twttr.widgets.createTweet(tweetId, $tooltipContent[0],{
-		dnt: true
-	}).then(function (el) {
-		$tooltipContent.dialog("option", "position",{my: "center", at: "center", of: window});
-		if(el !== undefined){
-			var $card = $(el.contentDocument).find(".Tweet-card [data-scribe='component:card']");
-			if($card.length > 0){
-				var interval = setInterval(function(){
-					if($card.hasClass("is-ready")){
-						$tooltipContent.dialog("option", "position",{my: "center", at: "center", of: window});
-						clearInterval(interval);
-					}
-				},500)
-			}
-		} else {
-			var $error = $("<h3 class='ui-state-error-text'>")
-				.text("The tweet can't be loaded.");
-			$tooltipContent.append($error);
-		}
-	});
-	$tooltipContent.dialog({
-		width: 500,
-		maxHeight: $(window).height()-50,
-		modal:true,
-		dialogClass: "tweet-dialog",
-		resizable: false
-	});
-};
-
-UTIL.serializeCurrentState = function(){
-	return {
-		filters : EUMSSI.FilterManager._filters,
-		lastq : EUMSSI.Manager.getLastQuery(),
-		lastfq : EUMSSI.Manager.getLastFilterQuery(),
-		currentTab : $(".tabs-container").tabs("option", "active"),
-		widgets : []
-	};
-};
