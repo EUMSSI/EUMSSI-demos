@@ -241,7 +241,7 @@
 						.prop("data-tweetid",doc['meta.source.tweetId'])
 						.prop("title","Open Tweet");
 					$twitterLogo.click(function(event){
-						UTIL.openTweet( $(event.target).prop("data-tweetid") );
+						UTIL.openTweetDialog( $(event.target).prop("data-tweetid") );
 					});
 					$title.append($twitterLogo)
 				}

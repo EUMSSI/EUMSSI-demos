@@ -111,6 +111,28 @@
 				});
 			},
 
+			/**
+			 * Retrieve Tweets with the current Query
+			 * @param {number} [start=0] - The current page start index for the current search.
+			 * @param {string} [order=desc] - Sort for the Solr.
+			 * @param {number} [gapsize=10] - The paginagion gap size.
+			 * @returns {*}
+			 */
+			getTweets: function(start, order, gapsize){
+				var url = this.solrUrl + this.servlet + '?';
+				var sort = "meta.source.datePublished " + (order || "desc");
+				var params = {
+					q : this.getLastQuery(),
+					fq : "meta.source.tweetId:*",
+					sort : sort,
+					wt : "json",
+					ident : "true",
+					rows: (gapsize || 10),		// pageSize
+					start: (start || 0)			// paginationGap start
+				};
+				return $.ajax({ url: url + $.param(params) });
+			},
+
 			_showLoader: function(){
 				$(".result-panel-content").addClass("ui-loading-modal");
 			},

@@ -48,10 +48,10 @@ window.EUMSSI = {
 			target: '#my-genericwordcloud'
 		}));
 
-		//EUMSSI.Manager.addWidget(new AjaxSolr.TwitterPolarityWidget({
-		//	id: 'twitterPolarity',
-		//	target: '.polarity-placeholder'
-		//}));
+		EUMSSI.Manager.addWidget(new AjaxSolr.TwitterPolarityWidget({
+			id: 'twitterPolarity',
+			target: '.polarity-placeholder'
+		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.WordGraphWidget({
 			id: 'my-wordgraph',
@@ -131,7 +131,6 @@ window.EUMSSI = {
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.VideoPlayerWidget({
 			id: "videoPlayer"
-			//target: '.mapChart-placeholder'
 		}));
 
 

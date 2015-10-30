@@ -13,64 +13,6 @@
 /*************** MISC **************/
 /*************** ******** **************/
 
-.ui-section-initpage {
-  height: 100%;
-  width: 100%;
-  text-align: center;
-
-  button.ui-button-main {
-	height: 32px;
-	font-size: large;
-	width: 32px;
-	margin-left: -40px;
-	cursor: pointer;
-	border: none;
-	padding: 4px 4px;
-	background-color: white;
-	&:hover {
-	  background-color: white;
-	}
-
-	.icon-search {
-	  background-image: url("../images/icon-search-grey.png");
-	  width: 24px;
-	  height: 24px;
-	  background-repeat: no-repeat;
-	}
-  }
-
-  img.logo {
-	margin-top: ~"calc(20% - 100px)";
-	margin-bottom: 25px;
-	margin-right: 0;
-	float: none;
-  }
-  .filter-container {
-	input {
-	  font-size: large;
-	  width: 500px;
-	  padding: 6px 10px 7px 10px;
-	  border: none;
-	  box-shadow: 2px 2px 4px grey;
-	}
-	h2 {
-	  display: none;
-	}
-  }
-
-  & > div > * {
-	display: inline-block;
-	vertical-align: middle;
-  }
-}
-
-.ui-section-mainlayout {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
 .info-block {
   .info-label {
 	cursor: pointer;
@@ -220,7 +162,68 @@ form {
   }
 }
 
+/*************************** INITIAL PAGE ***************************/
+
+.ui-section-initpage {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+
+  button.ui-button-main {
+	height: 32px;
+	font-size: large;
+	width: 32px;
+	margin-left: -40px;
+	cursor: pointer;
+	border: none;
+	padding: 4px 4px;
+	background-color: white;
+	&:hover {
+	  background-color: white;
+	}
+
+	.icon-search {
+	  background-image: url("../images/icon-search-grey.png");
+	  width: 24px;
+	  height: 24px;
+	  background-repeat: no-repeat;
+	}
+  }
+
+  img.logo {
+	margin-top: ~"calc(20% - 100px)";
+	margin-bottom: 25px;
+	margin-right: 0;
+	float: none;
+  }
+  .filter-container {
+	input {
+	  font-size: large;
+	  width: 500px;
+	  padding: 6px 10px 7px 10px;
+	  border: none;
+	  box-shadow: 2px 2px 4px grey;
+	}
+	h2 {
+	  display: none;
+	}
+  }
+
+  & > div > * {
+	display: inline-block;
+	vertical-align: middle;
+  }
+}
+
+
 /*************************** LAYOUT GENERAL ***************************/
+
+.ui-section-mainlayout {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
 .ui-layout-resizer {
   background-color: @rgb_grey7;
@@ -370,6 +373,7 @@ img.logo {
   .tab-content {
 	padding: 10px 20px 50px 40px;
 	&.expanded {
+	  overflow: hidden;
 	  position: relative;
 	  width: calc(~"100% - 60px");
 	  height: calc(~"100% - 60px");
@@ -825,6 +829,7 @@ span.more {
 	width: calc(~"100% - 20px");
   }
 }
+// ************************************************************************* //
 
 /************************ MAP GEOCHART WIDGET **************************/
 .tab-content.mapChart {
@@ -845,15 +850,54 @@ span.more {
 
 /************************ POLARITY WIDGET **************************/
 
+.tab-content.expanded.polarity {
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 100%;
+}
+
 .polarity-placeholder {
   position: relative;
   width: 100%;
   height: 100%;
-  svg {
-	width: 100%;
+
+  .polarityCol {
 	height: 100%;
-	background: linear-gradient(to bottom, #0dc900 0%, #dbdbdb 50%, #dbdbdb 50%, #e00000 100%); /* W3C */
-	overflow: visible;
+	width: calc(~"50% - 20px");
+	margin: 0 5px;
+	display: inline-block;
+	overflow-y: scroll;
+	overflow-x: hidden;
+
+	&.agree .tweet-container{
+		background: linear-gradient(to bottom, rgba(0, 145, 201, 0.8) 0%, rgba(255, 255, 255, 1) 100%);
+	}
+	&.against .tweet-container{
+		background: linear-gradient(to bottom, rgba(224, 0, 0, 0.8) 0%, rgba(255, 255, 255, 1) 100%);
+	}
+
+	.tweet-container-loading{
+	  width: 100%;
+	  height: 200px;
+	  margin-top: -200px;
+	  background-image: url("../images/bar-ajax-loader.gif");
+	  background-position: center;
+	  background-repeat: no-repeat;
+	  z-index: 10;
+	}
+
+	.tweet-container{
+	  width: 100%;
+	  padding-bottom: 200px;
+	  padding-top: 5px;
+	  .tweet {
+		margin: 10px auto;
+		max-width: 500px;
+		min-width: 250px;
+		width: calc(~"100% - 20px");
+		text-align: center;
+	  }
+	}
   }
 }
 
@@ -929,21 +973,16 @@ body .ui-dialog.video-dialog.ui-widget{
   overflow: visible;
   width: 530px !important;
 
-
-  //CON PLUGIN
   &.plugin-on {
 	width: 855px !important;
   }
-
   .ui-dialog-title{
 	  color: whitesmoke;
   }
-
   .ui-dialog-content {
 	overflow: visible;
 	padding: 0;
   }
-
 }
 
 .youtube-placeholder{
@@ -953,7 +992,6 @@ body .ui-dialog.video-dialog.ui-widget{
 }
 
 .amalia-placeholder {
-
   .amalia-player-row {
 	padding: 0 5px;
     &> div {
@@ -1009,4 +1047,8 @@ body .ui-dialog {
   .ui-dialog-title {
 	font-size: large;
   }
+}
+
+body .tweet-tooltip{
+  background: none;
 }
