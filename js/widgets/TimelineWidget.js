@@ -137,7 +137,14 @@
 
 		
 		_onEnityClick: function(name){
+			this.setFilter(name);
 			this.getImportantEvents(name);
+		},
+		
+		setFilter: function (value) {
+			//Set the current Filter
+			storedValue = value;
+			EUMSSI.FilterManager.addFilter("Entity:", storedValue, this.id, "Entity: "+value);
 		}
 
 	});
