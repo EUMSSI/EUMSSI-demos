@@ -129,6 +129,7 @@
 			$event.append($('<h2>').text(event.headline));
 			$event.append($('<p class="date">').html(event.date));
 			$event.append($('<p>').html(event.description));
+
 			var $key = $('<span>').addClass("info-label").text("Major Entities");
 			$event.append($('<p>').append($key).append($value));
 			$(".event-placeholder").append($event);
