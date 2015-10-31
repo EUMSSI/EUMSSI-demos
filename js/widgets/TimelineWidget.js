@@ -108,6 +108,7 @@
 			$event.append($('<h2>').text(event.headline));
 			$event.append($('<p class="date">').html(event.date));
 			$event.append($('<p>').html(event.description));
+
 			$(".event-placeholder").append($event);
 		}
 
