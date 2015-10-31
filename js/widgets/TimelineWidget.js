@@ -1,4 +1,3 @@
-
 (function ($) {
 
 	AjaxSolr.TimelineWidget = AjaxSolr.AbstractWidget.extend({
@@ -52,11 +51,22 @@
 			$(this.target).html($("<div>").addClass("ui-error-text").text(message));
 		},
 
-		getImportantEvents: function(){
-			$.ajax({
-				url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( EUMSSI.Manager.getLastQuery() || "*%3A*"),
-				success: this._renderTimelineAPI.bind(this)
-			});
+		getImportantEvents: function(entity){
+			$(this.target).addClass("ui-loading-modal");
+			if (!entity) {
+				$.ajax({
+					url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( EUMSSI.Manager.getLastQuery() || "*%3A*"),
+					success: this._renderTimelineAPI.bind(this)
+				});
+			}
+			
+			else {
+				$.ajax({
+					url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( "meta.extracted.text.ner.all:*" + entity + "*" ),
+					success: this._renderTimelineAPI.bind(this)
+				});
+			}
+			
 		},
 
 		_renderTimelineAPI: function(response){
@@ -105,12 +115,29 @@
 
 		_renderEvent: function(event){
 			var $event = $("<div>");
+			var $value = $('<span>').addClass("info-value");
+			var entities = event['entity'];
+			for (i = 0; i<entities.length; i++) {
+				//$value += entities[i].name + " ; ";
+				var $entitylink = $('<a>')
+				.text(entities[i].name + " ; ")
+				.click(this._onEnityClick.bind(this, entities[i].name ));
+				$value.append($entitylink);
+			}
+			
+			
 			$event.append($('<h2>').text(event.headline));
 			$event.append($('<p class="date">').html(event.date));
 			$event.append($('<p>').html(event.description));
+			var $key = $('<span>').addClass("info-label").text("Major Entities");
+			$event.append($('<p>').append($key).append($value));
 			$(".event-placeholder").append($event);
-		}
+		},
 
+		
+		_onEnityClick: function(name){
+			this.getImportantEvents(name);
+		}
 
 	});
 
