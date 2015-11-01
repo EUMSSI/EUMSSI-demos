@@ -6,8 +6,8 @@
 			this.$target = $(this.target);
 			this.$tabs = $(this.target).parents(".tabs-container");
 			this.apiURL = "http://eumssi.cloudapp.net/EumssiEventExplorer/webresources/API/";
-			this.wordNumber = 50;
-			this.graphSize = this.wordNumber * 7;
+			this.wordNumber = 150;
+			this.graphSize = 500;
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
 			
 			this.$target.parent().find(".wordgraph-key-selector").selectmenu({
@@ -25,7 +25,7 @@
 			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
 
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this._getGraph(this.field);
+				this._getGraph();
 			} else {
 				this.$tabs.off("tabsactivate.wordgraphwidget");
 				this.$tabs.on("tabsactivate.wordgraphwidget", this._tabChange.bind(this) );
@@ -44,15 +44,20 @@
 			}
 		},
 
-		_getGraph: function(){
-			var q = EUMSSI.Manager.getLastQuery() || "*%3A*";
+		_getGraph: function(filter){
+			var filterValue = filter;
+			if (!filter) {
+				filterValue="*";
+			}
+			
+			var q = EUMSSI.Manager.getLastQuery() || "*";
 			
 			//Loading
 			$(this.target).addClass("ui-loading-modal");
 			$(this.target).empty();
 			$.when(
-				$.ajax( this.apiURL + "getSemanticCloud/json/"+this.wordNumber+"/" + q + "/all/" + this.field ),
-				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/all/" + this.field )
+				$.ajax( this.apiURL + "getSemanticCloud/json/"+this.wordNumber+"/" + q + "/all/" + this.field  + "/" + filterValue),
+				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/all/" + this.field  + "/" + filterValue)
 			).done(this._onGetWordGraph.bind(this));
 		},
 
@@ -69,6 +74,7 @@
 		},
 
 		_renderGraph: function(tf, links){
+			var self = this;
 			var nodes = {};
 			var size = 500;
 
@@ -202,7 +208,10 @@
 			function mouseclick() {
 				linktext = d3.select(this).select("text").text();
 				// For now, we open just the Google search results - should be replaced by new word cloud on this entity
-				window.open("https://www.google.com/?gws_rd=ssl#q="+linktext);
+				//window.open("https://www.google.com/?gws_rd=ssl#q="+linktext);
+				self.setFilter(linktext);
+				self._getGraph(linktext);
+				
 			}
 
 			// Search functionality (copied/paste from http://www.coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
