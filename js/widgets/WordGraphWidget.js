@@ -7,13 +7,25 @@
 			this.$tabs = $(this.target).parents(".tabs-container");
 			this.apiURL = "http://eumssi.cloudapp.net/EumssiEventExplorer/webresources/API/";
 			this.wordNumber = 50;
+			this.graphSize = this.wordNumber * 7;
+			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
+			
+			this.$target.parent().find(".wordgraph-key-selector").selectmenu({
+				width: 200,
+				select: function( event, data ) {
+					if(this.field != data.item.value){
+						this._onSelectKey(data.item.value);
+					}
+				}.bind(this)
+			});
+			
 		},
 
 		afterRequest: function () {
 			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
 
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this._getGraph();
+				this._getGraph(this.field);
 			} else {
 				this.$tabs.off("tabsactivate.wordgraphwidget");
 				this.$tabs.on("tabsactivate.wordgraphwidget", this._tabChange.bind(this) );
@@ -32,19 +44,15 @@
 			}
 		},
 
-		_getGraph: function(filterWord){
-			var q = "";
-			if(filterWord){
-				q = ""+filterWord;
-			} else {
-				q = EUMSSI.Manager.getLastQuery() || "*%3A*";
-			}
+		_getGraph: function(){
+			var q = EUMSSI.Manager.getLastQuery() || "*%3A*";
+			
 			//Loading
 			$(this.target).addClass("ui-loading-modal");
 			$(this.target).empty();
 			$.when(
-				$.ajax( this.apiURL + "getWordCloud/json/"+this.wordNumber+"/" + q ),
-				$.ajax( this.apiURL + "getGraph/json/"+this.wordNumber+"/" + q )
+				$.ajax( this.apiURL + "getSemanticCloud/json/"+this.wordNumber+"/" + q + "/all/" + this.field ),
+				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/all/" + this.field )
 			).done(this._onGetWordGraph.bind(this));
 		},
 
@@ -84,10 +92,10 @@
 
 			// Compute the distinct nodes from the links.
 			links.forEach(function(link) {
-				link.source = nodes[link.source];
-				link.target = nodes[link.target];
-				//link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
-				//link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+				//link.source = nodes[link.source];
+				//link.target = nodes[link.target];
+				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 1, color: "purple"});
+				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 1, color: "purple"});
 			});
 			// SVG constants
 			var width = 1060,
@@ -258,6 +266,34 @@
 			}
 
 
+		},
+		
+		
+		_onSelectKey: function(keyValue){
+			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME = keyValue;
+			//this.field = keyValue;
+			EUMSSI.CONF.updateFacetingFields();
+			this.clearFilter();
+			EUMSSI.Manager.doRequest(0);
+		},
+
+		/**
+		 * Sets the main Solr query to the given string.
+		 * @param {String} attributeName The name of the filter key.
+		 * @param {String} value the value for the filter.
+		 */
+		setFilter: function (value) {
+			//Set the current Filter
+			this.storedValue = this.field + ":" + value;
+			EUMSSI.FilterManager.addFilter(this.field, this.storedValue, this.id, this.field+": "+value);
+		},
+
+		/**
+		 * Sets the main Solr query to the empty string.
+		 * @param {Boolean} [silent] true, if don't want to trigger the change event
+		 */
+		clearFilter: function (silent) {
+			EUMSSI.FilterManager.removeFilterByWidget(this.id, silent);
 		}
 
 		//_onWordClick: function(d){
