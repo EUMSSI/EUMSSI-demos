@@ -121,7 +121,7 @@
 			getTweets: function(start, order, gapsize){
 				var url = this.solrUrl + this.servlet + '?';
 				var sort = "meta.extracted.text.polarity.numeric " + (order || "desc");
-				var discretePolarity = !!order ? "NEGATIVE" : "POSITIVE";
+				var discretePolarity = order === "asc" ? "NEGATIVE" : "POSITIVE";
 				var params = {
 					q : this.getLastQuery(),
 					//For the moment only retrieve the NEGATIVE OR POSITIVE excluding NEUTRAL
