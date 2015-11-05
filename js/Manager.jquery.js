@@ -120,10 +120,12 @@
 			 */
 			getTweets: function(start, order, gapsize){
 				var url = this.solrUrl + this.servlet + '?';
-				var sort = "meta.source.datePublished " + (order || "desc");
+				var sort = "meta.extracted.text.polarity.numeric " + (order || "desc");
+				var discretePolarity = !!order ? "NEGATIVE" : "POSITIVE";
 				var params = {
 					q : this.getLastQuery(),
-					fq : "meta.source.tweetId:*",
+					//For the moment only retrieve the NEGATIVE OR POSITIVE excluding NEUTRAL
+					fq : "meta.source.tweetId:* AND meta.extracted.text.polarity.numeric:* AND meta.extracted.text.polarity.discrete:\"" + discretePolarity +"\"",
 					sort : sort,
 					wt : "json",
 					ident : "true",
