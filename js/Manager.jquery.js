@@ -125,7 +125,7 @@
 				var params = {
 					q : this.getLastQuery(),
 					//For the moment only retrieve the NEGATIVE OR POSITIVE excluding NEUTRAL
-					fq : "meta.source.tweetId:* AND meta.extracted.text.polarity.numeric:* AND meta.extracted.text.polarity.discrete:\"" + discretePolarity +"\"",
+					fq : "+source:Twitter +meta.extracted.text.polarity.discrete:\"" + discretePolarity +"\"",
 					sort : sort,
 					wt : "json",
 					ident : "true",
