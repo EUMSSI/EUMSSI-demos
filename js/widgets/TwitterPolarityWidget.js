@@ -59,15 +59,17 @@
 		},
 
 		_getMoreAgreeTweets: function(){
+			this.$target.find(".polarityCol.agree").find(".tweet-container-loading").addClass("loading");
 			this.manager.getTweets(this._lastAGREEpage,"desc").then(this._onLoadData.bind(this, "desc"));
 		},
 
 		_getMoreAgainstTweets: function(){
+			this.$target.find(".polarityCol.against").find(".tweet-container-loading").addClass("loading");
 			this.manager.getTweets(this._lastAGAINSTpage,"asc").then(this._onLoadData.bind(this, "asc"));
 		},
 
 		/**
-		 *
+		 * @param {string} order - the order of the loaded data "asc" or "desc"
 		 * @param {object} response
 		 * @param {number} response.size
 		 * @param {string} response.text
@@ -76,35 +78,57 @@
 		_onLoadData: function(order,response){
 			//Parse data to object
 			response = JSON.parse(response);
-			//Remove the loading
-			if(order == "desc"){
-				this._fetchingAgree = false;
+
+			//Remove loaders
+			if (order == "desc") {
+				this.$target.find(".polarityCol.agree").find(".tweet-container-loading").removeClass("loading");
 			} else {
-				this._fetchingAgainst = false;
+				this.$target.find(".polarityCol.against").find(".tweet-container-loading").removeClass("loading");
 			}
 
-			this._renderColumns(response, order);
+			if(response && response.response) {
+				this._renderColumns(response, order);
+				if (order == "desc") {
+					if(response.response.numFound == 0){
+						//No positive Tweets
+						this.$target.find(".polarityCol.agree").find(".tweet-container").append($("<h3>").text("No positive tweets found"));
+					} else if (response.response.numFound > (response.response.start + 10)) {
+						this._fetchingAgree = false;
+					} else {
+						//No more elements
+						this.$target.find(".polarityCol.agree").find(".tweet-container").append($("<h3>").text("End of positive tweets"));
+					}
+				} else {
+					if(response.response.numFound == 0){
+						//No negative Tweets
+						this.$target.find(".polarityCol.against").find(".tweet-container").append($("<h3>").text("No negative tweets found"));
+					} else if (response.response.numFound > (response.response.start + 10)) {
+						this._fetchingAgainst = false;
+					} else {
+						//No more elements
+						this.$target.find(".polarityCol.against").find(".tweet-container").append($("<h3>").text("End of negative tweets"));
+					}
+				}
+			}
 		},
 
 		_renderColumns: function(response, order){
-			if(response && response.response){
-				var docs = response.response.docs;
-				for( var i in docs){
-					var item = docs[i];
-					var tweetId = item['meta.source.tweetId'];
-					var $el = $("<div class='tweet'>");
-					if(order == "desc"){
-						this.$target.find(".polarityCol.agree .tweet-container").append($el);
-					} else {
-						this.$target.find(".polarityCol.against .tweet-container").append($el);
-					}
-
-					twttr.widgets.createTweet(tweetId, $el[0],{
-						dnt: true
-						//conversation: "none",
-						//cards: "hidden"
-					});
+			var docs = response.response.docs;
+			for( var i in docs){
+				var item = docs[i];
+				var tweetId = item['meta.source.tweetId'];
+				var $el = $("<div class='tweet'>");
+				if(order == "desc"){
+					this.$target.find(".polarityCol.agree .tweet-container").append($el);
+				} else {
+					this.$target.find(".polarityCol.against .tweet-container").append($el);
 				}
+
+				twttr.widgets.createTweet(tweetId, $el[0],{
+					dnt: true
+					//conversation: "none",
+					//cards: "hidden"
+				});
 			}
 		},
 
