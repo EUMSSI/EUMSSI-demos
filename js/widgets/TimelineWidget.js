@@ -5,7 +5,7 @@
 
 		init: function(){
 			this.$tabs = $(this.target).parents(".tabs-container");
-			this.apiURL = "http://eumssi.cloudapp.net/EumssiEventExplorer/webresources/API/";
+			this.apiURL = "http://demo.eumssi.eu:8385/EumssiEventExplorer/webresources/API/";
 			this.rowsNumber = 100;
 		},
 
