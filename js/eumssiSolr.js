@@ -18,8 +18,8 @@ window.EUMSSI = {
 		//<editor-fold desc="MAIN CORE MANAGER">
 
 		EUMSSI.Manager = new AjaxSolr.Manager({
-			solrUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/',
-			segmentsCoreUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/segments/'
+			solrUrl : 'http://demo.eumssi.eu/Solr_EUMSSI/content_items/',
+			segmentsCoreUrl : 'http://demo.eumssi.eu/Solr_EUMSSI/segments/'
 		});
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.FilterViewerWidget({
@@ -290,7 +290,7 @@ window.EUMSSI = {
 			};
 
 			$.ajax({
-				url: 'http://eumssi.cloudapp.net/EumssiApi/webapp/feedback/report?' + $.param(formData),
+				url: 'http://demo.eumssi.eu/EumssiApi/webapp/feedback/report?' + $.param(formData),
 				success: function(response){
 					$(this).dialog("destroy").remove();
 				}.bind(this)
