@@ -6,7 +6,7 @@
 
 		init: function(){
 			this.$tabs = $(this.target).parents(".tabs-container");
-			this.apiURL = "http://eumssi.cloudapp.net/EumssiEventExplorer/webresources/API/";
+			this.apiURL = "http://demo.eumssi.eu/EumssiEventExplorer/webresources/API/";
 			this.rowsNumber = 100;
 
 			//Bind events click

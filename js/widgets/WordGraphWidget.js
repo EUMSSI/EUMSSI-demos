@@ -5,9 +5,10 @@
 		init: function() {
 			this.$target = $(this.target);
 			this.$tabs = $(this.target).parents(".tabs-container");
-			this.apiURL = "http://eumssi.cloudapp.net/EumssiEventExplorer/webresources/API/";
+			this.apiURL = "http://demo.eumssi.eu/EumssiEventExplorer/webresources/API/";
 			this.wordNumber = 150;
 			this.graphSize = 500;
+			this.storyTelling = 10;
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
 			
 			this.$target.parent().find(".wordgraph-key-selector").selectmenu({
@@ -60,6 +61,36 @@
 				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/all/" + this.field  + "/" + filterValue)
 			).done(this._onGetWordGraph.bind(this));
 		},
+		
+//		_getGraph: function(filter){
+//			var filterValue = filter;
+//			if (!filter) {
+//				filterValue="*";
+//			}
+//			
+//			var q = EUMSSI.Manager.getLastQuery() || "*";
+//			
+//			//Loading
+//			$(this.target).addClass("ui-loading-modal");
+//			$(this.target).empty();
+//			$.when(
+//				$.ajax( this.apiURL + "getSemanticCloud/json/"+this.wordNumber+"/" + q + "/all/" + this.field  + "/" + filterValue),
+//				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/all/" + this.field  + "/" + filterValue)
+//			).done(this._onGetWordGraph.bind(this));
+//		},
+//		
+		
+		_getStoryTelling: function(a1, a2){
+			
+			//Loading
+			$(this.target).addClass("ui-loading-modal");
+			$(this.target).empty();
+			
+			$.ajax({
+				url: this.apiURL + "storyTelling/json/"+this.storyTelling+"/" + a1 + "/" + a2 + "/all",
+				success: this._onStoryTellingGraph.bind(this)
+			});
+		},
 
 		/**
 		 *
@@ -73,7 +104,17 @@
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
+		
+		_onStoryTellingGraph: function(links){
+			var tf = {};
+			this._renderGraph(tf,links);
+			$(this.target).removeClass("ui-loading-modal");
+		},
+
+		
 		_renderGraph: function(tf, links){
+			var pinned_nodes = [];
+			
 			var self = this;
 			var nodes = {};
 			var size = 500;
@@ -100,8 +141,8 @@
 			links.forEach(function(link) {
 				//link.source = nodes[link.source];
 				//link.target = nodes[link.target];
-				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 1, color: "purple"});
-				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 1, color: "purple"});
+				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 12, color: "purple"});
+				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 12, color: "purple"});
 			});
 			// SVG constants
 			var width = 1060,
@@ -134,13 +175,22 @@
 				d.y += d3.event.dy;
 			}
 			function dragend(d, i) {
+				
 				d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
 				d3.select(this).select("text").style("fill", "#FF8800"); // change color to orange
+				pinned_nodes.push(d.name);
+				if (pinned_nodes.length ==2) {
+					self._getStoryTelling(pinned_nodes[0], pinned_nodes[1]);
+					pinned_nodes = [];
+				}
 				force.resume();
+				
 			}
 			function releasenode(d) {
 				d.fixed = false; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
 				d3.select(this).select("text").style("fill", function (d,i) { return color(i); }); // set back to original color
+				linktext = d3.select(this).select("text").text();
+				console.log(linktext + " is pinned");
 				//force.resume();
 			}
 
