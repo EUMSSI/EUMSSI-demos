@@ -90,7 +90,7 @@ window.EUMSSI = {
 				// Place here the infor to create TextWidgets Automatically
 				//{key:"meta.source.text",label:"Content Search", showInResultCheck: false},
 				{key:"meta.extracted.audio_transcript",label:"Audio Transcript", showInResultCheck: false},
-				{key:"meta.extracted.video_ocr.best",label:"OCR", showInResultCheck: true},
+				{key:"meta.extracted.video_ocr.best",label:"Caption in video", showInResultCheck: true},
 				{key:"meta.extracted.text.dbpedia.PERSON",label:"Person", showInResultCheck: true},
 				{key:"meta.extracted.text.dbpedia.LOCATION",label:"Location", showInResultCheck: true}
 				//...
