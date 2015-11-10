@@ -286,7 +286,7 @@ window.EUMSSI = {
 				//email : $form.find(".email").val(),
 				type : $form.find(".type").val(),
 				comment : $form.find(".comment").val(),
-				state : UTIL.serializeCurrentState()
+				state : JSON.stringify(UTIL.serializeCurrentState())
 			};
 
 			$.ajax({
