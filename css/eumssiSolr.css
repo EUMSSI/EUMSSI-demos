@@ -871,7 +871,6 @@ body .ui-dialog.video-dialog.ui-widget .ui-dialog-content {
 .amalia-placeholder .amalia-player-row > div {
   display: inline-block;
   height: 320px;
-  overflow: auto;
 }
 .amalia-placeholder .amalia-player-placeholder {
   width: 520px;
@@ -881,6 +880,7 @@ body .ui-dialog.video-dialog.ui-widget .ui-dialog-content {
 }
 .amalia-placeholder .ajs-plugin.plugin-text-sync {
   background: #333333;
+  height: 320px;
 }
 .amalia-placeholder .ajs-plugin.plugin-text-sync .line-component {
   padding: 0;

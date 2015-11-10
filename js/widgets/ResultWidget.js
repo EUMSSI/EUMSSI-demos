@@ -220,7 +220,7 @@
 				videoLink = parentDoc['meta.source.httpHigh'] || parentDoc['meta.source.mediaurl'] || parentDoc['meta.source.httpMedium'];
 			}
 
-			EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, segmentDoc, parseFloat(segmentDoc.beginOffset), parseFloat(segmentDoc.endOffset) ]);
+			EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, parentDoc, parseFloat(segmentDoc.beginOffset), parseFloat(segmentDoc.endOffset) ]);
 		},
 
 		_renderTitle: function(doc){
