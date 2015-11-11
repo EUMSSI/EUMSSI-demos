@@ -22,6 +22,27 @@ window.EUMSSI = {
 			segmentsCoreUrl : 'http://demo.eumssi.eu/Solr_EUMSSI/segments/'
 		});
 
+		EUMSSI.Manager.init();
+		EUMSSI.Manager.retrieveSolrFieldsNames();
+
+		//Set Main Query to search on All
+		EUMSSI.Manager.store.addByValue('q', '*:*');
+		//Example: Search Only items with headline
+		//Manager.store.addByValue('q', 'meta.source.headline:[* TO *]');
+		EUMSSI.Manager.store.addByValue('ident', 'true');
+
+		//Faceting Parametres
+		var params = {
+			'facet': true,
+			//'facet.mincount': 1,	// Min count to appear
+			'json.nl': 'map'
+		};
+		for (var name in params) {
+			EUMSSI.Manager.store.addByValue(name, params[name]);
+		}
+		EUMSSI.CONF.updateFacetingFields();
+
+
 		EUMSSI.Manager.addWidget(new AjaxSolr.FilterViewerWidget({
 			id: 'filterViewer',
 			target: '.filterViewer-placeholder',
@@ -101,7 +122,8 @@ window.EUMSSI = {
 			id: "source",
 			label: "Source",
 			target: '.source-placeholder',
-			field: "source"
+			field: "source",
+			persistentFilter: true
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.MapChartWidget({
@@ -132,27 +154,6 @@ window.EUMSSI = {
 		EUMSSI.Manager.addWidget(new AjaxSolr.VideoPlayerWidget({
 			id: "videoPlayer"
 		}));
-
-
-		EUMSSI.Manager.init();
-		EUMSSI.Manager.retrieveSolrFieldsNames();
-
-		//Set Main Query to search on All
-		EUMSSI.Manager.store.addByValue('q', '*:*');
-		//Example: Search Only items with headline
-		//Manager.store.addByValue('q', 'meta.source.headline:[* TO *]');
-		EUMSSI.Manager.store.addByValue('ident', 'true');
-
-		//Faceting Parametres
-		var params = {
-			'facet': true,
-			'facet.mincount': 1,	// Min count to appear
-			'json.nl': 'map'
-		};
-		for (var name in params) {
-			EUMSSI.Manager.store.addByValue(name, params[name]);
-		}
-		EUMSSI.CONF.updateFacetingFields();
 
 		//Perform an initial Search
 		//EUMSSI.Manager.doRequest();

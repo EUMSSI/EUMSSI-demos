@@ -61,6 +61,20 @@
 			},
 
 			/**
+			 * Custom AddWidget function that initializes the widget if the manager has been already init.
+			 * Adds a widget to the manager.
+			 * @overrides
+			 * @param {AjaxSolr.AbstractWidget} widget
+			 */
+			addWidget: function (widget) {
+				widget.manager = this;
+				this.widgets[widget.id] = widget;
+				if (this.initialized) {
+					this.widgets[widget.id].init();
+				}
+			},
+
+			/**
 			 * Refresh the Filter query
 			 * @private
 			 */
