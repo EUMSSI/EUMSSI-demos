@@ -1,6 +1,14 @@
 /*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL */
 (function($){
 
+	/**
+	 * Widget that creates a list of checkboxes with the {field} facet.
+	 * id: "source" - The identificator of the Widget, used to manage the filters.
+	 * label: "Source" - Text for the title.
+	 * target: {string }'.source-placeholder' - The query for jQuery to find the placeholder
+	 * field: {string} "source" - The Solr field
+	 * persistentFilter {Boolean} [false] - If true, the selected facet facets for the filter won't be clear on new request.
+	 */
 	AjaxSolr.TagFacetWidget = AjaxSolr.AbstractFacetWidget.extend({
 
 		start:0,	//Reset the pagination with doRequest on this Widget
@@ -16,12 +24,21 @@
 				var $label = $("<h2>").text(this.label);
 				this.$target.before($label);
 			}
+
+			//Manage the facet.mincour on persistent mode
+			if(this.persistentFilter){
+				var paramName = 'f.' + CONF.SOURCE_FIELD_NAME + '.facet.mincour';
+				EUMSSI.Manager.store.remove(paramName);
+				EUMSSI.Manager.store.addByValue('f.' + CONF.SOURCE_FIELD_NAME + '.facet.mincour', 0);
+			}
+
 			//Recalculate height when filter change (Only visual behaivor)
 			EUMSSI.EventManager.on("filterChange",this._recalculateHeight.bind(this));
+			EUMSSI.EventManager.on("filterChange:"+this.field, this._manageFilterChange.bind(this));
 		},
 
 		beforeRequest: function() {
-			if(!this.flag_TagFacetRequest && !this.manager.flag_PaginationRequest) {
+			if(!this.persistentFilter && !this.flag_TagFacetRequest && !this.manager.flag_PaginationRequest) {
 				//Clean FQ - if the call don't activate the holdFacetNames
 				EUMSSI.FilterManager.removeFilterByWidget(this.id);
 			}
@@ -48,10 +65,11 @@
 			});
 
 			// Render or Update
-			if(this.flag_TagFacetRequest) {
+			if( (this.persistentFilter && this._rendered) || this.flag_TagFacetRequest) {
 				this._updateRender(objectedItems);
 			} else {
 				this._render(objectedItems);
+				this._rendered = true;
 			}
 
 			//Reset the holdFacetNames
@@ -66,8 +84,14 @@
 		_updateRender : function(items){
 			//Clean the items count
 			this.$target.find(".ui-checkbox-container .tagfacet-item-count").html("");
+
+			var checkedKeys = this._getCheckedKeys();
 			for (var i = 0; i < items.length ; i++) {
-				this.$target.find(".ui-checkbox-container[data-facet='"+items[i].facet+"'] .tagfacet-item-count").text("("+ items[i].count +")");
+				if( !this.persistentFilter || checkedKeys.length === 0 || items[i].count > 0 || checkedKeys.indexOf(items[i].facet) >= 0 ){
+					this.$target.find(".ui-checkbox-container[data-facet='"+items[i].facet+"'] .tagfacet-item-count").text("("+ items[i].count +")");
+				} else {
+					this.$target.find(".ui-checkbox-container[data-facet='"+items[i].facet+"'] .tagfacet-item-count").text("");
+				}
 			}
 		},
 
@@ -78,6 +102,9 @@
 		 */
 		_render: function(items) {
 			this.$target.empty();
+
+			//Sort items by name
+			items = _.sortBy(items,function(obj){ return obj.facet; });
 
 			for (var i = 0; i < items.length  ; i++) {
 				var facet = items[i].facet;
@@ -113,31 +140,53 @@
 			this.$target.css("height", "calc(100% - "+height+"px)");
 		},
 
+		_manageFilterChange:function(){
+			if(!EUMSSI.FilterManager.checkFilterByWidgetId(this.id)){
+				this._unselectAll();
+			}
+		},
+
 		/**
-		 * When Select/Unselect a facet get the current filter query and perform a request
-		 * @param {jQuery:event} e
+		 * Unselect visually all the checkboxes
 		 * @private
 		 */
-		_onClickCheckbox: function(e){
-			//Clean FQ
-			EUMSSI.FilterManager.removeFilterByWidget(this.id);
+		_unselectAll: function(){
+			this.$target.find("input[type=checkbox]").prop("checked","");
+		},
 
+		/**
+		 * Obtain the checked items
+		 * @returns {Array} the keys of the checked items
+		 * @private
+		 */
+		_getCheckedKeys : function(){
 			var checkedKeys = [];
 			this.$target.find("input[type='checkbox']").each(function(i, it){
 				if( it.checked ){
 					checkedKeys.push($(it).prop("data-value"));
 				}
 			});
+			return checkedKeys;
+		},
 
+		/**
+		 * When Select/Unselect a facet get the current filter query and perform a request
+		 * @param {jQuery:event} e
+		 * @private
+		 */
+		_onClickCheckbox: function(e){
+			var checkedKeys = this._getCheckedKeys();
 			if(checkedKeys.length > 0){
 				//Add FQ
 				this._lastfq = this.field + ':("' + checkedKeys.join('" OR "') + '")';
+				EUMSSI.FilterManager.removeFilterByWidget(this.id, true);
 				EUMSSI.FilterManager.addFilter(this.field, this._lastfq, this.id);
 
 				this.flag_TagFacetRequest = true;
+			} else {
+				EUMSSI.FilterManager.removeFilterByWidget(this.id);
 			}
 			this.doRequest();
-
 		}
 	});
 
