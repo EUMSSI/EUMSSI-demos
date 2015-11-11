@@ -291,6 +291,9 @@
 							value = this._personCustomRender(text, $content);
 							$value.addClass("person-data");
 						break;
+						case "meta.extracted.text.dbpedia.LOCATION" :
+							value = this._locationCustomRender(text, $content);
+							break;
 						default :
 							//FIX - comma problem
 							text = text.replace(/,([^\s])/g, ", $1");
@@ -404,6 +407,19 @@
 				tempValue = "Loading Images..."
 			}
 			return tempValue;
+		},
+
+		_locationCustomRender: function(text, $content){
+			var tempArray = [];
+			var locationCount = _.countBy(text.split(","),function(loc){return loc;});
+			_.each(locationCount, function(val,key){
+				if(val > 1){
+					tempArray.push(key + "(x" + val + ")");
+				} else {
+					tempArray.push(key);
+				}
+			});
+			return tempArray.join(", ")+".";
 		},
 
 		_renderWikipediaImages : function($content, response){
