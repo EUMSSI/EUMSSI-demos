@@ -59,11 +59,6 @@ window.EUMSSI = {
 			target: '#my-wikievent'
 		}));
 
-		EUMSSI.Manager.addWidget(new AjaxSolr.WordCloudWidget({
-			id: 'my-wordcloud',
-			target: '#my-wordcloud'
-		}));
-
 		EUMSSI.Manager.addWidget(new AjaxSolr.GenericWordCloudWidget({
 			id: 'my-genericwordcloud',
 			target: '#my-genericwordcloud'
