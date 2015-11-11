@@ -277,7 +277,7 @@
 			//Create new FQ
 			EUMSSI.FilterManager.addFilter(
 				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME,
-				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + ':("' + EUMSSI.UTIL.countryCode_SWAP[regionCode]+ '")',
+				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + ':("' + EUMSSI.UTIL.countryCode_SWAP[regionCode].replace(" ","_") + '")',
 				this.id+"_Country",
 				"Location: "+EUMSSI.UTIL.countryCode_SWAP[regionCode]
 			);
@@ -315,6 +315,7 @@
 		 * @private
 		 */
 		_getCountryCode: function(facetName){
+			facetName = facetName.replace("_"," ");
 			return EUMSSI.UTIL.countryCode[facetName];
 		}
 
