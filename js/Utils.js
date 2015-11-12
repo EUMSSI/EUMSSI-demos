@@ -2,9 +2,9 @@
 window.CONF = {};
 window.UTIL = {};
 
-CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text.dbpedia.Country";
-CONF.MAP_CITIES_FIELD_NAME = "meta.extracted.text.dbpedia.City";
-CONF.PERSON_FIELD_NAME = "meta.extracted.text.dbpedia.PERSON";
+CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.Country";
+CONF.MAP_CITIES_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.City";
+CONF.PERSON_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.PERSON";
 CONF.CLOUD_FIELD_NAME = "meta.source.keywords";
 CONF.SOURCE_FIELD_NAME = "source";
 

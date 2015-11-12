@@ -134,12 +134,12 @@
 			 */
 			getTweets: function(start, order, gapsize){
 				var url = this.solrUrl + this.servlet + '?';
-				var sort = "meta.extracted.text.polarity.numeric " + (order || "desc");
+				var sort = "meta.extracted.text_polarity.numeric " + (order || "desc");
 				var discretePolarity = order === "asc" ? "NEGATIVE" : "POSITIVE";
 				var params = {
 					q : this.getLastQuery(),
 					//For the moment only retrieve the NEGATIVE OR POSITIVE excluding NEUTRAL
-					fq : "+source:Twitter +meta.extracted.text.polarity.discrete:\"" + discretePolarity +"\"",
+					fq : "+source:Twitter +meta.extracted.text_polarity.discrete:\"" + discretePolarity +"\"",
 					sort : sort,
 					wt : "json",
 					ident : "true",
