@@ -242,6 +242,9 @@ window.EUMSSI = {
 			//Move the input to search
 			var $mainSearchInput = $(".ui-section-initpage .mainSearch-placeholder").detach();
 			$(".ui-section-mainlayout .filterViewer-placeholder").after($mainSearchInput);
+			//Append help icon - may improve this
+			$mainSearchInput.find(".filter-container h2").after($("#search-info-icon-tpl").text());
+			$mainSearchInput.find(".search-info").click(UTIL.showSearchHelp);
 			//Change the panels and initialize the layout
 			$(".ui-section-initpage").hide();
 			$(".ui-section-mainlayout").show();

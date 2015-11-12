@@ -255,6 +255,20 @@ UTIL.serializeCurrentState = function(){
 	};
 };
 
+UTIL.showSearchHelp = function(){
+	var $dialogContent = $($("#search-info-content-tpl").text());
+	$dialogContent.dialog({
+		title: "Search help",
+		closeOnEscape: true,
+		width: 800,
+		close: function () { $(this).remove() },
+		open: function() {
+			$(this).dialog( "option" ,"maxWidth" , $(window).width() - 100);
+			$(this).dialog( "option" ,"maxHeight", $(window).height() - 100);
+		}
+	});
+};
+
 
 // Country Code ISO-3166-2
 UTIL.countryCode = [];

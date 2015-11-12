@@ -480,6 +480,24 @@ img.logo {
 .advancedSearch-panel-content select {
   width: 150px;
 }
+.search-panel-content div.search-info,
+.advancedSearch-panel-content div.search-info {
+  color: #ffffff;
+  background-color: #777777;
+  display: inline-block;
+  width: 17px;
+  vertical-align: text-bottom;
+  margin-left: 5px;
+  height: 17px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bolder;
+  cursor: pointer;
+}
+.search-panel-content div.search-info:hover,
+.advancedSearch-panel-content div.search-info:hover {
+  background-color: #ff4900;
+}
 .search-panel-content .filter-container,
 .advancedSearch-panel-content .filter-container {
   position: relative;
@@ -498,6 +516,11 @@ img.logo {
 .advancedSearch-panel-content .filter-container .ui-checkbox-label {
   font-size: 10px;
   font-style: italic;
+}
+div.search-info-content h4 {
+  color: #ff4900;
+  background-color: #ffede5;
+  margin: 0.5em 0;
 }
 /*************************** Dialog ***************************/
 span.info-label {

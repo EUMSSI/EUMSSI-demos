@@ -571,6 +571,22 @@ img.logo {
   select {
 	width: 150px;
   }
+  div.search-info {
+	color: @rgb_white;
+	background-color: @rgb_grey7;
+	display: inline-block;
+	width: 17px;
+	vertical-align: text-bottom;
+	margin-left: 5px;
+	height: 17px;
+	border-radius: 10px;
+	text-align: center;
+	font-weight: bolder;
+	cursor: pointer;
+	&:hover{
+	  background-color: @rgb_orange;
+	}
+  }
   .filter-container {
 	position: relative;
 	h2 {
@@ -585,6 +601,14 @@ img.logo {
 	  font-size: 10px;
 	  font-style: italic;
 	}
+  }
+}
+
+div.search-info-content {
+  h4 {
+	color: @rgb_orange;
+  	background-color: lighten(@rgb_orange,45%);
+	margin: 0.5em 0;
   }
 }
 

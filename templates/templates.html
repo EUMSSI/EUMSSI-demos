@@ -70,3 +70,37 @@
         </div>
 </script>
 
+<script type="text/template" id="search-info-icon-tpl">
+    <div class='search-info' title="Open search help">?</div>
+</script>
+
+<script type="text/template" id="search-info-content-tpl">
+    <div class="search-info-content">
+        <h5>You can use the follow operators on the Content Search field in order to improve the search.</h5>
+        <h4>ASTERISK WILDCARD (*)</h4>
+        <p>When entered in the search query entry box, the asterisk acts as a substitute for multiple characters or for a blank character.</p>
+        <p>For instance, a query consisting of the characters sh* may yield the result sh and results starting with the letters sh: sham, shin, shoemaker, Shakespeare, shy, shark, etc.</p>
+        <p>The asterisk alone may be used to retrieve all the assets stored in the system, or all the assets belonging to a particular field.</p>
+        <br>
+        <h4>QUESTION MARK WILDCARD (?)</h4>
+        <p>When entered in the search query entry box, the question mark acts as a substitute for a single character. You may enter as many question marks as characters you need to substitute.</p>
+        <p>For instance, given the combination of characters sh??, the search system may yield results such as sham, show, shoe, shot, shin, etc., but not shy or shark.</p>
+        <br>
+        <h4>AND OPERATOR</h4>
+        <p>To function as an operator, AND needs to be entered in all capitals in the search text entry box. If lowercased, the search system will process it as part of the search string. This operator is also accessible via the advanced search AND/OR menu.</p>
+        <p>This operator prompts the system to yield matches that necessarily contain the preceding and succeeding values. For instance, for a search query such as movie AND trailer, possible results may include movie trailer, movie 32 trailer, movie trailer 3x, etc.</p>
+        <br>
+        <h4>OR OPERATOR</h4>
+        <p>To function as an operator, OR needs to be entered in all capitals in the search text entry box. If lowercased, the search system will process it as part of the search string. This operator is also accessible via the advanced search AND/OR menu.</p>
+        <p>This operator prompts the system to yield matches that contain either the preceding or the succeeding value. For instance, for a search query such as movie OR trailer, possible results may include movie trailer, movie, trailer, movie 32 trailer, trailer 3x, etc.</p>
+        <br>
+        <h4>NOT OPERATOR</h4>
+        <p>To function as an operator, NOT needs to be entered in all capitals in the search text entry box. If lowercased, the search system will process it as part of the search string. Additionally, NOT always needs to operate in combination with the AND or OR operator.</p>
+        <p>This operator prompts the system to yield matches not containing the succeeding value. For instance, for a search query such as movie AND NOT trailer, possible results may include movie, movie preview, movie soundtrack, movie 32..., but not movie trailer.</p>
+        <br>
+        <h4>PROXIMITY OPERATOR (~)</h4>
+        <p>This operator is reserved for exact multi-word queries. It needs to be added in final position along with a number indicating up to how many return strings (words and/or numbers) are to be yielded in between the words of the query.</p>
+        <p>For instance, for a search query such as movie trailer~2, possible results may include movie set trailer, movie 3 65 trailer, movie night suggested trailer, movie N movie trailer, etc., but not movie set 3 65 trailer.</p>
+        <br>
+    </div>
+</script>
