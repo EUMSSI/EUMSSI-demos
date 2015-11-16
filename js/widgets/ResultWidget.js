@@ -287,11 +287,11 @@
 					var $key = $('<span>').addClass("info-label");
 
 					switch(key){
-						case "meta.extracted.text.dbpedia.PERSON" :
+						case "meta.extracted.text_nerl.dbpedia.PERSON" :
 							value = this._personCustomRender(text, $content);
 							$value.addClass("person-data");
 						break;
-						case "meta.extracted.text.dbpedia.LOCATION" :
+						case "meta.extracted.text_nerl.dbpedia.LOCATION" :
 							value = this._locationCustomRender(text, $content);
 							break;
 						default :
@@ -302,7 +302,7 @@
 
 							//ADD here HTML tags to the value
 							//dbpedia links transformation
-							if(key == "meta.extracted.text.dbpedia"){
+							if(key == "meta.extracted.text_nerl.dbpedia"){
 								value = this._generateHTMLLinks(value);
 							}
 						break;

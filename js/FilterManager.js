@@ -200,14 +200,7 @@ _.extend(FilterManager.prototype, {
 	_parseGeneralFilter : function(value){
 		var searchQueries = [];
 		var searchFields = [
-			"meta.source.text",
-			"meta.source.description",
-			"meta.source.category",
-			"meta.source.headline",
-			"meta.source.author",
-			"meta.extracted.audio_transcript",
-			"meta.extracted.video_ocr.best",
-			"meta.source.keywords"
+			"contentSearch"
 		];
 
 		if(value){

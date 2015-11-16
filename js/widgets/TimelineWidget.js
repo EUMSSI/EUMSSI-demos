@@ -62,7 +62,7 @@
 			
 			else {
 				$.ajax({
-					url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( "meta.extracted.text.ner.all:*" + entity + "*" ),
+					url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( "meta.extracted.text_nerl.ner.all:*" + entity + "*" ),
 					success: this._renderTimelineAPI.bind(this)
 				});
 			}
