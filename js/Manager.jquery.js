@@ -142,7 +142,7 @@
 					fq : "+source:Twitter +meta.extracted.text_polarity.discrete:\"" + discretePolarity +"\"",
 					sort : sort,
 					wt : "json",
-					ident : "true",
+					indent : "true",
 					rows: (gapsize || 10),		// pageSize
 					start: (start || 0)			// paginationGap start
 				};
