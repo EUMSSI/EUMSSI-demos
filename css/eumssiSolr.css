@@ -80,6 +80,10 @@ li {
   list-style-type: none;
   margin-top: 0.2em;
 }
+input[type=checkbox] {
+  vertical-align: text-bottom;
+  margin: 0 2px 1px 2px;
+}
 form {
   padding: 10px;
 }
@@ -468,7 +472,7 @@ img.logo {
 .search-panel-content h2,
 .advancedSearch-panel-content h2 {
   clear: left;
-  padding-top: 20px;
+  margin-top: 20px;
   color: #333333;
   font-size: 13px;
 }
@@ -516,6 +520,18 @@ img.logo {
 .advancedSearch-panel-content .filter-container .ui-checkbox-label {
   font-size: 10px;
   font-style: italic;
+}
+.search-panel-content .videoOnlyWidget,
+.advancedSearch-panel-content .videoOnlyWidget {
+  margin-top: 20px;
+}
+.search-panel-content .videoOnlyWidget .ui-checkbox-container:hover,
+.advancedSearch-panel-content .videoOnlyWidget .ui-checkbox-container:hover {
+  background-color: rgba(255, 73, 0, 0.15);
+}
+.search-panel-content .videoOnlyWidget label,
+.advancedSearch-panel-content .videoOnlyWidget label {
+  font-weight: bold;
 }
 div.search-info-content h4 {
   color: #ff4900;
@@ -613,11 +629,7 @@ span.more {
   width: 100%;
 }
 .tagfacet .ui-checkbox-container:hover {
-  background-color: rgba(255, 77, 0, 0.1);
-}
-.tagfacet .ui-checkbox-container input {
-  vertical-align: top;
-  margin: 2px 2px;
+  background-color: rgba(255, 73, 0, 0.15);
 }
 /*************************** TAG CLOUD WIDGET ***************************/
 .tagCloud-placeholder {

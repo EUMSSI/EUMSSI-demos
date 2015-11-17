@@ -85,9 +85,12 @@ window.EUMSSI = {
 			attributeName: 'meta.source.inLanguage'
 		}));
 
-		EUMSSI.Manager.addWidget(new AjaxSolr.SelectVideoQualityWidget({
-			id: 'videoQuality',
-			target: '.videoQualityWidget-placeholder'
+		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
+			id: 'videoOnly',
+			key: 'meta.source.mediaurl',
+			label: 'Only video documents',
+			title: 'Check if only want results with video',
+			target: '.videoOnlyWidget-placeholder'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.DynamicSearchWidget({
@@ -312,6 +315,8 @@ window.EUMSSI = {
 				}
 			});
 		});
+
+
 
 
 		//</editor-fold>
