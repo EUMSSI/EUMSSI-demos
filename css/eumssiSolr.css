@@ -948,3 +948,6 @@ body .ui-dialog .ui-dialog-title {
 body .tweet-tooltip {
   background: none;
 }
+body .ui-dialog-titlebar-close .ui-button-text {
+  display: none;
+}
