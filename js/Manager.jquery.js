@@ -112,13 +112,17 @@
 			 * @param parentId
 			 */
 			getSegmentsByParentId: function(parentId){
-				var url = this.segmentsCoreUrl +
-					this.servlet + '?' +
-					"q=" + this.getLastQuery() +
-					"&wt=json&indent=true" +
-					"&rows=15&fq=parent_id%3A"+AjaxSolr.Parameter.escapeValue(parentId);
+				var url = this.segmentsCoreUrl + this.servlet + '?';
+				var params = {
+					q : this.getLastQuery(),
+					fq : "parent_id:"+AjaxSolr.Parameter.escapeValue(parentId),
+					sort : "beginOffset asc",
+					wt : "json",
+					indent : "true",
+					rows : "15"
+				};
 				return $.ajax({
-					url: url,
+					url: url + $.param(params),
 					success: function(response){
 						this._solrFields = response.split(",").sort();
 					}.bind(this)
