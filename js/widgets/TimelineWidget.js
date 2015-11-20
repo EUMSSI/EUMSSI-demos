@@ -147,7 +147,7 @@
 		setFilter: function (value) {
 			//Set the current Filter
 			storedValue = value;
-			EUMSSI.FilterManager.addFilter("Entity:", storedValue, this.id, "Entity: "+value);
+			EUMSSI.FilterManager.addFilter("meta.extracted.text_nerl.ner.all:", "meta.extracted.text_nerl.ner.all:" + storedValue, this.id, "Entity: "+value);
 		}
 
 	});
