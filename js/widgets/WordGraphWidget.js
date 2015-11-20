@@ -1,22 +1,22 @@
 (function ($) {
-
 	AjaxSolr.WordGraphWidget = AjaxSolr.AbstractFacetWidget.extend({
-
 		init: function() {
 			this.$target = $(this.target);
 			this.$tabs = $(this.target).parents(".tabs-container");
 			this.apiURL = "http://demo.eumssi.eu/EumssiEventExplorer/webresources/API/";
-			this.wordNumber = 150;
-			this.graphSize = 500;
+			this.wordNumber = 100;
+			this.graphSize = 200;
 			this.storyTelling = 10;
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
 			
 			this.$target.parent().find(".wordgraph-key-selector").selectmenu({
 				width: 200,
 				select: function( event, data ) {
+					console.log("Selected: " + data.item.value);
 					if(this.field != data.item.value){
 						this._onSelectKey(data.item.value);
 					}
+					$("#selectedD3Node").hide();
 				}.bind(this)
 			});
 			
@@ -46,10 +46,16 @@
 		},
 
 		_getGraph: function(filter){
+			var language = $(".localeSelector").val();
+			$("#selectedD3Node").hide();
+
+			if (!language)
+				language = "all";
+			console.log("Filter123: " + language);
 			var filterValue = filter;
 			if (!filter) {
 				filterValue="*";
-			}
+			}			
 			
 			var q = EUMSSI.Manager.getLastQuery() || "*";
 			
@@ -57,8 +63,8 @@
 			$(this.target).addClass("ui-loading-modal");
 			$(this.target).empty();
 			$.when(
-				$.ajax( this.apiURL + "getSemanticCloud/json/"+this.wordNumber+"/" + q + "/all/" + this.field  + "/" + filterValue),
-				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/all/" + this.field  + "/" + filterValue)
+				$.ajax( this.apiURL + "getSemanticCloud/json/"+this.wordNumber+"/" + q + "/" + language + "/" + this.field  + "/" + filterValue),
+				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/" + language + "/" + this.field  + "/" + filterValue)
 			).done(this._onGetWordGraph.bind(this));
 		},
 		
@@ -106,6 +112,7 @@
 
 		
 		_onStoryTellingGraph: function(links){
+			//console.log(links);
 			var tf = {};
 			this._renderGraph(tf,links);
 			$(this.target).removeClass("ui-loading-modal");
@@ -152,13 +159,13 @@
 				.nodes(d3.values(nodes))
 				.links(links)
 				.size([width, height])
-				.linkDistance(200)
-				.charge(-300)
+				.linkDistance(80)
+				.charge(-100)
 				.on("tick", tick)
 				.start();
 			// Append SVG to the html, with defined constants
 			var svg = d3.select("#my-wordgraph").append("svg")
-				.attr("width", width)
+				.attr("width", "100%")
 				.attr("height", height);
 			// Code for pinnable nodes
 			var node_drag = d3.behavior.drag()
@@ -181,10 +188,15 @@
 				pinned_nodes.push(d.name);
 				if (pinned_nodes.length ==2) {
 					self._getStoryTelling(pinned_nodes[0], pinned_nodes[1]);
+					$("#selectedD3Node").text("Telling story: " + pinned_nodes[0] + " <-> " + pinned_nodes[1]);					
 					pinned_nodes = [];
 				}
+				else
+					$("#selectedD3Node").text("Selected: " + d.name);
+					
 				force.resume();
-				
+				console.log("Selected: " + d.name);
+				$("#selectedD3Node").show();
 			}
 			function releasenode(d) {
 				d.fixed = false; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
@@ -345,7 +357,8 @@
 			//Set the current Filter
 			this.storedValue = this.field + ":" + value;
 			EUMSSI.FilterManager.addFilter(this.field, this.storedValue, this.id, this.field+": "+value);
-		},
+			$("#selectedD3Node").hide();
+		}, 
 
 		/**
 		 * Sets the main Solr query to the empty string.

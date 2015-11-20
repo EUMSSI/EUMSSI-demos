@@ -81,7 +81,7 @@
 				var doc = response[i];
 				var output= {};
 
-				output["headline"] = doc["description"];
+				output["headline"] = doc["annotatedDescription"];
 				output["text"] = doc['description'];
 				output["endDate"] = doc['date'].replace(/-/g,",");
 				output["startDate"] =  doc['date'].replace(/-/g,",");
@@ -89,7 +89,7 @@
 				if (!!output["headline"] && output["headline"].length>0) {
 					if (dateObj.length == this.rowsNumber) { break; }
 					if (!!output["text"]) {output["text"] = output["text"].substring(0,200);}
-					if (!!output["headline"]) {output["headline"] = output["headline"].substring(0,50);}
+					if (!!output["headline"]) {output["headline"] = output["headline"].substring(0,80);}
 					dateObj.push(output);
 				}
 
@@ -119,7 +119,7 @@
 		_renderEvent: function(event){
 			var $event = $("<div>");
 			$event.append($('<h2>').text(event.headline));
-			$event.append($('<p class="date">').html(event.date));
+			$event.append($('<h3>').html(event.date));
 
 			if(event["belongsToStory"]){
 				var $belongsto = $('<a>')
@@ -144,9 +144,13 @@
 			if(event["category"]){
 				var $key = $('<span>').addClass("info-label").text("Category");
 				var $value = $('<span>').addClass("info-value");
-				var $category = $('<a>')
-					.text(event["category"].name)
-					.click(this._onCategoryClick.bind(this, event["category"].id ));
+//				var $category = $('<a>')
+//					.text(event["category"].name)
+//					.click(this._onCategoryClick.bind(this, event["category"].id ));
+				
+
+				var $category =event["category"].name;
+				
 				$value.append($category);
 				$event.append($('<p>').append($key).append($value));
 			}

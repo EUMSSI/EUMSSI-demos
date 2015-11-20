@@ -53,9 +53,12 @@
 
 		getImportantEvents: function(entity){
 			$(this.target).addClass("ui-loading-modal");
+			var cont = EUMSSI.Manager.getLastQuery();
+			var lastquery = cont.split(":");
+			var queryurl = this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( "meta.source.text:" + lastquery[1] || "*%3A*");
 			if (!entity) {
 				$.ajax({
-					url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( EUMSSI.Manager.getLastQuery() || "*%3A*"),
+					url: queryurl,
 					success: this._renderTimelineAPI.bind(this)
 				});
 			}
