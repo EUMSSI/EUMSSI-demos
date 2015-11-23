@@ -58,7 +58,9 @@
 			}			
 			
 			var q = EUMSSI.Manager.getLastQuery() || "*";
-			
+			//var cont = EUMSSI.Manager.getLastQuery();
+			//var lastquery = cont.split(":");
+			//q = lastquery[1]| "*"
 			//Loading
 			$(this.target).addClass("ui-loading-modal");
 			$(this.target).empty();
