@@ -25,11 +25,11 @@
 				this.$target.before($label);
 			}
 
-			//Manage the facet.mincour on persistent mode
+			//Manage the facet.mincount on persistent mode
 			if(this.persistentFilter){
-				var paramName = 'f.' + CONF.SOURCE_FIELD_NAME + '.facet.mincour';
+				var paramName = 'f.' + CONF.SOURCE_FIELD_NAME + '.facet.mincount';
 				EUMSSI.Manager.store.remove(paramName);
-				EUMSSI.Manager.store.addByValue('f.' + CONF.SOURCE_FIELD_NAME + '.facet.mincour', 0);
+				EUMSSI.Manager.store.addByValue('f.' + CONF.SOURCE_FIELD_NAME + '.facet.mincount', 0);
 			}
 
 			//Recalculate height when filter change (Only visual behaivor)
