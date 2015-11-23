@@ -135,7 +135,7 @@
 			var siblings = this.$target.siblings();
 			var height = 10;
 			siblings.each(function(){
-				height += $(this).outerHeight();
+				height += $(this).outerHeight(true);
 			});
 			this.$target.css("height", "calc(100% - "+height+"px)");
 		},
