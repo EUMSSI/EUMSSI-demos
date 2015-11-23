@@ -52,14 +52,16 @@
 		 * @param {Date} [toDate]
 		 */
 		setFilter: function (fromDate, toDate) {
-			var from, to, fq, filterText;
+			var from, to, fq, filterText, fromText, toText;
 			//Remove previous Value
 			this.clearFilter(true);
 			if(fromDate || toDate){
 				from = fromDate ? fromDate.toISOString() : "*";
 				to = toDate ? toDate.toISOString() : "*";
+				fromText = fromDate ? fromDate.toLocaleDateString() : "*";
+				toText = toDate ? toDate.toLocaleDateString() : "*";
 				fq = this.key + ":["+ from +" TO " + to + "]";
-				filterText = "From "+from.substr(0,10)+" to "+to.substr(0,10);
+				filterText = "From "+fromText+" to "+toText;
 				//Set the current Filter
 				EUMSSI.FilterManager.addFilter(this.key, fq, this.id, filterText);
 			}

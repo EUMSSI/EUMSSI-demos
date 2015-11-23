@@ -165,6 +165,10 @@ window.EUMSSI = {
 
 
 		//<editor-fold desc="JQUERY.TABS">
+		var language = window.navigator.userLanguage || window.navigator.language;
+		if(language) {
+			$.datepicker.setDefaults( $.datepicker.regional[language] );
+		}
 
 		$(".tabs-container").tabs({
 			active: 0
