@@ -31,11 +31,11 @@ CONF.updateFacetingFields = function(){
 	params['f.' + CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
 	params['f.' + CONF.CLOUD_FIELD_NAME + '.facet.limit'] = 100;
 	//Facet Min occurrences
-	params['f.' + CONF.SOURCE_FIELD_NAME + '.facet.mincour'] = 1;
-	params['f.' + CONF.MAP_LOCATION_FIELD_NAME + '.facet.mincour'] = 1;
-	params['f.' + CONF.MAP_CITIES_FIELD_NAME + '.facet.mincour'] = 1;
-	params['f.' + CONF.PERSON_FIELD_NAME + '.facet.mincour'] = 1;
-	params['f.' + CONF.CLOUD_FIELD_NAME + '.facet.mincour'] = 1;
+	params['f.' + CONF.SOURCE_FIELD_NAME + '.facet.mincount'] = 1;
+	params['f.' + CONF.MAP_LOCATION_FIELD_NAME + '.facet.mincount'] = 1;
+	params['f.' + CONF.MAP_CITIES_FIELD_NAME + '.facet.mincount'] = 1;
+	params['f.' + CONF.PERSON_FIELD_NAME + '.facet.mincount'] = 1;
+	params['f.' + CONF.CLOUD_FIELD_NAME + '.facet.mincount'] = 1;
 
 	for (var name in params) {
 		EUMSSI.Manager.store.addByValue(name, params[name]);
