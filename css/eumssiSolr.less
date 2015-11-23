@@ -860,6 +860,7 @@ span.more {
 		text-overflow: ellipsis;
 		overflow: hidden;
 		width: calc(~"100% - 20px");
+		font-size: 8pt;
 	}
 }
 
@@ -1070,6 +1071,26 @@ body .ui-dialog.video-dialog.ui-widget {
 
 // ************************************************************************* //
 
+/**************************** DATE FILTER WIDGET ****************************/
+.dateFilterWidget-placeholder {
+	margin-top: 20px;
+	div {
+		margin-top:8px;
+	}
+	label{
+		font-weight: bold;
+		text-align: right;
+		display: inline-block;
+		width: 35px;
+		margin-right: 0.5em;
+	}
+	input {
+		width: 157px;
+	}
+}
+
+// ************************************************************************* //
+
 /*************************** OVERRIDE - jQuery UI ***************************/
 body .ui-widget-header {
 	border: none;
@@ -1094,4 +1115,9 @@ body .tweet-tooltip {
 //Fix problem with focus on dialogs on the close button
 body .ui-dialog-titlebar-close .ui-button-text {
 	display: none;
+}
+
+body .ui-datepicker {
+	z-index: 10 !important;
+	font-size: inherit;
 }

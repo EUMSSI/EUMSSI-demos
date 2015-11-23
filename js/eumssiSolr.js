@@ -93,6 +93,12 @@ window.EUMSSI = {
 			target: '.videoOnlyWidget-placeholder'
 		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.DateFilterWidget({
+			id: 'dateFilterWidget',
+			key: 'meta.source.datePublished',
+			target: '.dateFilterWidget-placeholder'
+		}));
+
 		EUMSSI.Manager.addWidget(new AjaxSolr.DynamicSearchWidget({
 			id: 'mainFilter',
 			target: '.mainSearch-placeholder',
