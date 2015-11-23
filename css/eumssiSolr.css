@@ -740,6 +740,9 @@ span.more {
   opacity: 1 !important;
 }
 /*************************** TAG CLOUD WIDGET ***************************/
+.filterViewer-placeholder {
+  display: inline-block;
+}
 .filterViewer-placeholder .ui-filters-label {
   display: none;
 }

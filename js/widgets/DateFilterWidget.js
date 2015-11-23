@@ -58,8 +58,8 @@
 			if(fromDate || toDate){
 				from = fromDate ? fromDate.toISOString() : "*";
 				to = toDate ? toDate.toISOString() : "*";
-				fromText = fromDate ? fromDate.toLocaleDateString() : "*";
-				toText = toDate ? toDate.toLocaleDateString() : "*";
+				fromText = fromDate ? $.datepicker.formatDate($.datepicker.regional[''].dateFormat, fromDate) : "*";
+				toText = toDate ? $.datepicker.formatDate($.datepicker.regional[''].dateFormat, toDate) : "*";
 				fq = this.key + ":["+ from +" TO " + to + "]";
 				filterText = "From "+fromText+" to "+toText;
 				//Set the current Filter

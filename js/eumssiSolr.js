@@ -164,11 +164,16 @@ window.EUMSSI = {
 		//</editor-fold>
 
 
-		//<editor-fold desc="JQUERY.TABS">
+/*
+		//DATEPICKER Default LOCALE
 		var language = window.navigator.userLanguage || window.navigator.language;
 		if(language) {
 			$.datepicker.setDefaults( $.datepicker.regional[language] );
 		}
+*/
+		$.datepicker.setDefaults( $.datepicker.regional[''] );
+
+		//<editor-fold desc="JQUERY.TABS">
 
 		$(".tabs-container").tabs({
 			active: 0
