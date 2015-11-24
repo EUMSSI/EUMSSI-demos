@@ -140,10 +140,15 @@
 				var url = this.solrUrl + this.servlet + '?';
 				var sort = "meta.extracted.text_polarity.numeric " + (order || "desc");
 				var discretePolarity = order === "asc" ? "NEGATIVE" : "POSITIVE";
+				console.log('Manager.getTweets\t' + EUMSSI.FilterManager.getFilters('meta.source.datePublished'));
+				var filters = ""
+				EUMSSI.FilterManager.getFilters("meta.source.datePublished").forEach(function(f) {
+					filters += '+(' + f['query'] + ') ';
+				})
 				var params = {
 					q : this.getLastQuery(),
 					//For the moment only retrieve the NEGATIVE OR POSITIVE excluding NEUTRAL
-					fq : "+source:Twitter +meta.extracted.text_polarity.discrete:\"" + discretePolarity +"\"",
+					fq : filters + "+source:Twitter +meta.extracted.text_polarity.discrete:\"" + discretePolarity +"\"",
 					sort : sort,
 					wt : "json",
 					indent : "true",
