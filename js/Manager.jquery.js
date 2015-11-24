@@ -145,6 +145,9 @@
 				EUMSSI.FilterManager.getFilters("meta.source.datePublished").forEach(function(f) {
 					filters += '+(' + f['query'] + ') ';
 				})
+				EUMSSI.FilterManager.getFilters("meta.source.inLanguage").forEach(function(f) {
+					filters += '+(' + f['query'] + ') ';
+				})
 				var params = {
 					q : this.getLastQuery(),
 					//For the moment only retrieve the NEGATIVE OR POSITIVE excluding NEUTRAL
