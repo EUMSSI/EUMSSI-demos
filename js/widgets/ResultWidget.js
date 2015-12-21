@@ -225,12 +225,13 @@
 
 		_renderTitle: function(doc){
 			var $header =  $("<span class='links'>"),
-				$title = $("<h2>");
+				$title = $("<h2>"),
+				text = "";
 			$header.text(doc['meta.source.headline']);
 
 			//Twitter - special behaviour
 			if(!doc['meta.source.headline'] && doc['source'] && doc['source'].startsWith("Twitter") ) {
-				var text = doc['meta.source.text'] || "";
+				text = doc['meta.source.text'] || "";
 				$header.text(text.substring(0, 50));
 				if(text.length > 50){
 					$header.append("...");
@@ -243,7 +244,16 @@
 					$twitterLogo.click(function(event){
 						UTIL.openTweet( $(event.target).prop("data-tweetid") );
 					});
-					$title.append($twitterLogo)
+					$title.append($twitterLogo);
+				}
+			}
+
+			//Wikipedia Event - special behaviour
+			if(!doc['meta.source.headline'] && doc['source'] && doc['source'].startsWith("Wikipedia") ) {
+				text = doc['meta.source.text'] || "";
+				$header.text(text.substring(0, 50));
+				if(text.length > 50){
+					$header.append("...");
 				}
 			}
 
