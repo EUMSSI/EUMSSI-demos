@@ -23,13 +23,33 @@
 
 		afterRequest: function () {
 			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
-
-			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this._loadData();
+			if(this._isTwitterEnabled()){
+				EUMSSI.$tabs.tabs( "enable", tabPosition );
+				if(this.$tabs.tabs( "option", "active") === tabPosition) {
+					this._loadData();
+				} else {
+					this.$tabs.off("tabsactivate.twitterpolaritywidget");
+					this.$tabs.on("tabsactivate.twitterpolaritywidget", this._tabChange.bind(this) );
+				}
 			} else {
-				this.$tabs.off("tabsactivate.twitterpolaritywidget");
-				this.$tabs.on("tabsactivate.twitterpolaritywidget", this._tabChange.bind(this) );
+				if(this.$tabs.tabs( "option", "active") === tabPosition) {
+					this.$tabs.tabs( "option", "active", 0);
+				}
+				EUMSSI.$tabs.tabs( "disable", tabPosition );
 			}
+		},
+
+		/**
+		 * Checks if the Twitter source is currently enabled
+		 * @returns {boolean}
+		 * @private
+		 */
+		_isTwitterEnabled: function(){
+			var sourceWidget = EUMSSI.Manager.widgets['source'];
+			if(sourceWidget){
+				return sourceWidget.isKeyActive('Twitter');
+			}
+			return false;
 		},
 
 		/**

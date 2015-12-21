@@ -8,7 +8,8 @@ window.EUMSSI = {
 	CONF : CONF || {},
 	UTIL : UTIL || {},
 	pageLayout : undefined,
-	contentLayout : undefined
+	contentLayout : undefined,
+	$tabs : undefined
 };
 
 (function ($) {
@@ -176,7 +177,7 @@ window.EUMSSI = {
 
 		//<editor-fold desc="JQUERY.TABS">
 
-		$(".tabs-container").tabs({
+		EUMSSI.$tabs = $(".tabs-container").tabs({
 			active: 0
 		});
 

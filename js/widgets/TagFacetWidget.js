@@ -187,7 +187,17 @@
 				EUMSSI.FilterManager.removeFilterByWidget(this.id);
 			}
 			this.doRequest();
+		},
+
+		/**
+		 * Check if the given key is currently active, that means if it's checked or if all are unchecked.
+		 * @param {string} keyName - key
+		 */
+		isKeyActive: function(keyName){
+			var checkedKeys = this._getCheckedKeys();
+			return !(checkedKeys.length > 0 && _.indexOf(checkedKeys,keyName) === -1);
 		}
+
 	});
 
 })(jQuery);
