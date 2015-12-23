@@ -941,6 +941,52 @@ span.more {
 			}
 		}
 	}
+
+	.chartsCol {
+		display: inline-block;
+		width: 35%;
+		height: 100%;
+		& > div {
+			height: 33%;
+			width: 100%;
+			position: relative;
+			display: inline-block;
+
+			&.tweet-pie-chart > div {
+				width: 50%;
+				height: 100%;
+				float: left;
+			}
+
+			&.tweet-time-chart > div {
+				width: 100%;
+				height: 100%;
+				display: inline-block;
+			}
+
+		}
+		//.tweet-pie-chart {
+		//	background-color: lime;
+		//}
+		//.tweet-time-chart {
+		//	background-color: yellow;
+		//}
+		//.tweet-map-chart {
+		//	background-color: darkred;
+		//}
+	}
+}
+/* NEW UPDATE LAYOUT WITH CHARTS */
+body #twitterpolarity {
+
+	.tab-content {
+		padding: 0;
+		width: 100%;
+	}
+
+	.polarity-placeholder .polarityCol {
+		width: 30%;
+	}
 }
 
 // ************************************************************************* //

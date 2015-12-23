@@ -94,6 +94,37 @@
 				}
 			},
 
+			_showLoader: function(){
+				$(".result-panel-content").addClass("ui-loading-modal");
+			},
+
+			_hideLoader: function(){
+				$(".result-panel-content").removeClass("ui-loading-modal");
+			},
+
+			/* Filter Interface  */
+			addFilter: function(filterName, query, widgetId, filterText){
+				EUMSSI.FilterManager.addFilter(filterName, query, widgetId, filterText);
+			},
+
+			removeFilterByName: function(filterName, widgetId){
+				EUMSSI.FilterManager.removeFilterByName(filterName, widgetId);
+			},
+
+			removeFilterByWidget: function(widgetId){
+				EUMSSI.FilterManager.removeFilterByWidget(widgetId);
+			},
+
+			getLastFilterQuery: function(){
+				return this._lastfq || "";
+			},
+
+			getLastQuery: function(){
+				return this._lastq || "*:*";
+			},
+
+			//<editor-fold desc="CUSTOM SOLR SERVICES">
+
 			/**
 			 * Fetch the current indexed fields on Solr
 			 * and save it in Manager._solrFields
@@ -140,14 +171,8 @@
 				var url = this.solrUrl + this.servlet + '?';
 				var sort = "meta.extracted.text_polarity.numeric " + (order || "desc");
 				var discretePolarity = order === "asc" ? "NEGATIVE" : "POSITIVE";
-				console.log('Manager.getTweets\t' + EUMSSI.FilterManager.getFilters('meta.source.datePublished'));
-				var filters = ""
-				EUMSSI.FilterManager.getFilters("meta.source.datePublished").forEach(function(f) {
-					filters += '+(' + f['query'] + ') ';
-				})
-				EUMSSI.FilterManager.getFilters("meta.source.inLanguage").forEach(function(f) {
-					filters += '+(' + f['query'] + ') ';
-				})
+				var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage"]);
+
 				var params = {
 					q : this.getLastQuery(),
 					//For the moment only retrieve the NEGATIVE OR POSITIVE excluding NEUTRAL
@@ -161,35 +186,72 @@
 				return $.ajax({ url: url + $.param(params) });
 			},
 
-			_showLoader: function(){
-				$(".result-panel-content").addClass("ui-loading-modal");
+			/**
+			 * Obtain the Tweets Counts grouped by Polarity
+			 * @returns {Deferred}
+			 */
+			getTweetsPolarityTotal: function(){
+				var url = this.solrUrl + this.servlet + '?';
+				var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage"]);
+
+				var params = {
+					q : this.getLastQuery(),
+					fq : filters + "+source:Twitter",
+					facet : true,
+					'facet.field' : "meta.extracted.text_polarity.discrete",
+					'json.nl' : "map",
+					wt : "json",
+					indent : "true",
+					rows: 0,	// pageSize
+					start: 0	// paginationGap start
+				};
+				return $.ajax({ url: url + $.param(params) });
 			},
 
-			_hideLoader: function(){
-				$(".result-panel-content").removeClass("ui-loading-modal");
-			},
+			/**
+			 * Get the tweets number by data ranges
+			 * @param {string} [polarity] - the polarity value adds a meta.extracted.text_polarity.discrete filter, "POSITIVE" || "NEGATIVE"
+			 * @returns {Deferred}
+			 */
+			getTweetsDateRanges: function(polarity){
+				var url = this.solrUrl + this.servlet + '?';
+				var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage"]);
 
-			/* Filter Interface  */
-			addFilter: function(filterName, query, widgetId, filterText){
-				EUMSSI.FilterManager.addFilter(filterName, query, widgetId, filterText);
-			},
+				var facetPramsDays = {
+					"facet.date": "meta.source.datePublished",
+					"facet.date.start": "NOW/DAY-90DAYS",
+					"facet.date.end": "NOW/DAY",
+					"facet.date.gap": "+1DAY"
+				};
 
-			removeFilterByName: function(filterName, widgetId){
-				EUMSSI.FilterManager.removeFilterByName(filterName, widgetId);
-			},
+				var facetParamsMonth = {
+					"facet.date": "meta.source.datePublished",
+					"facet.date.start": "NOW/MONTHS-12MONTHS",
+					"facet.date.end": "NOW/MONTHS",
+					"facet.date.gap": "+1MONTHS"
+				};
 
-			removeFilterByWidget: function(widgetId){
-				EUMSSI.FilterManager.removeFilterByWidget(widgetId);
-			},
+				if( polarity == "POSITIVE" || polarity == "NEGATIVE" ){
+					filters +="+meta.extracted.text_polarity.discrete:\"" + polarity +"\"";
+				}
 
-			getLastFilterQuery: function(){
-				return this._lastfq || "";
-			},
+				var params = {
+					q : this.getLastQuery(),
+					fq : filters + "+source:Twitter",
+					facet : true,
+					'json.nl' : "map",
+					wt : "json",
+					indent : "true",
+					rows: 0,	// pageSize
+					start: 0	// paginationGap start
+				};
 
-			getLastQuery: function(){
-				return this._lastq || "*:*";
+				params = _.extend(params,facetParamsMonth);
+				return $.ajax({ url: url + $.param(params) });
 			}
+			//</editor-fold>
 
 		});
+
 
 }));

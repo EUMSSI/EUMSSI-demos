@@ -73,6 +73,14 @@
 			this._lastAGREEpage = 0;
 			this._lastAGAINSTpage = 0;
 			this.$target.find(".tweet-container").empty();
+			//Pie
+			this.manager.getTweetsPolarityTotal().then(this._renderPieCharts.bind(this));
+			//Time Chart
+			$.when(
+				this.manager.getTweetsDateRanges("POSITIVE"),
+				this.manager.getTweetsDateRanges("NEGATIVE")
+				//this.manager.getTweetsDateRanges()
+			).then(this._renderTimeTweetsChart.bind(this));
 			//Get the tweets
 			this._getMoreAgreeTweets();
 			this._getMoreAgainstTweets();
@@ -167,6 +175,80 @@
 					this._getMoreAgainstTweets();
 				}
 			}
+		},
+
+
+		/**
+		 * PIE Chart with Google visual PieChart
+		 * @param response
+		 * @private
+		 */
+		_renderPieCharts : function(response){
+			var resposneObj = JSON.parse(response);
+			var polarityCounts = resposneObj.facet_counts.facet_fields["meta.extracted.text_polarity.discrete"];
+
+			var options = {
+				legend:'none',
+				width: '100%',
+				height: '100%',
+				pieSliceText: 'percentage',
+				colors: ['#33A7D4' ,'#E63333', '#999999'],
+				chartArea: {
+					height: "90%",
+					width: "90%"
+				}
+			};
+
+			var data = google.visualization.arrayToDataTable([
+				['Label', 'Value'],
+				['Positive', polarityCounts["POSITIVE"]],
+				['Negative', polarityCounts["NEGATIVE"]]
+			]);
+			var chart = new google.visualization.PieChart(this.$target.find(".dual-pie-chart").get(0));
+			chart.draw(data, options);
+
+			var data2 = google.visualization.arrayToDataTable([
+				['Label', 'Value'],
+				['Positive', polarityCounts["POSITIVE"]],
+				['Negative', polarityCounts["NEGATIVE"]],
+				['Neutral', polarityCounts["NEUTRAL"]]
+			]);
+			var chart2 = new google.visualization.PieChart(this.$target.find(".complete-pie-chart").get(0));
+			chart2.draw(data2, options);
+		},
+
+		_renderTimeTweetsChart: function(responsePositive, responseNegative){
+
+			var resposneObjPositive = JSON.parse(responsePositive[0]);
+			var dateCountsPositive = resposneObjPositive.facet_counts.facet_dates["meta.source.datePublished"];
+
+			var resposneObjNegative = JSON.parse(responseNegative[0]);
+			var dateCountsNegative = resposneObjNegative.facet_counts.facet_dates["meta.source.datePublished"];
+
+			var dataArray = [];
+			dataArray.push(["Date", "Positive", "Negative"]);
+			_.each(dateCountsPositive, function(count, date){
+				//The Solr response add this attributes on the facet array
+				if( date !== "gap" && date !== "start" && date !== "end" ){
+					dataArray.push([new Date(date), count, dateCountsNegative[date]]);
+				}
+			});
+			var data = google.visualization.arrayToDataTable(dataArray);
+
+			var options = {
+				title: 'Tweets Counts over Time',
+				curveType: 'function',
+				legend: { position: 'bottom' },
+				colors: ['#33A7D4' ,'#E63333', '#999999'],
+				explorer:{
+					axis: 'horizontal',
+					actions: ['dragToZoom', 'rightClickToReset'],
+					keepInBounds: true
+				}
+			};
+
+			var chart = new google.visualization.LineChart(this.$target.find(".tweet-time-chart").get(0));
+			chart.draw(data, options);
 		}
 
 	});

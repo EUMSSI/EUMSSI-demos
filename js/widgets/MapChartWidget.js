@@ -34,7 +34,8 @@
 			$.getScript( "http://www.google.com/jsapi" )
 				.done(function( script, textStatus ) {
 					google.load("visualization", "1", {
-						packages:["geochart"],
+						//packages:["geochart", "corechart"],
+						packages:["corechart"],
 						callback: this._initChart.bind(this)
 					});
 
