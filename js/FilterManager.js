@@ -174,7 +174,13 @@ _.extend(FilterManager.prototype, {
 		var fq = "", q = [];
 		_.each(this._filters,function(filterObj){
 			if(filterNames === undefined || (filterNames instanceof Array && filterNames.indexOf(filterObj.filterName) >= 0) ){
-				q.push(filterObj.query);
+				switch(filterObj.filterName){
+					case "GENERAL_SEARCH" :
+						//General search is now a main Query
+						break;
+					default:
+						q.push(filterObj.query);
+				}
 			}
 		},this);
 
