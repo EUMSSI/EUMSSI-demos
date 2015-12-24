@@ -11,6 +11,8 @@
 			//Events
 			this.$target.find("input").change(this._onChange.bind(this));
 			EUMSSI.EventManager.on("filterChange:"+this.key, this._manageFilterChange.bind(this));
+			//WidgetEvents
+			EUMSSI.EventManager.on("DateFilter:addFilter", this._addFilterFromEvent.bind(this));
 		},
 
 		_render: function(){
@@ -73,8 +75,21 @@
 		 */
 		clearFilter: function (silent) {
 			EUMSSI.FilterManager.removeFilterByName(this.key, this.id, silent);
-		}
+		},
 
+		/**
+		 * Set the current dates to the filter and perform a request
+		 * @param {jQuery.Event} event
+		 * @param {Object} params - params to the event
+		 * @param {Date} params.dateFrom - Date to be set as "From" Date.
+		 * @param {Date} params.dateTo - Date to set as "To" date.
+		 * @private
+		 */
+		_addFilterFromEvent: function(event, params){
+			this.$target.find(".dateFilter-from input").datepicker("setDate", params.dateFrom);
+			this.$target.find(".dateFilter-to input").datepicker("setDate", params.dateTo || params.dateFrom);
+			this._onChange();
+		}
 	});
 
 })(jQuery);
