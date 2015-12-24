@@ -74,8 +74,10 @@
 			this._lastAGAINSTpage = 0;
 			this.$target.find(".tweet-container").empty();
 			//Pie
+			this.$target.find(".tweet-pie-chart").addClass("ui-loading-modal");
 			this.manager.getTweetsPolarityTotal().then(this._renderPieCharts.bind(this));
 			//Time Chart
+			this.$target.find(".tweet-time-chart").addClass("ui-loading-modal");
 			$.when(
 				this.manager.getTweetsDateRanges("POSITIVE"),
 				this.manager.getTweetsDateRanges("NEGATIVE")
@@ -215,6 +217,7 @@
 			]);
 			var chart2 = new google.visualization.PieChart(this.$target.find(".complete-pie-chart").get(0));
 			chart2.draw(data2, options);
+			this.$target.find(".tweet-pie-chart").removeClass("ui-loading-modal");
 		},
 
 		_renderTimeTweetsChart: function(responsePositive, responseNegative){
@@ -236,8 +239,8 @@
 			var data = google.visualization.arrayToDataTable(dataArray);
 
 			var options = {
-				title: 'Tweets Counts over Time',
-				curveType: 'function',
+				title: 'Tweets Counts',
+				//curveType: 'function',
 				legend: { position: 'bottom' },
 				colors: ['#33A7D4' ,'#E63333', '#999999'],
 				explorer:{
@@ -249,6 +252,26 @@
 
 			var chart = new google.visualization.LineChart(this.$target.find(".tweet-time-chart").get(0));
 			chart.draw(data, options);
+			this.$target.find(".tweet-time-chart").removeClass("ui-loading-modal");
+
+			google.visualization.events.addListener(chart, 'select', this._onTimeTweetSelect.bind(this, chart, data));
+		},
+
+		_onTimeTweetSelect: function(chart, data){
+			var selection = chart.getSelection();
+			if(selection && selection[0] && selection[0].row){
+				var dateFrom = data.getValue(selection[0].row,0);
+				var dateTo = new Date(dateFrom);
+				dateTo.setDate(dateTo.getDate() + 1); // Add 1 day
+				this._setDateFilter(dateFrom,dateTo);
+			}
+		},
+
+		_setDateFilter: function(dateFrom, dateTo){
+			EUMSSI.EventManager.trigger("DateFilter:addFilter", {
+				dateFrom: dateFrom,
+				dateTo: dateTo
+			});
 		}
 
 	});

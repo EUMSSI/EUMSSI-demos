@@ -215,11 +215,12 @@
 			 */
 			getTweetsDateRanges: function(polarity){
 				var url = this.solrUrl + this.servlet + '?';
-				var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage"]);
+				//var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage"]);
+				var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.inLanguage"]);
 
 				var facetPramsDays = {
 					"facet.date": "meta.source.datePublished",
-					"facet.date.start": "NOW/DAY-90DAYS",
+					"facet.date.start": "NOW/DAY-6MONTHS",
 					"facet.date.end": "NOW/DAY",
 					"facet.date.gap": "+1DAY"
 				};
@@ -246,7 +247,7 @@
 					start: 0	// paginationGap start
 				};
 
-				params = _.extend(params,facetParamsMonth);
+				params = _.extend(params,facetPramsDays);
 				return $.ajax({ url: url + $.param(params) });
 			}
 			//</editor-fold>
