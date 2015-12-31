@@ -835,6 +835,10 @@ span.more {
   position: relative;
   display: inline-block;
 }
+.polarity-placeholder .chartsCol > div.tweet-pie-chart > svg {
+  width: 100%;
+  height: 100%;
+}
 .polarity-placeholder .chartsCol > div.tweet-pie-chart > div {
   width: 50%;
   height: 100%;

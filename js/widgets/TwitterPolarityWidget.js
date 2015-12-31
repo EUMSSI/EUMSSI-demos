@@ -73,9 +73,16 @@
 			this._lastAGREEpage = 0;
 			this._lastAGAINSTpage = 0;
 			this.$target.find(".tweet-container").empty();
-			//Pie
+
+			//Pie Chart
+			this.$target.find(".tweet-pie-chart svg").empty();
 			this.$target.find(".tweet-pie-chart").addClass("ui-loading-modal");
-			this.manager.getTweetsPolarityTotal().then(this._renderPieCharts.bind(this));
+			this.manager.getTweetsPolarityTotal()
+				.then(this._renderPieChartsD3.bind(this))
+				.always(function(){
+					this.$target.find(".tweet-pie-chart").removeClass("ui-loading-modal");
+				}.bind(this));
+
 			//Time Chart
 			this.$target.find(".tweet-time-chart").addClass("ui-loading-modal");
 			$.when(
@@ -83,6 +90,7 @@
 				this.manager.getTweetsDateRanges("NEGATIVE")
 				//this.manager.getTweetsDateRanges()
 			).then(this._renderTimeTweetsChart.bind(this));
+
 			//Get the tweets
 			this._getMoreAgreeTweets();
 			this._getMoreAgainstTweets();
@@ -179,6 +187,48 @@
 			}
 		},
 
+		/**
+		 * render a pieChart with nvd3 library
+		 * @param response
+		 * @private
+		 */
+		_renderPieChartsD3 : function(response){
+			var resposneObj = JSON.parse(response);
+			var polarityCounts = resposneObj.facet_counts.facet_fields["meta.extracted.text_polarity.discrete"];
+
+			var data = [
+				{	'label': 'Positive',	'value': polarityCounts["POSITIVE"]	},
+				{	'label': 'Negative',	'value': polarityCounts["NEGATIVE"]	},
+				{	'label': 'Neutral',		'value': polarityCounts["NEUTRAL"],	'disabled' : true	}
+			];
+
+			nv.addGraph(function() {
+				var graph = d3.select(".tweet-pie-chart svg");
+				var chart = nv.models.pieChart()
+					.x(function(d) { return d.label })
+					.y(function(d) { return d.value })
+					.labelType("percent")
+					.color(['#33A7D4' ,'#E63333', '#999999'])
+					.legendPosition("right")
+					.margin({top: 0, right: 0, bottom: 0, left: 0})
+					.donut(true)
+					.donutRatio(0.35)
+					.showLabels(true);
+
+				var legendTopMargin = Math.floor( graph.node().getBoundingClientRect().height/5 );
+				chart.legend.margin({top: legendTopMargin, right: 50, bottom: 0, left: 25});
+				chart.legend.width(120);
+				chart.legend.rightAlign(false);
+
+				graph.datum(data)
+					.transition().duration(500)
+					.call(chart);
+
+				nv.utils.windowResize(chart.update);
+				return chart;
+			});
+		},
+
 
 		/**
 		 * PIE Chart with Google visual PieChart
@@ -217,7 +267,6 @@
 			]);
 			var chart2 = new google.visualization.PieChart(this.$target.find(".complete-pie-chart").get(0));
 			chart2.draw(data2, options);
-			this.$target.find(".tweet-pie-chart").removeClass("ui-loading-modal");
 		},
 
 		_renderTimeTweetsChart: function(responsePositive, responseNegative){
