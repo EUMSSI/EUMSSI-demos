@@ -166,7 +166,7 @@
 				.on("tick", tick)
 				.start();
 			// Append SVG to the html, with defined constants
-			var svg = d3.select("#my-wordgraph").append("svg")
+			var svg = d3.select("#my-genericgraph").append("svg")
 				.attr("width", "100%")
 				.attr("height", height);
 			// Code for pinnable nodes
