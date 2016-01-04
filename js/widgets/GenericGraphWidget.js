@@ -8,7 +8,8 @@
 			this.graphSize = 200;
 			this.storyTelling = 10;
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
-			
+			this.tf = [];
+			this.pivots = "";
 			this.$target.parent().find(".genericgraph-key-selector").selectmenu({
 				width: 200,
 				select: function( event, data ) {
@@ -67,22 +68,34 @@
 
 
 			var facet, count, i, l, size, tabPosition,
-				maxCount = 0,
-				tf = [];
+				maxCount = 0;
+			this.tf = [];
 			for ( facet in this.manager.response.facet_counts.facet_fields[this.field]) {
 				count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
 				if (count > maxCount) {
 					maxCount = count;
 				}
-				tf.push({ text: facet, size: count });
+				this.tf.push({ text: facet, size: count });
 			}
-			tf.sort(function (a, b) {
+			this.tf.sort(function (a, b) {
 				return a.facet < b.facet ? -1 : 1;
 			});
-			links = [];
-			this._onGetWordGraph(tf, links);
+
+			var q = EUMSSI.Manager.getLastQuery() || "*:*";
+			this.pivots = this.field + "," + this.field;
+			var p_url = "select?q=" + q + "&rows=0&wt=json&indent=true&facet=true&facet.pivot=" + this.pivots;
+			console.log(p_url);
+			console.log(pivots);
+			$.ajax({
+				url: this.manager.solrUrl + p_url,
+				success: this._onGetWordGraph.bind(this)
+			});
+
+
 		},
-		
+
+
+
 //		_getGraph: function(filter){
 //			var filterValue = filter;
 //			if (!filter) {
@@ -120,8 +133,11 @@
 		 * @param {string} response.text
 		 * @private
 		 */
-		_onGetWordGraph: function(tf, links){
-			this._renderGraph(tf[0], links[0]);
+		_onGetWordGraph: function(response){
+			links = [];
+			var facet_pivots = response['facet_counts']['facet_pivot'][this.pivots];
+			
+			this._renderGraph(this.tf, links);
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
