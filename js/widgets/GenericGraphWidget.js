@@ -79,7 +79,7 @@
 			tf.sort(function (a, b) {
 				return a.facet < b.facet ? -1 : 1;
 			});
-
+			links = [];
 			this._onGetWordGraph(tf, links);
 		},
 		
