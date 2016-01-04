@@ -9,14 +9,14 @@
 			this.storyTelling = 10;
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
 			
-			this.$target.parent().find(".wordgraph-key-selector").selectmenu({
+			this.$target.parent().find(".genericgraph-key-selector").selectmenu({
 				width: 200,
 				select: function( event, data ) {
 					console.log("Selected: " + data.item.value);
 					if(this.field != data.item.value){
 						this._onSelectKey(data.item.value);
 					}
-					$("#selectedD3Node").hide();
+					$("#selectedD3Node11").hide();
 				}.bind(this)
 			});
 			
@@ -47,7 +47,7 @@
 
 		_getGraph: function(filter){
 			var language = $(".localeSelector").val();
-			$("#selectedD3Node").hide();
+			$("#selectedD3Node1").hide();
 
 			if (!language)
 				language = "all";
@@ -190,15 +190,15 @@
 				pinned_nodes.push(d.name);
 				if (pinned_nodes.length ==2) {
 					self._getStoryTelling(pinned_nodes[0], pinned_nodes[1]);
-					$("#selectedD3Node").text("Telling story: " + pinned_nodes[0] + " <-> " + pinned_nodes[1]);					
+					$("#selectedD3Node1").text("Telling story: " + pinned_nodes[0] + " <-> " + pinned_nodes[1]);					
 					pinned_nodes = [];
 				}
 				else
-					$("#selectedD3Node").text("Selected: " + d.name);
+					$("#selectedD3Node1").text("Selected: " + d.name);
 					
 				force.resume();
 				console.log("Selected: " + d.name);
-				$("#selectedD3Node").show();
+				$("#selectedD3Node1").show();
 			}
 			function releasenode(d) {
 				d.fixed = false; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
@@ -359,7 +359,7 @@
 			//Set the current Filter
 			this.storedValue = this.field + ":" + value;
 			EUMSSI.FilterManager.addFilter(this.field, this.storedValue, this.id, this.field+": "+value);
-			$("#selectedD3Node").hide();
+			$("#selectedD3Node1").hide();
 		}, 
 
 		/**
