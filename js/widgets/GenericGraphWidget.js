@@ -208,10 +208,10 @@
 
 			// Compute the distinct nodes from the links.
 			links.forEach(function(link) {
-				//link.source = nodes[link.source];
-				//link.target = nodes[link.target];
-				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 10, color: "purple"});
-				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 10, color: "purple"});
+				link.source = nodes[link.source];
+				link.target = nodes[link.target];
+				//link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 10, color: "purple"});
+				//link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 10, color: "purple"});
 			});
 			// SVG constants
 			var width = 1060,
@@ -221,7 +221,7 @@
 				.nodes(d3.values(nodes))
 				.links(links)
 				.size([width, height])
-				.linkDistance(80)
+				.linkDistance(200)
 				.charge(-100)
 				.on("tick", tick)
 				.start();
