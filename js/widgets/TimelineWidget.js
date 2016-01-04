@@ -80,7 +80,9 @@
 			tlobj["type"] = "default";
 
 			var eventObj = [];
-
+			response.sort(function (a, b) {
+				return a.date < b.date ? -1 : 1;
+			});
 			for (var i = 0, l = response.length; i < l; i++) {
 				var doc = response[i];
 				var slideobj= {};
