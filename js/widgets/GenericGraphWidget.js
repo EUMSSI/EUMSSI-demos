@@ -190,10 +190,10 @@
 			}
 			//update
 
-			for (var i in tf) {
-				tf[i].size = 12 + tf[i].size * scale;
-				nodes[tf[i].text] = {name: tf[i].text, size: tf[i].size, color: "purple"};
-			}
+			//for (var i in tf) {
+			//	tf[i].size = 12 + tf[i].size * scale;
+			//	nodes[tf[i].text] = {name: tf[i].text, size: tf[i].size, color: "purple"};
+			//}
 
 
 			//Set up color scale
