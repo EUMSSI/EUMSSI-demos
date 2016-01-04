@@ -8,7 +8,8 @@ window.EUMSSI = {
 	CONF : CONF || {},
 	UTIL : UTIL || {},
 	pageLayout : undefined,
-	contentLayout : undefined
+	contentLayout : undefined,
+	$tabs : undefined
 };
 
 (function ($) {
@@ -18,9 +19,30 @@ window.EUMSSI = {
 		//<editor-fold desc="MAIN CORE MANAGER">
 
 		EUMSSI.Manager = new AjaxSolr.Manager({
-			solrUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/',
-			segmentsCoreUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/segments/'
+			solrUrl : 'http://demo.eumssi.eu/Solr_EUMSSI/content_items/',
+			segmentsCoreUrl : 'http://demo.eumssi.eu/Solr_EUMSSI/segments/'
 		});
+
+		EUMSSI.Manager.init();
+		EUMSSI.Manager.retrieveSolrFieldsNames();
+
+		//Set Main Query to search on All
+		EUMSSI.Manager.store.addByValue('q', '*:*');
+		//Example: Search Only items with headline
+		//Manager.store.addByValue('q', 'meta.source.headline:[* TO *]');
+		EUMSSI.Manager.store.addByValue('ident', 'true');
+
+		//Faceting Parametres
+		var params = {
+			'facet': true,
+			//'facet.mincount': 1,	// Min count to appear
+			'json.nl': 'map'
+		};
+		for (var name in params) {
+			EUMSSI.Manager.store.addByValue(name, params[name]);
+		}
+		EUMSSI.CONF.updateFacetingFields();
+
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.FilterViewerWidget({
 			id: 'filterViewer',
@@ -36,11 +58,6 @@ window.EUMSSI = {
 		EUMSSI.Manager.addWidget(new AjaxSolr.WikipediaEventWidget({
 			id: 'my-wikievent',
 			target: '#my-wikievent'
-		}));
-
-		EUMSSI.Manager.addWidget(new AjaxSolr.WordCloudWidget({
-			id: 'my-wordcloud',
-			target: '#my-wordcloud'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.GenericWordCloudWidget({
@@ -69,9 +86,18 @@ window.EUMSSI = {
 			attributeName: 'meta.source.inLanguage'
 		}));
 
-		EUMSSI.Manager.addWidget(new AjaxSolr.SelectVideoQualityWidget({
-			id: 'videoQuality',
-			target: '.videoQualityWidget-placeholder'
+		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
+			id: 'videoOnly',
+			key: 'meta.source.mediaurl',
+			label: 'Only video documents',
+			title: 'Check if only want results with video',
+			target: '.videoOnlyWidget-placeholder'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.DateFilterWidget({
+			id: 'dateFilterWidget',
+			key: 'meta.source.datePublished',
+			target: '.dateFilterWidget-placeholder'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.DynamicSearchWidget({
@@ -90,9 +116,10 @@ window.EUMSSI = {
 				// Place here the infor to create TextWidgets Automatically
 				//{key:"meta.source.text",label:"Content Search", showInResultCheck: false},
 				{key:"meta.extracted.audio_transcript",label:"Audio Transcript", showInResultCheck: false},
-				{key:"meta.extracted.video_ocr.best",label:"OCR", showInResultCheck: true},
-				{key:"meta.extracted.text.dbpedia.PERSON",label:"Person", showInResultCheck: true},
-				{key:"meta.extracted.text.dbpedia.LOCATION",label:"Location", showInResultCheck: true}
+				{key:"meta.extracted.video_ocr.best",label:"Caption in video", showInResultCheck: true},
+				{key:"meta.extracted.video_persons.amalia",label:"Person Identification", showInResultCheck: true},
+				{key:"meta.extracted.text_nerl.dbpedia.PERSON",label:"Person", showInResultCheck: true},
+				{key:"meta.extracted.text_nerl.dbpedia.LOCATION",label:"Location", showInResultCheck: true}
 				//...
 			]
 		}));
@@ -101,7 +128,8 @@ window.EUMSSI = {
 			id: "source",
 			label: "Source",
 			target: '.source-placeholder',
-			field: "source"
+			field: "source",
+			persistentFilter: true
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.MapChartWidget({
@@ -133,35 +161,23 @@ window.EUMSSI = {
 			id: "videoPlayer"
 		}));
 
-
-		EUMSSI.Manager.init();
-		EUMSSI.Manager.retrieveSolrFieldsNames();
-
-		//Set Main Query to search on All
-		EUMSSI.Manager.store.addByValue('q', '*:*');
-		//Example: Search Only items with headline
-		//Manager.store.addByValue('q', 'meta.source.headline:[* TO *]');
-		EUMSSI.Manager.store.addByValue('ident', 'true');
-
-		//Faceting Parametres
-		var params = {
-			'facet': true,
-			'facet.mincount': 1,	// Min count to appear
-			'json.nl': 'map'
-		};
-		for (var name in params) {
-			EUMSSI.Manager.store.addByValue(name, params[name]);
-		}
-		EUMSSI.CONF.updateFacetingFields();
-
 		//Perform an initial Search
 		//EUMSSI.Manager.doRequest();
 		//</editor-fold>
 
 
+/*
+		//DATEPICKER Default LOCALE
+		var language = window.navigator.userLanguage || window.navigator.language;
+		if(language) {
+			$.datepicker.setDefaults( $.datepicker.regional[language] );
+		}
+*/
+		$.datepicker.setDefaults( $.datepicker.regional[''] );
+
 		//<editor-fold desc="JQUERY.TABS">
 
-		$(".tabs-container").tabs({
+		EUMSSI.$tabs = $(".tabs-container").tabs({
 			active: 0
 		});
 
@@ -246,6 +262,9 @@ window.EUMSSI = {
 			//Move the input to search
 			var $mainSearchInput = $(".ui-section-initpage .mainSearch-placeholder").detach();
 			$(".ui-section-mainlayout .filterViewer-placeholder").after($mainSearchInput);
+			//Append help icon - may improve this
+			$mainSearchInput.find(".filter-container h2").after($("#search-info-icon-tpl").text());
+			$mainSearchInput.find(".search-info").click(UTIL.showSearchHelp);
 			//Change the panels and initialize the layout
 			$(".ui-section-initpage").hide();
 			$(".ui-section-mainlayout").show();
@@ -286,11 +305,11 @@ window.EUMSSI = {
 				//email : $form.find(".email").val(),
 				type : $form.find(".type").val(),
 				comment : $form.find(".comment").val(),
-				state : UTIL.serializeCurrentState()
+				state : JSON.stringify(UTIL.serializeCurrentState())
 			};
 
 			$.ajax({
-				url: 'http://eumssi.cloudapp.net/EumssiApi/webapp/feedback/report?' + $.param(formData),
+				url: 'http://demo.eumssi.eu/EumssiApi/webapp/feedback/report?' + $.param(formData),
 				success: function(response){
 					$(this).dialog("destroy").remove();
 				}.bind(this)
@@ -313,6 +332,8 @@ window.EUMSSI = {
 				}
 			});
 		});
+
+
 
 
 		//</editor-fold>

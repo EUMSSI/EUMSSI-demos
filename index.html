@@ -24,16 +24,20 @@
     <!--<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>-->
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
     <script src="lib/d3/d3.layout.cloud.js"></script>
+    <script src="lib/d3/nv/nv.d3.min.js"></script>
+    <link href="lib/d3/nv/nv.d3.min.css" rel="stylesheet">
 
     <script src="lib/underscore/underscore-min.js"></script>
     <script src="lib/jquery/jquery-1.11.2.min.js"></script>
     <script src="lib/jquery/jquery-ui.min.js"></script>
+    <script src="lib/jquery/ui/i18n/datepicker-all.js"></script>
     <script src="lib/jquery/jquery.layout-1.4.4.js"></script>
     <script src="lib/jquery/jquery.freetile.js"></script>
     <!--<script src="lib/jquery/jquery.flex.js"></script>-->
     <!--<script src="lib/jquery/jquery.layout.pseudoClose.min-1.1.js"></script>-->
     <!--<script src="lib/jquery/jquery.layout.slideOffscreen.min-1.1.js"></script>-->
     <link rel="stylesheet" href="lib/jquery/jquery-ui.min.css">
+
 
     <!-- amalia.js -->
     <script src="lib/amalia.js-1.3.1/components/raphael/raphael.js"></script>
@@ -64,12 +68,13 @@
     <script src="js/widgets/TimelineWidget.js"></script>
     <script src="js/widgets/WikipediaEventWidget.js"></script>
 
-    <script src="js/widgets/WordCloudWidget.js"></script>
     <script src="js/widgets/WordGraphWidget.js"></script>
     <script src="js/widgets/GenericWordCloudWidget.js"></script>
     <script src="js/widgets/TwitterPolarityWidget.js"></script>
 
     <script src="js/widgets/SelectLocaleWidget.js"></script>
+    <script src="js/widgets/CheckboxWidget.js"></script>
+    <script src="js/widgets/DateFilterWidget.js"></script>
     <script src="js/widgets/SelectVideoQualityWidget.js"></script>
     <script src="js/widgets/DynamicSearchWidget.js"></script>
     <script src="js/widgets/TagFacetWidget.js"></script>
@@ -116,12 +121,13 @@
 
                 <div class="filterViewer-placeholder"></div>
 
-                <!--<div class="mainSearch-placeholder"></div>-->
+                <!--<h2>Search Options</h2>-->
+                <div class="videoOnlyWidget videoOnlyWidget-placeholder"></div>
+
+                <div class="dateFilterWidget-placeholder"></div>
 
                 <h2>Language</h2>
                 <div class="localeWidget-placeholder"></div>
-                <h2>Video Quality</h2>
-                <div class="videoQualityWidget-placeholder"></div>
 
                 <div class="source-placeholder tagfacet" ></div>
 
@@ -153,10 +159,9 @@
                             <li><a href="#fragment-2">Map</a></li>
                             <li><a href="#fragment-3">People</a></li>
                             <li><a href="#timelinetab">Timeline</a></li>
-                            <li><a href="#wordcloudtab">Word Cloud</a></li>
+                            <li><a href="#genericwordcloudtab">Word Cloud</a></li>
                             <li><a href="#wordgraphtab">Word Graph</a></li>
                             <li><a href="#wikieventtab">Wikipedia Event</a></li>
-                            <li><a href="#genericwordcloudtab">Generic Word Cloud</a></li>
                             <li><a href="#twitterpolarity">Polarity</a></li>
                         </ul>
                         <div id="fragment-1" data-tabpos="0">
@@ -220,9 +225,27 @@
                             </div>
                         </div>
 
-                        <div id="wordcloudtab" data-tabpos="4">
+                        <div id="genericwordcloudtab" data-tabpos="4">
                             <div class="tab-content">
-                                <div id="my-wordcloud" class="wordcloud"></div>
+                                <div class='genericwordcloud-toolbar content-toolbar ui-widget-header ui-corner-all'>
+                                    <label>Cloud Key</label>
+                                    <select style="width: 180px;" title="Select Keyword" class="genericwordcloud-key-selector">
+                                        <option value="meta.source.keywords">Keywords</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.PERSON">DBpedia Persons</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.ORGANIZATION">DBpedia Organizations</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>
+                                        <option value="meta.extracted.text_nerl.ner.all">Ner All</option>
+                                        <option value="meta.extracted.text_nerl.ner.PERSON">Ner Persons</option>
+                                        <option value="meta.extracted.text_nerl.ner.ORGANIZATION">Ner Organizations</option>
+                                        <option value="meta.extracted.text_nerl.ner.LOCATION">Ner Locations</option>
+                                        <option value="meta.source.hashtags">Twitter: Hashtags</option>
+                                        <option value="meta.source.userMentions">Twitter: User Mentions</option>
+                                        <option value="meta.source.author">Authors</option>
+                                        <option value="meta.source.text">Plain Text</option>
+                                    </select>
+                                </div>
+                                <div id="my-genericwordcloud" class="genericwordcloud"></div>
                             </div>
                         </div>
 
@@ -232,15 +255,16 @@
                                     <label>Field</label>
                                     <select style="width: 180px;" title="Select Keyword" class="wordgraph-key-selector">
                                         <option value="meta.source.keywords">Keywords</option>
-                                        <option value="meta.extracted.text.dbpedia.all">DBpedia All</option>
-                                        <option value="meta.extracted.text.dbpedia.PERSON">DBpedia Persons</option>
-                                        <option value="meta.extracted.text.dbpedia.ORGANIZATION">DBpedia Organizations</option>
-                                        <option value="meta.extracted.text.dbpedia.LOCATION">DBpedia Locations</option>
-                                        <option value="meta.extracted.text.ner.all">Ner All</option>
-                                        <option value="meta.extracted.text.ner.PERSON">Ner Persons</option>
-                                        <option value="meta.extracted.text.ner.ORGANIZATION">Ner Organizations</option>
+                                        <!-- <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option> -->
+                                        <option value="meta.extracted.text_nerl.dbpedia.PERSON">DBpedia Persons</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.ORGANIZATION">DBpedia Organizations</option>
+                                        <!-- <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>-->
+                                        <!-- <option value="meta.extracted.text_nerl.ner.all">Ner All</option> -->
+                                        <option value="meta.extracted.text_nerl.ner.PERSON">Ner Persons</option>
+                                        <option value="meta.extracted.text_nerl.ner.ORGANIZATION">Ner Organizations</option>
                                         <option value="meta.source.text">Plain Text</option>
                                     </select>
+                                    <label style="display:none; position: absolute; color: green; right: 300px" id="selectedD3Node">Selected: </label>
                                 </div>
                                 <div id="my-wordgraph" class="wordgraph"></div>
                             </div>
@@ -253,31 +277,7 @@
                             </div>
                         </div>
 
-                        <div id="genericwordcloudtab" data-tabpos="7">
-                            <div class="tab-content">
-                                <div class='genericwordcloud-toolbar content-toolbar ui-widget-header ui-corner-all'>
-                                    <label>Cloud Key</label>
-                                    <select style="width: 180px;" title="Select Keyword" class="genericwordcloud-key-selector">
-                                        <option value="meta.source.keywords">Keywords</option>
-                                        <option value="meta.extracted.text.dbpedia.all">DBpedia All</option>
-                                        <option value="meta.extracted.text.dbpedia.PERSON">DBpedia Persons</option>
-                                        <option value="meta.extracted.text.dbpedia.ORGANIZATION">DBpedia Organizations</option>
-                                        <option value="meta.extracted.text.dbpedia.LOCATION">DBpedia Locations</option>
-                                        <option value="meta.extracted.text.ner.all">Ner All</option>
-                                        <option value="meta.extracted.text.ner.PERSON">Ner Persons</option>
-                                        <option value="meta.extracted.text.ner.ORGANIZATION">Ner Organizations</option>
-                                        <option value="meta.extracted.text.ner.LOCATION">Ner Locations</option>
-                                        <option value="meta.source.hashtags">Twitter: Hashtags</option>
-                                        <option value="meta.source.userMentions">Twitter: User Mentions</option>
-                                        <option value="meta.source.author">Authors</option>
-                                        <option value="meta.source.text">Plain Text</option>
-                                    </select>
-                                </div>
-                                <div id="my-genericwordcloud" class="genericwordcloud"></div>
-                            </div>
-                        </div>
-                        
-                        <div id="twitterpolarity" data-tabpos="8">
+                        <div id="twitterpolarity" data-tabpos="7">
                             <div class="tab-content expanded polarity">
                                 <div class="polarity-placeholder"></div>
                             </div>

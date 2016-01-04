@@ -53,16 +53,19 @@
 
 		getImportantEvents: function(entity){
 			$(this.target).addClass("ui-loading-modal");
+			var cont = EUMSSI.Manager.getLastQuery();
+			var lastquery = cont.split(":");
+			var queryurl = this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( "meta.source.text:" + lastquery[1] || "*%3A*");
 			if (!entity) {
 				$.ajax({
-					url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( EUMSSI.Manager.getLastQuery() || "*%3A*"),
+					url: queryurl,
 					success: this._renderTimelineAPI.bind(this)
 				});
 			}
 			
 			else {
 				$.ajax({
-					url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( "meta.extracted.text.ner.all:*" + entity + "*" ),
+					url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( "meta.extracted.text_nerl.ner.all:*" + entity + "*" ),
 					success: this._renderTimelineAPI.bind(this)
 				});
 			}
@@ -144,7 +147,7 @@
 		setFilter: function (value) {
 			//Set the current Filter
 			storedValue = value;
-			EUMSSI.FilterManager.addFilter("Entity:", storedValue, this.id, "Entity: "+value);
+			EUMSSI.FilterManager.addFilter("meta.extracted.text_nerl.ner.all:", "meta.extracted.text_nerl.ner.all:" + storedValue, this.id, "Entity: "+value);
 		}
 
 	});

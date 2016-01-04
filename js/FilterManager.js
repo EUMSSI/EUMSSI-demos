@@ -14,7 +14,7 @@ function FilterManager(){
 
 _.extend(FilterManager.prototype, {
 
-	/* FILTERS API */
+	//<editor-fold desc="FILTERS API">
 
 	/**
 	 * Get all the filters Array
@@ -166,19 +166,21 @@ _.extend(FilterManager.prototype, {
 
 	/**
 	 * Generate a filter query String with the current filters
+	 * @param {Array.<string>} [filterNames] - The name of the filters to add to the custom filter query,
+	 * if no filterNames given, then generate a filter with all the current filters set.
 	 * @private
 	 */
-	getFilterQueryString: function(){
+	getFilterQueryString: function(filterNames){
 		var fq = "", q = [];
 		_.each(this._filters,function(filterObj){
-			//Detect special cases
-			switch(filterObj.filterName){
-				case "GENERAL_SEARCH" :
-					//General search is now a Query
-					//q.push(this._parseGeneralFilter(filterObj.query.replace("GENERAL_SEARCH"+":","")));
-					break;
-				default:
-					q.push(filterObj.query);
+			if(filterNames === undefined || (filterNames instanceof Array && filterNames.indexOf(filterObj.filterName) >= 0) ){
+				switch(filterObj.filterName){
+					case "GENERAL_SEARCH" :
+						//General search is now a main Query
+						break;
+					default:
+						q.push(filterObj.query);
+				}
 			}
 		},this);
 
@@ -188,9 +190,9 @@ _.extend(FilterManager.prototype, {
 
 		return fq;
 	},
+	//</editor-fold>
 
-	/* end FILTERS API end */
-
+	//<editor-fold desc="Better Solr Queries Aux Functions">
 	/**
 	 * Creates a Query with the general search fields with the given value.
 	 * @param {string} value - the value of the search
@@ -200,14 +202,7 @@ _.extend(FilterManager.prototype, {
 	_parseGeneralFilter : function(value){
 		var searchQueries = [];
 		var searchFields = [
-			"meta.source.text",
-			"meta.source.description",
-			"meta.source.category",
-			"meta.source.headline",
-			"meta.source.author",
-			"meta.extracted.audio_transcript",
-			"meta.extracted.video_ocr.best",
-			"meta.source.keywords"
+			"contentSearch"
 		];
 
 		if(value){
@@ -234,7 +229,7 @@ _.extend(FilterManager.prototype, {
 
 	_escapeSpecialChars: function(valorBusqueda){
 		if (valorBusqueda != "*" ){
-			valorBusqueda = valorBusqueda.replace("\\", "\\\\");//Modificamos las '\' primero, porque para el resto de caracteres de escape se añaden '\'
+			valorBusqueda = valorBusqueda.replace("\\", "\\\\");//Modificamos las '\' primero, porque para el resto de caracteres de escape se aÃ±aden '\'
 			valorBusqueda = valorBusqueda.replace("+", "\\+");
 			valorBusqueda = valorBusqueda.replace("-", "\\-");
 			valorBusqueda = valorBusqueda.replace("&", "\\&");
@@ -246,12 +241,12 @@ _.extend(FilterManager.prototype, {
 			valorBusqueda = valorBusqueda.replace("]", "\\]");
 			valorBusqueda = valorBusqueda.replace("^", "\\^");
 			valorBusqueda = valorBusqueda.replace(":", "\\:");
-			//valorBusqueda = valorBusqueda.Replace("\"", "\\\"");  //No escapamos para permitir búsquedas de frases
-			//valorBusqueda = valorBusqueda.Replace("~", @"\~");    //No escapamos, para permitir búsquedas de cercanía al user
-			//valorBusqueda = valorBusqueda.Replace("*", @"\*");    //No escapamos, para permitir búsquedas con wildcards al user
-			//valorBusqueda = valorBusqueda.Replace("?", @"\?");    //No escapamos, para permitir búsquedas con wildcards al user
-			//valorBusqueda = valorBusqueda.Replace("(", @"\(");	//No escapamos, para permitir búsquedas con agrupaciones Ej: a AND (b OR c)
-			//valorBusqueda = valorBusqueda.Replace(")", @"\)");	//No escapamos, para permitir búsquedas con agrupaciones Ej: a AND (b OR c)
+			//valorBusqueda = valorBusqueda.Replace("\"", "\\\"");  //No escapamos para permitir bÃºsquedas de frases
+			//valorBusqueda = valorBusqueda.Replace("~", @"\~");    //No escapamos, para permitir bÃºsquedas de cercanÃ­a al user
+			//valorBusqueda = valorBusqueda.Replace("*", @"\*");    //No escapamos, para permitir bÃºsquedas con wildcards al user
+			//valorBusqueda = valorBusqueda.Replace("?", @"\?");    //No escapamos, para permitir bÃºsquedas con wildcards al user
+			//valorBusqueda = valorBusqueda.Replace("(", @"\(");	//No escapamos, para permitir bÃºsquedas con agrupaciones Ej: a AND (b OR c)
+			//valorBusqueda = valorBusqueda.Replace(")", @"\)");	//No escapamos, para permitir bÃºsquedas con agrupaciones Ej: a AND (b OR c)
 
 			valorBusqueda = this._checkUseNearOperator(valorBusqueda);
 			valorBusqueda = this._checkUseWildcards(valorBusqueda);
@@ -263,10 +258,10 @@ _.extend(FilterManager.prototype, {
 
 	/**
 	 * Extracheck
-	 * Cuando se utiliza el operador de cercanía, los términos de búsqueda deben ir entre ", pq si no solr interpreta el operador ~
-	 * como si fuera un FuzzyQuery, y si el valor de cercanía es mayor que 1 (que seguramente lo sea, porque de lo contrario no tiene
+	 * Cuando se utiliza el operador de cercanÃ­a, los tÃ©rminos de bÃºsqueda deben ir entre ", pq si no solr interpreta el operador ~
+	 * como si fuera un FuzzyQuery, y si el valor de cercanÃ­a es mayor que 1 (que seguramente lo sea, porque de lo contrario no tiene
 	 * mucho sentido), el query a Solr da ERROR de parseo y dice: Minimum similarity for a FuzzyQuery has to be between 0.0f and 1.0f !
-	 * Si el user utiliza el operador ~, comprobar que los términos los ha colocado entre ", si no, añadirlas!!
+	 * Si el user utiliza el operador ~, comprobar que los tÃ©rminos los ha colocado entre ", si no, aÃ±adirlas!!
 	 * @param valorBusqueda
 	 * @returns {*}
 	 * @private
@@ -293,9 +288,9 @@ _.extend(FilterManager.prototype, {
 		var newValorBusqueda = "";
 		// Extracheck
 		// COPIADO DE MAM
-		// Hay un bug en esta versión de solr, que cuando se usan los wildcards * o ?, la búsqueda es caseSensitive.
-		// Lo convertimos todo a lowercase para evitar este problema, hasta que actualicemos versión de solr.
-		// Ojo con convertir a lowercase operadores lógicos!!!!
+		// Hay un bug en esta versiÃ³n de solr, que cuando se usan los wildcards * o ?, la bÃºsqueda es caseSensitive.
+		// Lo convertimos todo a lowercase para evitar este problema, hasta que actualicemos versiÃ³n de solr.
+		// Ojo con convertir a lowercase operadores lÃ³gicos!!!!
 		if (valorBusqueda.indexOf('*') >= 0 || valorBusqueda.indexOf('?') >= 0) {
 			var arrayTokens = valorBusqueda.split(' ');
 			for(var token in arrayTokens) {
@@ -385,13 +380,13 @@ _.extend(FilterManager.prototype, {
 		var strResult = valorBusqueda;
 		var temp = "";
 
-		if (valorBusqueda.indexOf(" AND ") >= 0 && valorBusqueda.indexOf(" OR ") < 0 && valorBusqueda.indexOf(" NOT ") < 0)	//Sólo ANDs
+		if (valorBusqueda.indexOf(" AND ") >= 0 && valorBusqueda.indexOf(" OR ") < 0 && valorBusqueda.indexOf(" NOT ") < 0)	//Sï¿½lo ANDs
 		{
 			temp = valorBusqueda.replace(" AND ", " ");
 			if (temp)
 				strResult = '("{0}"~1000000)'.replace("{0}",temp);
 		}
-		else if (valorBusqueda.indexOf(" OR ") >= 0 && valorBusqueda.indexOf(" AND ") < 0 && valorBusqueda.indexOf(" NOT ") < 0) //Sólo ORs
+		else if (valorBusqueda.indexOf(" OR ") >= 0 && valorBusqueda.indexOf(" AND ") < 0 && valorBusqueda.indexOf(" NOT ") < 0) //Sï¿½lo ORs
 		{
 			temp = valorBusqueda.replace(" OR ", " ");
 			if (temp)
@@ -402,8 +397,8 @@ _.extend(FilterManager.prototype, {
 
 	/**
 	 * Buscamos cada uno de los strings que componen el valoBusqueda, separados por espacios en blanco.
-	 * A cada uno de estoos tokens, le añadimos el operador "AND" delante, para convertirlo en obligatorio.
-	 * Así lo que hará solr al buscar es un AND de todos los tokens que componen el valor a buscar.
+	 * A cada uno de estoos tokens, le aï¿½adimos el operador "AND" delante, para convertirlo en obligatorio.
+	 * Asï¿½ lo que harï¿½ solr al buscar es un AND de todos los tokens que componen el valor a buscar.
 	 * @param valorBusqueda
 	 * @returns {string}
 	 * @private
@@ -424,12 +419,13 @@ _.extend(FilterManager.prototype, {
 			}
 		}
 
-		//Este sería el caso en el que el usuario está introduciendo espacios en blanco al principo de la cadena de búsqueda
+		//Este serï¿½a el caso en el que el usuario estï¿½ introduciendo espacios en blanco al principo de la cadena de bï¿½squeda
 		if (!strResult) strResult = "*";
-		else strResult = this._includePhraseBoostingInSearchValue(strResult);	//Boosting de las frases, para q tokens más cercanos tengan más score
+		else strResult = this._includePhraseBoostingInSearchValue(strResult);	//Boosting de las frases, para q tokens mï¿½s cercanos tengan mï¿½s score
 
 		return strResult;
 	}
+	//</editor-fold>
 
 });
 

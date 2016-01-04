@@ -2,9 +2,9 @@
 window.CONF = {};
 window.UTIL = {};
 
-CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text.dbpedia.Country";
-CONF.MAP_CITIES_FIELD_NAME = "meta.extracted.text.dbpedia.City";
-CONF.PERSON_FIELD_NAME = "meta.extracted.text.dbpedia.PERSON";
+CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.Country";
+CONF.MAP_CITIES_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.City";
+CONF.PERSON_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.PERSON";
 CONF.CLOUD_FIELD_NAME = "meta.source.keywords";
 CONF.SOURCE_FIELD_NAME = "source";
 
@@ -24,11 +24,18 @@ CONF.updateFacetingFields = function(){
 			CONF.CLOUD_FIELD_NAME
 		]
 	};
+	//Facet Limit
 	params['f.' + CONF.SOURCE_FIELD_NAME + '.facet.limit'] = 20;
 	params['f.' + CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
 	params['f.' + CONF.MAP_CITIES_FIELD_NAME + '.facet.limit'] = 25;
 	params['f.' + CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
 	params['f.' + CONF.CLOUD_FIELD_NAME + '.facet.limit'] = 100;
+	//Facet Min occurrences
+	params['f.' + CONF.SOURCE_FIELD_NAME + '.facet.mincount'] = 1;
+	params['f.' + CONF.MAP_LOCATION_FIELD_NAME + '.facet.mincount'] = 1;
+	params['f.' + CONF.MAP_CITIES_FIELD_NAME + '.facet.mincount'] = 1;
+	params['f.' + CONF.PERSON_FIELD_NAME + '.facet.mincount'] = 1;
+	params['f.' + CONF.CLOUD_FIELD_NAME + '.facet.mincount'] = 1;
 
 	for (var name in params) {
 		EUMSSI.Manager.store.addByValue(name, params[name]);
@@ -246,6 +253,20 @@ UTIL.serializeCurrentState = function(){
 		currentTab : $(".tabs-container").tabs("option", "active"),
 		widgets : []
 	};
+};
+
+UTIL.showSearchHelp = function(){
+	var $dialogContent = $($("#search-info-content-tpl").text());
+	$dialogContent.dialog({
+		title: "Search help",
+		closeOnEscape: true,
+		width: 800,
+		close: function () { $(this).remove() },
+		open: function() {
+			$(this).dialog( "option" ,"maxWidth" , $(window).width() - 100);
+			$(this).dialog( "option" ,"maxHeight", $(window).height() - 100);
+		}
+	});
 };
 
 

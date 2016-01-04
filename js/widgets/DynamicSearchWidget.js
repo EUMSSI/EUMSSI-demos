@@ -99,8 +99,6 @@
 				label: label,
 				showInResultCheck: showInResultCheck
 			}));
-			// Manager is already initialized we need to init widget manually
-			this.manager.widgets[genKey].init();
 
 			// If the Filter is added manually, add a btn to remove it.
 			if(!preloaded){

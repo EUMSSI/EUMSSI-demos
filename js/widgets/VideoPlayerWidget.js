@@ -116,7 +116,7 @@
 								//description: 'A description I may have to put here',
 								level: 1,
 								displayLevel: 1,
-								scrollAuto: true
+								autoScroll: true
 							}
 						}]
 					}

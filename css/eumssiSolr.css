@@ -80,6 +80,10 @@ li {
   list-style-type: none;
   margin-top: 0.2em;
 }
+input[type=checkbox] {
+  vertical-align: text-bottom;
+  margin: 0 2px 1px 2px;
+}
 form {
   padding: 10px;
 }
@@ -468,7 +472,7 @@ img.logo {
 .search-panel-content h2,
 .advancedSearch-panel-content h2 {
   clear: left;
-  padding-top: 20px;
+  margin-top: 20px;
   color: #333333;
   font-size: 13px;
 }
@@ -479,6 +483,24 @@ img.logo {
 .search-panel-content select,
 .advancedSearch-panel-content select {
   width: 150px;
+}
+.search-panel-content div.search-info,
+.advancedSearch-panel-content div.search-info {
+  color: #ffffff;
+  background-color: #777777;
+  display: inline-block;
+  width: 17px;
+  vertical-align: text-bottom;
+  margin-left: 5px;
+  height: 17px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bolder;
+  cursor: pointer;
+}
+.search-panel-content div.search-info:hover,
+.advancedSearch-panel-content div.search-info:hover {
+  background-color: #ff4900;
 }
 .search-panel-content .filter-container,
 .advancedSearch-panel-content .filter-container {
@@ -498,6 +520,23 @@ img.logo {
 .advancedSearch-panel-content .filter-container .ui-checkbox-label {
   font-size: 10px;
   font-style: italic;
+}
+.search-panel-content .videoOnlyWidget,
+.advancedSearch-panel-content .videoOnlyWidget {
+  margin-top: 20px;
+}
+.search-panel-content .videoOnlyWidget .ui-checkbox-container:hover,
+.advancedSearch-panel-content .videoOnlyWidget .ui-checkbox-container:hover {
+  background-color: rgba(255, 73, 0, 0.15);
+}
+.search-panel-content .videoOnlyWidget label,
+.advancedSearch-panel-content .videoOnlyWidget label {
+  font-weight: bold;
+}
+div.search-info-content h4 {
+  color: #ff4900;
+  background-color: #ffede5;
+  margin: 0.5em 0;
 }
 /*************************** Dialog ***************************/
 span.info-label {
@@ -590,11 +629,7 @@ span.more {
   width: 100%;
 }
 .tagfacet .ui-checkbox-container:hover {
-  background-color: rgba(255, 77, 0, 0.1);
-}
-.tagfacet .ui-checkbox-container input {
-  vertical-align: top;
-  margin: 2px 2px;
+  background-color: rgba(255, 73, 0, 0.15);
 }
 /*************************** TAG CLOUD WIDGET ***************************/
 .tagCloud-placeholder {
@@ -705,6 +740,9 @@ span.more {
   opacity: 1 !important;
 }
 /*************************** TAG CLOUD WIDGET ***************************/
+.filterViewer-placeholder {
+  display: inline-block;
+}
 .filterViewer-placeholder .ui-filters-label {
   display: none;
 }
@@ -722,6 +760,7 @@ span.more {
   text-overflow: ellipsis;
   overflow: hidden;
   width: calc(100% - 20px);
+  font-size: 8pt;
 }
 /************************ MAP GEOCHART WIDGET **************************/
 .tab-content.mapChart .mapChart-placeholder {
@@ -758,7 +797,7 @@ span.more {
 .polarity-placeholder .polarityCol.against .tweet-container {
   background: linear-gradient(to bottom, rgba(224, 0, 0, 0.8) 0%, #ffffff 100%);
 }
-.polarity-placeholder .polarityCol .tweet-container-loading {
+.polarity-placeholder .polarityCol .tweet-container-loading.loading {
   width: 100%;
   height: 200px;
   margin-top: -200px;
@@ -778,6 +817,45 @@ span.more {
   min-width: 250px;
   width: calc(100% - 20px);
   text-align: center;
+}
+.polarity-placeholder .polarityCol .tweet-container h3 {
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: -50px;
+  text-shadow: 0px 0px 2px white;
+}
+.polarity-placeholder .chartsCol {
+  display: inline-block;
+  width: 35%;
+  height: 100%;
+}
+.polarity-placeholder .chartsCol > div {
+  height: 33%;
+  width: 100%;
+  position: relative;
+  display: inline-block;
+}
+.polarity-placeholder .chartsCol > div.tweet-pie-chart > svg {
+  width: 100%;
+  height: 100%;
+}
+.polarity-placeholder .chartsCol > div.tweet-pie-chart > div {
+  width: 50%;
+  height: 100%;
+  float: left;
+}
+.polarity-placeholder .chartsCol > div.tweet-time-chart > div {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+}
+/* NEW UPDATE LAYOUT WITH CHARTS */
+body #twitterpolarity .tab-content {
+  padding: 0;
+  width: 100%;
+}
+body #twitterpolarity .polarity-placeholder .polarityCol {
+  width: 30%;
 }
 /************************ VIDEO PLAYER WIDGET **************************/
 .player-minimize {
@@ -865,7 +943,6 @@ body .ui-dialog.video-dialog.ui-widget .ui-dialog-content {
 .amalia-placeholder .amalia-player-row > div {
   display: inline-block;
   height: 320px;
-  overflow: auto;
 }
 .amalia-placeholder .amalia-player-placeholder {
   width: 520px;
@@ -875,6 +952,7 @@ body .ui-dialog.video-dialog.ui-widget .ui-dialog-content {
 }
 .amalia-placeholder .ajs-plugin.plugin-text-sync {
   background: #333333;
+  height: 320px;
 }
 .amalia-placeholder .ajs-plugin.plugin-text-sync .line-component {
   padding: 0;
@@ -888,6 +966,23 @@ body .ui-dialog.video-dialog.ui-widget .ui-dialog-content {
 .amalia-placeholder .ajs-plugin.plugin-text-sync .line-component .line.on {
   background-color: rgba(0, 0, 0, 0.25);
   box-shadow: 0 0 1px 3px #0cf;
+}
+/**************************** DATE FILTER WIDGET ****************************/
+.dateFilterWidget-placeholder {
+  margin-top: 20px;
+}
+.dateFilterWidget-placeholder div {
+  margin-top: 8px;
+}
+.dateFilterWidget-placeholder label {
+  font-weight: bold;
+  text-align: right;
+  display: inline-block;
+  width: 35px;
+  margin-right: 0.5em;
+}
+.dateFilterWidget-placeholder input {
+  width: 157px;
 }
 /*************************** OVERRIDE - jQuery UI ***************************/
 body .ui-widget-header {
@@ -906,4 +1001,11 @@ body .ui-dialog .ui-dialog-title {
 }
 body .tweet-tooltip {
   background: none;
+}
+body .ui-dialog-titlebar-close .ui-button-text {
+  display: none;
+}
+body .ui-datepicker {
+  z-index: 10 !important;
+  font-size: inherit;
 }

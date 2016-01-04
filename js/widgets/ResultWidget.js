@@ -220,17 +220,18 @@
 				videoLink = parentDoc['meta.source.httpHigh'] || parentDoc['meta.source.mediaurl'] || parentDoc['meta.source.httpMedium'];
 			}
 
-			EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, segmentDoc, parseFloat(segmentDoc.beginOffset), parseFloat(segmentDoc.endOffset) ]);
+			EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, parentDoc, parseFloat(segmentDoc.beginOffset), parseFloat(segmentDoc.endOffset) ]);
 		},
 
 		_renderTitle: function(doc){
 			var $header =  $("<span class='links'>"),
-				$title = $("<h2>");
+				$title = $("<h2>"),
+				text = "";
 			$header.text(doc['meta.source.headline']);
 
 			//Twitter - special behaviour
 			if(!doc['meta.source.headline'] && doc['source'] && doc['source'].startsWith("Twitter") ) {
-				var text = doc['meta.source.text'] || "";
+				text = doc['meta.source.text'] || "";
 				$header.text(text.substring(0, 50));
 				if(text.length > 50){
 					$header.append("...");
@@ -241,9 +242,18 @@
 						.prop("data-tweetid",doc['meta.source.tweetId'])
 						.prop("title","Open Tweet");
 					$twitterLogo.click(function(event){
-						UTIL.openTweetDialog( $(event.target).prop("data-tweetid") );
+						UTIL.openTweet( $(event.target).prop("data-tweetid") );
 					});
-					$title.append($twitterLogo)
+					$title.append($twitterLogo);
+				}
+			}
+
+			//Wikipedia Event - special behaviour
+			if(!doc['meta.source.headline'] && doc['source'] && doc['source'].startsWith("Wikipedia") ) {
+				text = doc['meta.source.text'] || "";
+				$header.text(text.substring(0, 50));
+				if(text.length > 50){
+					$header.append("...");
 				}
 			}
 
@@ -287,10 +297,13 @@
 					var $key = $('<span>').addClass("info-label");
 
 					switch(key){
-						case "meta.extracted.text.dbpedia.PERSON" :
+						case "meta.extracted.text_nerl.dbpedia.PERSON" :
 							value = this._personCustomRender(text, $content);
 							$value.addClass("person-data");
 						break;
+						case "meta.extracted.text_nerl.dbpedia.LOCATION" :
+							value = this._locationCustomRender(text, $content);
+							break;
 						default :
 							//FIX - comma problem
 							text = text.replace(/,([^\s])/g, ", $1");
@@ -299,7 +312,7 @@
 
 							//ADD here HTML tags to the value
 							//dbpedia links transformation
-							if(key == "meta.extracted.text.dbpedia"){
+							if(key == "meta.extracted.text_nerl.dbpedia"){
 								value = this._generateHTMLLinks(value);
 							}
 						break;
@@ -404,6 +417,19 @@
 				tempValue = "Loading Images..."
 			}
 			return tempValue;
+		},
+
+		_locationCustomRender: function(text, $content){
+			var tempArray = [];
+			var locationCount = _.countBy(text.split(","),function(loc){return loc;});
+			_.each(locationCount, function(val,key){
+				if(val > 1){
+					tempArray.push(key + "(x" + val + ")");
+				} else {
+					tempArray.push(key);
+				}
+			});
+			return tempArray.join(", ")+".";
 		},
 
 		_renderWikipediaImages : function($content, response){
