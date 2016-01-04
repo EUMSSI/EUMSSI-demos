@@ -83,7 +83,7 @@
 
 			var q = EUMSSI.Manager.getLastQuery() || "*:*";
 			this.pivots = this.field + "," + this.field;
-			var p_url = "select?q=" + q + "&rows=0&wt=json&indent=true&facet=true&facet.pivot=" + this.pivots;
+			var p_url = "select?q=" + q + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
 			console.log(p_url);
 			console.log(this.pivots);
 			$.ajax({
