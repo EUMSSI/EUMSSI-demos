@@ -33,6 +33,25 @@
   font: 10px sans-serif;
   pointer-events: none;
 }
+
+
+.genericgraph .link {
+  fill: none;
+  stroke: #cccccc;
+  stroke-width: 1.1px;
+}
+.genericgraph .node {
+  cursor: pointer;
+}
+.genericgraph .node circle {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+.genericgraph text {
+  font: 10px sans-serif;
+  pointer-events: none;
+}
 /*************** ******** **************/
 /*************** MISC **************/
 /*************************** Common ***************************/
