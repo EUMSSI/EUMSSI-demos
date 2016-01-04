@@ -148,12 +148,20 @@
 				obi = facet_pivots[i];
 
 				source_item = obi['value'];
-
+				if (keys[source_item] !== undefined) {
+					this.tf.push({'text': source_item, 'size': obi['count']});
+					keys[source_item] = 1;
+				}
 				for (var j in obi['pivot']) {
 					obj = obi['pivot'][j];
 					target_item = obj['value'];
 					link = {'source': source_item, 'target': target_item};
 					links.push(link);
+					if (keys[target_item] !== undefined) {
+						this.tf.push({'text': target_item, 'size': obj['count']});
+						keys[target_item] = 1;
+					}
+
 					if (j >10) {
 						break;
 					}
@@ -184,16 +192,17 @@
 			var scale = 1;
 
 			var max_size = size/tf.length;
+			console.log(max_size);
 			for (var i in tf) { // get the scale
 				scale = 8 * max_size / tf[i].size;
 				break;
 			}
 			//update
 
-			//for (var i in tf) {
-			//	tf[i].size = 12 + tf[i].size * scale;
-			//	nodes[tf[i].text] = {name: tf[i].text, size: tf[i].size, color: "purple"};
-			//}
+			for (var i in tf) {
+				tf[i].size = 5 + tf[i].size * scale;
+				nodes[tf[i].text] = {name: tf[i].text, size: tf[i].size, color: "purple"};
+			}
 
 
 			//Set up color scale
