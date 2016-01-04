@@ -134,11 +134,33 @@
 		 * @private
 		 */
 		_onGetWordGraph: function(responsestr){
+			keys = {};
+
+			for (var ik in this.tf) {
+				keys[this.tf[ik]['text']] = 1;
+			}
+
 			links = [];
 			response = JSON.parse(responsestr);
 			var temp = response['facet_counts'];
 			var facet_pivots = response['facet_counts']['facet_pivot'][this.pivots];
+			for (var i in facet_pivots) {
+				obi = facet_pivots[i];
 
+				source_item = obi['value'];
+
+				for (var j in obi['pivot']) {
+					obj = obi['pivot'][j];
+					target_item = obj['value'];
+					link = {'source': source_item, 'target': target_item};
+					links.push(link);
+					if (j >10) {
+						break;
+					}
+				}
+
+
+			}
 			this._renderGraph(this.tf, links);
 			$(this.target).removeClass("ui-loading-modal");
 		},
