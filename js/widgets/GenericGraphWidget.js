@@ -133,8 +133,9 @@
 		 * @param {string} response.text
 		 * @private
 		 */
-		_onGetWordGraph: function(response){
+		_onGetWordGraph: function(responsestr){
 			links = [];
+			response = JSON.parse(responsestr);
 			var temp = response['facet_counts'];
 			var facet_pivots = response['facet_counts']['facet_pivot'][this.pivots];
 
