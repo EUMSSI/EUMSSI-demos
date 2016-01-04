@@ -223,8 +223,8 @@
 				.nodes(d3.values(nodes))
 				.links(links)
 				.size([width, height])
-				.linkDistance(200)
-				.charge(-100)
+				.linkDistance(300)
+				.charge(-50)
 				.on("tick", tick)
 				.start();
 			// Append SVG to the html, with defined constants
