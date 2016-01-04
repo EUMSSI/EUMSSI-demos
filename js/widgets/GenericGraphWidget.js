@@ -198,7 +198,7 @@
 
 			var scale = max_size / this.maxCount;
 			for (var i in tf) {
-				tf[i].size = 5 + tf[i].size * scale;
+				tf[i].size = 15 + tf[i].size * scale;
 				nodes[tf[i].text] = {name: tf[i].text, size: tf[i].size, color: "purple"};
 			}
 
@@ -210,8 +210,8 @@
 			links.forEach(function(link) {
 				//link.source = nodes[link.source];
 				//link.target = nodes[link.target];
-				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 12, color: "purple"});
-				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 12, color: "purple"});
+				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 15, color: "purple"});
+				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 15, color: "purple"});
 			});
 			// SVG constants
 			var width = 1060,
