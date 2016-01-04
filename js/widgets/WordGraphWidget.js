@@ -152,7 +152,7 @@
 				//link.target = nodes[link.target];
 				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 12, color: "purple"});
 				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 12, color: "purple"});
-				link.weight = 10;
+				link.weight = 1;
 			});
 			// SVG constants
 			var width = 1060,
