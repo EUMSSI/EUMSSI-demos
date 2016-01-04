@@ -149,7 +149,7 @@
 				obi = facet_pivots[i];
 
 				source_item = obi['value'];
-				if (keys[source_item] !== undefined) {
+				if (keys[source_item] == undefined) {
 					this.tf.push({'text': source_item, 'size': obi['count']});
 					keys[source_item] = 1;
 					if (obi['count'] > this.maxCount) {
@@ -161,7 +161,7 @@
 					target_item = obj['value'];
 					link = {'source': source_item, 'target': target_item};
 					links.push(link);
-					if (keys[target_item] !== undefined) {
+					if (keys[target_item] == undefined) {
 						this.tf.push({'text': target_item, 'size': obj['count']});
 						keys[target_item] = 1;
 						if (obj['count'] > this.maxCount) {
