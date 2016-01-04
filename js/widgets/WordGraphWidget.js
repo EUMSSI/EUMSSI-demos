@@ -148,10 +148,10 @@
 
 			// Compute the distinct nodes from the links.
 			links.forEach(function(link) {
-				link.source = nodes[link.source];
-				link.target = nodes[link.target];
-				//link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 12, color: "purple"});
-				//link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 12, color: "purple"});
+				//link.source = nodes[link.source];
+				//link.target = nodes[link.target];
+				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 12, color: "purple"});
+				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 12, color: "purple"});
 				link.weight = 1;
 			});
 			// SVG constants
