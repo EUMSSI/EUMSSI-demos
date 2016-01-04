@@ -85,6 +85,8 @@
 			var q = EUMSSI.Manager.getLastQuery() || "*:*";
 			this.pivots = this.field + "," + this.field;
 			var p_url = "select?q=" + q + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
+			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage", this.field]);
+			p_url +="&fq=" + filters;
 			console.log(p_url);
 			console.log(this.pivots);
 			$.ajax({
