@@ -199,7 +199,7 @@
 			var scale = max_size / this.maxCount;
 			for (var i in tf) {
 				tf[i].size = 10 + tf[i].size * scale;
-				nodes[tf[i].text] = {name: tf[i].text, size: tf[i].size, color: "purple"};
+				nodes[tf[i].text] = {name: tf[i].text, size: tf[i].size, color: "purple", group:1};
 			}
 
 
@@ -212,7 +212,8 @@
 				//link.target = nodes[link.target];
 				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 10, color: "purple"});
 				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 10, color: "purple"});
-				link.weight = 1;
+				link.value = 1;
+				link.weight = link.value;
 			});
 			// SVG constants
 			var width = 1060,
