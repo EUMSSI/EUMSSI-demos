@@ -79,41 +79,36 @@
 			var tlobj = {};
 			tlobj["type"] = "default";
 
-			var dateObj = [];
+			var eventObj = [];
 
 			for (var i = 0, l = response.length; i < l; i++) {
 				var doc = response[i];
-				var output= {};
+				var slideobj= {};
 
-				output["headline"] = doc['headline'];
-				output["text"] = doc['description'];
-				output["endDate"] = doc['date'].replace(/-/g,",");
-				output["startDate"] =  doc['date'].replace(/-/g,",");
 
-				if (!!output["headline"] && output["headline"].length>0) {
-					if (dateObj.length == this.rowsNumber) { break; }
-					if (!!output["text"]) {output["text"] = output["text"].substring(0,200);}
-					dateObj.push(output);
+				year = doc['date'].substring(0,4);
+				month = doc['date'].substring(5,7);
+				day = doc['date'].substring(8,10);
+				var dateobj = {year: Number(year), month: Number(month), day: Number(day)};
+				var textobj = {headline:doc['headline'], text:doc['description']};
+
+				slideobj["text"] = textobj;
+				slideobj["end_date"] = dateobj;
+				slideobj["start_date"] =  dateobj;
+
+				if (!!slideobj['text']["headline"] && slideobj['text']["headline"].length>0) {
+					if (eventObj.length == this.rowsNumber) { break; }
+					if (!!slideobj['text']["text"]) {slideobj["text"]['text'] = output["text"]['text'].substring(0,200);}
+					eventObj.push(output);
 				}
 
 				this._renderEvent(doc);
 			}
 
-			if (dateObj.length==0) {return;}
-			tlobj["date"] = dateObj;
+			if (eventObj.length==0) {return;}
+			tlobj["events"] = eventObj;
 
-			var timelineobject = {};
-			timelineobject["timeline"] = tlobj;
-
-			createStoryJS({
-				type: 'timeline',
-				width: '760',
-				height: '500',
-				start_zoom_adjust: -2,
-				source:  timelineobject,
-				embed_id: 'my-timeline'
-			});
-
+			window.timeline = new TL.Timeline('my-timeline', tlobj);
 		},
 
 		_renderEvent: function(event){
