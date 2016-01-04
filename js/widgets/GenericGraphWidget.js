@@ -85,7 +85,7 @@
 			this.pivots = this.field + "," + this.field;
 			var p_url = "select?q=" + q + "&rows=0&wt=json&indent=true&facet=true&facet.pivot=" + this.pivots;
 			console.log(p_url);
-			console.log(pivots);
+			console.log(this.pivots);
 			$.ajax({
 				url: this.manager.solrUrl + p_url,
 				success: this._onGetWordGraph.bind(this)
@@ -136,7 +136,7 @@
 		_onGetWordGraph: function(response){
 			links = [];
 			var facet_pivots = response['facet_counts']['facet_pivot'][this.pivots];
-			
+
 			this._renderGraph(this.tf, links);
 			$(this.target).removeClass("ui-loading-modal");
 		},
