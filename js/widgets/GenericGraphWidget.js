@@ -16,7 +16,7 @@
 					if(this.field != data.item.value){
 						this._onSelectKey(data.item.value);
 					}
-					$("#selectedD3Node11").hide();
+					$("#selectedD3Node1").hide();
 				}.bind(this)
 			});
 			
