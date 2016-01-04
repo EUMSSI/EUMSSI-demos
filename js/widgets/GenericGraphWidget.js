@@ -64,10 +64,23 @@
 			//Loading
 			$(this.target).addClass("ui-loading-modal");
 			$(this.target).empty();
-			$.when(
-				$.ajax( this.apiURL + "getSemanticCloud/json/"+this.wordNumber+"/" + q + "/" + language + "/" + this.field  + "/" + filterValue),
-				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/" + language + "/" + this.field  + "/" + filterValue)
-			).done(this._onGetWordGraph.bind(this));
+
+
+			var facet, count, i, l, size, tabPosition,
+				maxCount = 0,
+				tf = [];
+			for ( facet in this.manager.response.facet_counts.facet_fields[this.field]) {
+				count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
+				if (count > maxCount) {
+					maxCount = count;
+				}
+				tf.push({ text: facet, size: count });
+			}
+			tf.sort(function (a, b) {
+				return a.facet < b.facet ? -1 : 1;
+			});
+
+			this._onGetWordGraph(tf, links);
 		},
 		
 //		_getGraph: function(filter){
