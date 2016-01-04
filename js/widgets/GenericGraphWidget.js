@@ -10,6 +10,7 @@
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
 			this.tf = [];
 			this.pivots = "";
+			this.maxCount =0;
 			this.$target.parent().find(".genericgraph-key-selector").selectmenu({
 				width: 200,
 				select: function( event, data ) {
@@ -67,13 +68,13 @@
 			$(this.target).empty();
 
 
-			var facet, count, i, l, size, tabPosition,
-				maxCount = 0;
+			var facet, count, i, l, size, tabPosition;
+			this.maxCount = 0;
 			this.tf = [];
 			for ( facet in this.manager.response.facet_counts.facet_fields[this.field]) {
 				count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
-				if (count > maxCount) {
-					maxCount = count;
+				if (count > this.maxCount) {
+					this.maxCount = count;
 				}
 				this.tf.push({ text: facet, size: count });
 			}
@@ -151,6 +152,9 @@
 				if (keys[source_item] !== undefined) {
 					this.tf.push({'text': source_item, 'size': obi['count']});
 					keys[source_item] = 1;
+					if (obi['count'] > this.maxCount) {
+						this.maxCount = obi['count'];
+					}
 				}
 				for (var j in obi['pivot']) {
 					obj = obi['pivot'][j];
@@ -160,6 +164,9 @@
 					if (keys[target_item] !== undefined) {
 						this.tf.push({'text': target_item, 'size': obj['count']});
 						keys[target_item] = 1;
+						if (obj['count'] > this.maxCount) {
+							this.maxCount = obj['count'];
+						}
 					}
 
 					if (j >10) {
@@ -187,18 +194,9 @@
 			
 			var self = this;
 			var nodes = {};
-			var size = 500;
+			var max_size = 50;
 
-			var scale = 1;
-
-			var max_size = size/tf.length;
-			console.log(max_size);
-			for (var i in tf) { // get the scale
-				scale = 8 * max_size / tf[i].size;
-				break;
-			}
-			//update
-
+			var scale = max_size / this.maxCount;
 			for (var i in tf) {
 				tf[i].size = 5 + tf[i].size * scale;
 				nodes[tf[i].text] = {name: tf[i].text, size: tf[i].size, color: "purple"};
