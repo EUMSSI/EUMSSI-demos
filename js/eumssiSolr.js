@@ -75,6 +75,11 @@ window.EUMSSI = {
 			target: '#my-wordgraph'
 		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.GenericGraphWidget({
+			id: 'my-genericgraph',
+			target: '#my-genericgraph'
+		}));
+
 		EUMSSI.Manager.addWidget(new AjaxSolr.ResultWidget({
 			id: 'result',
 			target: '.resultWidget-placeholder'
