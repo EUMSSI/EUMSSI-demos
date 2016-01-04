@@ -134,7 +134,6 @@
 		 * @private
 		 */
 		_onGetWordGraph: function(response){
-			console.log(response);
 			links = [];
 			var temp = response['facet_counts'];
 			var facet_pivots = response['facet_counts']['facet_pivot'][this.pivots];
