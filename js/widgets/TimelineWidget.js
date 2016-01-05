@@ -145,7 +145,7 @@
 			for (i = 0; i<entities.length; i++) {
 				//$value += entities[i].name + " ; ";
 				var $entitylink = $('<a>')
-				.text(entities[i].name + " ; ")
+				.text(entities[i].name + ", ")
 				.click(this._onEnityClick.bind(this, entities[i].name ));
 				$value.append($entitylink);
 			}
@@ -155,8 +155,10 @@
 			$event.append($('<p class="date">').html(event.date));
 			$event.append($('<p>').html(event.description));
 
-			var $key = $('<span>').addClass("info-label").text("Major Entities");
-			$event.append($('<p>').append($key).append($value));
+			if (entities.length>0) {
+				var $key = $('<span>').addClass("info-label").text("Major Entities");
+				$event.append($('<p>').append($key).append($value));
+			}
 			$(".event-placeholder").append($event);
 		},
 
