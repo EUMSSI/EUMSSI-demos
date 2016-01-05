@@ -107,7 +107,7 @@
 				day = doc['date'].substring(8,10);
 				var dateobj = {year: Number(year), month: Number(month), day: Number(day)};
 				var textobj = {headline:doc['headline'], text:doc['description']};
-
+				if (textobj['headline']==undefined) textobj['headline']="";
 				slideobj["text"] = textobj;
 				slideobj["end_date"] = dateobj;
 				slideobj["start_date"] =  dateobj;
