@@ -7,6 +7,7 @@
 			this.$tabs = $(this.target).parents(".tabs-container");
 			this.apiURL = "http://demo.eumssi.eu/EumssiEventExplorer/webresources/API/";
 			this.rowsNumber = 100;
+			this.field = "meta.extracted.text_nerl.dbpedia.all";
 		},
 
 		/** adding libs for timeline
@@ -53,22 +54,30 @@
 
 		getImportantEvents: function(entity){
 			$(this.target).addClass("ui-loading-modal");
-			var cont = EUMSSI.Manager.getLastQuery();
-			var lastquery = cont.split(":");
-			var queryurl = this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( "meta.source.text:" + lastquery[1] || "*%3A*");
-			if (!entity) {
-				$.ajax({
-					url: queryurl,
-					success: this._renderTimelineAPI.bind(this)
-				});
-			}
+			var language = $(".localeSelector").val();
+			if (!language)
+				language = "all";
+
+			var q = EUMSSI.Manager.getLastQuery() || "*";
+			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage",
+				"source", this.field]);
+			//var cont = EUMSSI.Manager.getLastQuery();
+			//var lastquery = cont.split(":");
+
+			var queryurl = this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/(" + q + ")+" + filters;
+			//if (!entity) {
+			$.ajax({
+				url: queryurl,
+				success: this._renderTimelineAPI.bind(this)
+			});
+			//}
 			
-			else {
-				$.ajax({
-					url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + ( "meta.extracted.text_nerl.ner.all:*" + entity + "*" ),
-					success: this._renderTimelineAPI.bind(this)
-				});
-			}
+			//else {
+			//	$.ajax({
+			//		url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + this.field + ":" + entity,
+			//		success: this._renderTimelineAPI.bind(this)
+			//	});
+			//}
 			
 		},
 
@@ -143,8 +152,9 @@
 		
 		setFilter: function (value) {
 			//Set the current Filter
-			storedValue = value;
-			EUMSSI.FilterManager.addFilter("meta.extracted.text_nerl.ner.all:", "meta.extracted.text_nerl.ner.all:" + storedValue, this.id, "Entity: "+value);
+			this.storedValue = this.field + ":" + value;
+			//EUMSSI.FilterManager.addFilter("meta.extracted.text_nerl.ner.all:", "meta.extracted.text_nerl.ner.all:" + storedValue, this.id, "meta.extracted.text_nerl.ner.all: "+value);
+			EUMSSI.FilterManager.addFilter(this.field, this.storedValue, this.id, this.field+": "+value);
 		}
 
 	});
