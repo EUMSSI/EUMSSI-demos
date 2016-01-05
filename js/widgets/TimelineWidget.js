@@ -112,7 +112,7 @@
 				slideobj["end_date"] = dateobj;
 				slideobj["start_date"] =  dateobj;
 
-				if (!!slideobj['text']["headline"] && slideobj['text']["headline"].length>0) {
+				if (!!slideobj['text']["text"] && slideobj['text']["text"].length>0) {
 					if (eventObj.length == this.rowsNumber) { break; }
 					if (!!slideobj['text']["text"]) {slideobj["text"]['text'] = slideobj["text"]['text'].substring(0,200);}
 					eventObj.push(slideobj);
