@@ -63,8 +63,13 @@
 				"source", this.field]);
 			//var cont = EUMSSI.Manager.getLastQuery();
 			//var lastquery = cont.split(":");
-
-			var queryurl = this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/(" + q + ")+" + filters;
+			var queryurl= "";
+			if (!filters || filters.length==0) {
+				queryurl= this.apiURL + "getImportantEvents/json/" + this.rowsNumber + "/(" + q + ")";
+			}
+			else {
+				queryurl = this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/(" + q + ")+" + filters;
+			}
 			//if (!entity) {
 			$.ajax({
 				url: queryurl,
