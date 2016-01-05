@@ -120,7 +120,8 @@
 				slideobj["text"] = textobj;
 				slideobj["end_date"] = dateobj;
 				slideobj["start_date"] =  dateobj;
-				slideobj['media'] = mediaobj;
+				if (mediaobj['url']!==undefined)
+					slideobj['media'] = mediaobj;
 
 				if (!!slideobj['text']["text"] && slideobj['text']["text"].length>0) {
 					if (eventObj.length == this.rowsNumber) { break; }
