@@ -68,7 +68,7 @@
 				queryurl= this.apiURL + "getImportantEvents/json/" + this.rowsNumber + "/(" + q + ")";
 			}
 			else {
-				queryurl = this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/(" + q + ")+" + filters;
+				queryurl = this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/(" + q + ")" + filters;
 			}
 			//if (!entity) {
 			$.ajax({
