@@ -108,9 +108,19 @@
 				var dateobj = {year: Number(year), month: Number(month), day: Number(day)};
 				var textobj = {headline:doc['headline'], text:doc['description']};
 				if (textobj['headline']==undefined) textobj['headline']="";
+
+				var mediaobj = {};
+				entities = doc['entity'];
+				if (entities.length >0) {
+					ent = entities[0]['name'];
+					if (ent.length>0) {
+						mediaobj['url'] = "https://en.wikipedia.org/wiki/" + ent;
+					}
+				}
 				slideobj["text"] = textobj;
 				slideobj["end_date"] = dateobj;
 				slideobj["start_date"] =  dateobj;
+				slideobj['media'] = mediaobj;
 
 				if (!!slideobj['text']["text"] && slideobj['text']["text"].length>0) {
 					if (eventObj.length == this.rowsNumber) { break; }
