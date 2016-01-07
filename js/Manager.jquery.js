@@ -211,12 +211,14 @@
 			/**
 			 * Get the tweets number by data ranges
 			 * @param {string} [polarity] - the polarity value adds a meta.extracted.text_polarity.discrete filter, "POSITIVE" || "NEGATIVE"
+			 * @param {string} [timeMode] - the time gap to represent the graph "DAY" || "WEEK" || "MONTH"
 			 * @returns {Deferred}
 			 */
-			getTweetsDateRanges: function(polarity){
+			getTweetsDateRanges: function(polarity, timeMode){
 				var url = this.solrUrl + this.servlet + '?';
 				//var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage"]);
 				var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.inLanguage"]);
+				var facetParams;
 
 				var facetPramsDays = {
 					"facet.date": "meta.source.datePublished",
@@ -225,12 +227,29 @@
 					"facet.date.gap": "+1DAY"
 				};
 
+				var facetParamsWeeks = {
+					"facet.date": "meta.source.datePublished",
+					"facet.date.start": "NOW/DAY-1YEAR",
+					"facet.date.end": "NOW/DAY",
+					"facet.date.gap": "+7DAYS"
+				};
+
 				var facetParamsMonth = {
 					"facet.date": "meta.source.datePublished",
-					"facet.date.start": "NOW/MONTHS-12MONTHS",
+					"facet.date.start": "NOW/MONTHS-24MONTHS",
 					"facet.date.end": "NOW/MONTHS",
 					"facet.date.gap": "+1MONTHS"
 				};
+
+				switch (timeMode) {
+					case "DAY" : facetParams = facetPramsDays;
+						break;
+					case "WEEK" : facetParams = facetParamsWeeks;
+						break;
+					case "MONTH" : facetParams = facetParamsMonth;
+						break;
+					default : break;
+				}
 
 				if( polarity == "POSITIVE" || polarity == "NEGATIVE" ){
 					filters +="+meta.extracted.text_polarity.discrete:\"" + polarity +"\"";
@@ -247,7 +266,7 @@
 					start: 0	// paginationGap start
 				};
 
-				params = _.extend(params,facetPramsDays);
+				params = _.extend(params,facetParams);
 				return $.ajax({ url: url + $.param(params) });
 			}
 			//</editor-fold>

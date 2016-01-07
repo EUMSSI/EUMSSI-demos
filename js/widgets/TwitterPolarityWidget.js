@@ -17,8 +17,11 @@
 			//Events - scroll
 			this.$target.find(".polarityCol.agree").scroll(this._manageScroll.bind(this));
 			this.$target.find(".polarityCol.against").scroll(this._manageScroll.bind(this));
+			//Buttons for date ranges change:
+			this.$target.find(".tweet-time-chart-buttons button").click(this._onTimeChartTimeModeClick.bind(this));
 
 			this._layoutLoaded = true;
+			this._tweetTimeChartType = "DAY";
 		},
 
 		afterRequest: function () {
@@ -84,16 +87,20 @@
 				}.bind(this));
 
 			//Time Chart
-			this.$target.find(".tweet-time-chart").addClass("ui-loading-modal");
-			$.when(
-				this.manager.getTweetsDateRanges("POSITIVE"),
-				this.manager.getTweetsDateRanges("NEGATIVE")
-				//this.manager.getTweetsDateRanges()
-			).then(this._renderTimeTweetsChart.bind(this));
+			this._loadTimeChart();
 
 			//Get the tweets
 			this._getMoreAgreeTweets();
 			this._getMoreAgainstTweets();
+		},
+
+		_loadTimeChart: function(){
+			this.$target.find(".tweet-time-chart-placeholder").addClass("ui-loading-modal");
+			$.when(
+				this.manager.getTweetsDateRanges("POSITIVE", this._tweetTimeChartType),
+				this.manager.getTweetsDateRanges("NEGATIVE", this._tweetTimeChartType)
+				//this.manager.getTweetsDateRanges()
+			).then(this._renderTimeTweetsChart.bind(this));
 		},
 
 		_getMoreAgreeTweets: function(){
@@ -229,46 +236,6 @@
 			});
 		},
 
-
-		/**
-		 * PIE Chart with Google visual PieChart
-		 * @param response
-		 * @private
-		 */
-		_renderPieCharts : function(response){
-			var resposneObj = JSON.parse(response);
-			var polarityCounts = resposneObj.facet_counts.facet_fields["meta.extracted.text_polarity.discrete"];
-
-			var options = {
-				legend:'none',
-				width: '100%',
-				height: '100%',
-				pieSliceText: 'percentage',
-				colors: ['#33A7D4' ,'#E63333', '#999999'],
-				chartArea: {
-					height: "90%",
-					width: "90%"
-				}
-			};
-
-			var data = google.visualization.arrayToDataTable([
-				['Label', 'Value'],
-				['Positive', polarityCounts["POSITIVE"]],
-				['Negative', polarityCounts["NEGATIVE"]]
-			]);
-			var chart = new google.visualization.PieChart(this.$target.find(".dual-pie-chart").get(0));
-			chart.draw(data, options);
-
-			var data2 = google.visualization.arrayToDataTable([
-				['Label', 'Value'],
-				['Positive', polarityCounts["POSITIVE"]],
-				['Negative', polarityCounts["NEGATIVE"]],
-				['Neutral', polarityCounts["NEUTRAL"]]
-			]);
-			var chart2 = new google.visualization.PieChart(this.$target.find(".complete-pie-chart").get(0));
-			chart2.draw(data2, options);
-		},
-
 		_renderTimeTweetsChart: function(responsePositive, responseNegative){
 
 			var resposneObjPositive = JSON.parse(responsePositive[0]);
@@ -299,11 +266,22 @@
 				}
 			};
 
-			var chart = new google.visualization.LineChart(this.$target.find(".tweet-time-chart").get(0));
+			var chart = new google.visualization.LineChart(this.$target.find(".time-chart").get(0));
 			chart.draw(data, options);
-			this.$target.find(".tweet-time-chart").removeClass("ui-loading-modal");
+			this.$target.find(".tweet-time-chart-placeholder").removeClass("ui-loading-modal");
 
 			google.visualization.events.addListener(chart, 'select', this._onTimeTweetSelect.bind(this, chart, data));
+		},
+
+		_onTimeChartTimeModeClick: function(event){
+			var $target = $(event.target);
+			this._tweetTimeChartType = $target.attr("value");
+
+			$target.parent().find("button").removeClass("state-active");
+			$target.addClass("state-active");
+
+			//Refresh the chart
+			this._loadTimeChart();
 		},
 
 		_onTimeTweetSelect: function(chart, data){
@@ -311,7 +289,15 @@
 			if(selection && selection[0] && selection[0].row){
 				var dateFrom = data.getValue(selection[0].row,0);
 				var dateTo = new Date(dateFrom);
-				dateTo.setDate(dateTo.getDate() + 1); // Add 1 day
+				switch(this._tweetTimeChartType){
+					case "DAY" : dateTo.setDate(dateTo.getDate() + 1); // Add 1 day
+						break;
+					case "WEEK" : dateTo.setDate(dateTo.getDate() + 7); // Add 7 days
+						break;
+					case "MONTH" : dateTo.setMonth(dateTo.getMonth() + 1); // Add 1 Month
+						break;
+					default : break;
+				}
 				this._setDateFilter(dateFrom,dateTo);
 			}
 		},
