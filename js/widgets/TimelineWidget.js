@@ -153,7 +153,7 @@
 
 			$event.append($('<h3>').html(event.date));
 			$event.append($('<h2>').text(event.headline));
-			$event.append($('<p>').html("source:" + event.sourceData));
+			$event.append($('<p>').html("( " + event.sourceData) + " )");
 			$event.append($('<p>').html(event.description));
 
 
