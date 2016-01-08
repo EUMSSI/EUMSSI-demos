@@ -212,9 +212,10 @@
 			links.forEach(function(link) {
 				//link.source = nodes[link.source];
 				//link.target = nodes[link.target];
+				link.value = (link.source.size + link.target.size)/2;
 				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 10, color: "purple"});
 				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 10, color: "purple"});
-				link.value = 1;
+
 				link.weight = link.value;
 			});
 			// SVG constants
@@ -277,7 +278,11 @@
 			var link = svg.selectAll(".link")
 				.data(force.links())
 				.enter().append("line")
-				.attr("class", "link");
+				.attr("class", "link")
+				.style('stroke-width', function(l) {
+					return l.weight;
+				});
+
 			// Add circles to nodes and call the drag function
 			var node = svg.selectAll(".node")
 				.data(force.nodes())
