@@ -259,6 +259,8 @@
 				//curveType: 'function',
 				legend: { position: 'bottom' },
 				colors: ['#33A7D4' ,'#E63333', '#999999'],
+				width: this.$target.find(".tweet-time-chart-placeholder").width(),
+				height: this.$target.find(".tweet-time-chart-placeholder").height(),
 				explorer:{
 					axis: 'horizontal',
 					actions: ['dragToZoom', 'rightClickToReset'],
