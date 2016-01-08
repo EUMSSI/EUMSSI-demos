@@ -38,7 +38,7 @@
 .genericgraph .link {
   fill: none;
   stroke: #cccccc;
-  stroke-width: 3px;
+  /*stroke-width: 1px;*/
 }
 .genericgraph .node {
   cursor: pointer;
