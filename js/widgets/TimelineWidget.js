@@ -149,12 +149,13 @@
 				.click(this._onEnityClick.bind(this, entities[i].name ));
 				$value.append($entitylink);
 			}
-			
-			
+
+
+			$event.append($('<h3>').html(event.date));
 			$event.append($('<h2>').text(event.headline));
-			$event.append($('<p class="date">').html(event.date));
+			$event.append($('<h2>').html("source:" + event.sourceData));
 			$event.append($('<p>').html(event.description));
-			$event.append($('<h3>').html(event.sourceData));
+
 
 			if (entities.length>0) {
 				var $key = $('<span>').addClass("info-label").text("Major Entities");
