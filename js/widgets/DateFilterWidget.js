@@ -54,7 +54,7 @@
 		 * @param {Date} [toDate]
 		 */
 		setFilter: function (fromDate, toDate) {
-			var from, to, fq, filterText, fromText, toText;
+			var from, to, fq, filterText, fromText, toText, filterData;
 			//Remove previous Value
 			this.clearFilter(true);
 			if(fromDate || toDate){
@@ -64,8 +64,12 @@
 				toText = toDate ? $.datepicker.formatDate($.datepicker.regional[''].dateFormat, toDate) : "*";
 				fq = this.key + ":["+ from +" TO " + to + "]";
 				filterText = "From "+fromText+" to "+toText;
+				filterData = {
+					from : from,
+					to : to
+				};
 				//Set the current Filter
-				EUMSSI.FilterManager.addFilter(this.key, fq, this.id, filterText);
+				EUMSSI.FilterManager.addFilter(this.key, fq, this.id, filterText, filterData);
 			}
 		},
 
