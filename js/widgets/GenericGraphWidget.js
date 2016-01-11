@@ -166,7 +166,7 @@
 					if (source_item == target_item) {
 						continue;
 					}
-					link = {'source': source_item, 'target': target_item};
+					link = {'source': source_item, 'target': target_item, 'weight': obj['count']};
 					links.push(link);
 					if (j==1) {
 						max_freq = obj['count'];
@@ -222,11 +222,10 @@
 			links.forEach(function(link) {
 				//link.source = nodes[link.source];
 				//link.target = nodes[link.target];
-				link.value = 1;
+				link.value = link.weight;
+				link.weight = link.value;
 				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 10, color: "purple"});
 				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 10, color: "purple"});
-
-				link.weight = link.value;
 			});
 			// SVG constants
 			var width = 1060,
