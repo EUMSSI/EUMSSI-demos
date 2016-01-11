@@ -181,8 +181,8 @@
 			final_links = [];
 			for (var il in links) {
 				link = links[il];
-				if (link.weight >= 0.9 * max_freq) {
-					link.weight = 20 *  link.weight / max_freq; 		//normalization
+				if (link.weight >= 0.5 * max_freq) {
+					link.weight = Math.round(20 *  link.weight / max_freq); 		//normalization
 					final_links.push(link);
 					target_keys[link.target] = link.weight;
 				}
