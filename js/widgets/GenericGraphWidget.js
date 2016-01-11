@@ -159,7 +159,7 @@
 						this.maxCount = obi['count'];
 					}
 				}
-				var max_fre = 0;
+				var max_freq = 0;
 				for (var j in obi['pivot']) {
 					obj = obi['pivot'][j];
 					target_item = obj['value'];
