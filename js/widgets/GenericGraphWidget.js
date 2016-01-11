@@ -247,7 +247,7 @@
 				.links(links)
 				.size([width, height])
 				.linkDistance(300)
-				.charge(-50)
+				.charge(50)
 				.on("tick", tick)
 				.start();
 			// Append SVG to the html, with defined constants
