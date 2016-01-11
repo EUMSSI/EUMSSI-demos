@@ -172,7 +172,7 @@
 					link = {'source': source_item, 'target': target_item, 'weight': obj['count']};
 					links.push(link);
 
-					if (max_freq < obj['count']) max_freq = obj['count'];
+					if (j ==1 && max_freq < obj['count']) max_freq = obj['count'];
 				}
 			}
 
