@@ -138,6 +138,7 @@
 		 */
 		_onGetWordGraph: function(responsestr){
 			keys = {};
+			target_keys = {};
 
 			for (var ik in this.tf) {
 				keys[this.tf[ik]['text']] = 1;
@@ -158,26 +159,35 @@
 						this.maxCount = obi['count'];
 					}
 				}
+				var max_fre = 0;
 				for (var j in obi['pivot']) {
 					obj = obi['pivot'][j];
 					target_item = obj['value'];
+					if (source_item == target_item) {
+						continue;
+					}
 					link = {'source': source_item, 'target': target_item};
 					links.push(link);
-					if (keys[target_item] == undefined) {
-						this.tf.push({'text': target_item, 'size': obj['count']});
-						keys[target_item] = 1;
-						if (obj['count'] > this.maxCount) {
-							this.maxCount = obj['count'];
-						}
+					if (j==1) {
+						max_freq = obj['count'];
 					}
 
-					if (j >3) {
+					if (obj['count'] < 0.2 * max_freq) { // power law
 						break;
 					}
 				}
-
-
 			}
+
+			for (var tk in target_keys) {
+				if (keys[tk] == undefined) {
+					this.tf.push({'text': tk, 'size': target_keys[tk]});
+					keys[tk] = 1;
+					if (target_keys[tk] > this.maxCount) {
+						this.maxCount = target_keys[tk];
+					}
+				}
+			}
+
 			this._renderGraph(this.tf, links);
 			$(this.target).removeClass("ui-loading-modal");
 		},
@@ -212,7 +222,7 @@
 			links.forEach(function(link) {
 				//link.source = nodes[link.source];
 				//link.target = nodes[link.target];
-				link.value = (link.source.size + link.target.size)/2;
+				link.value = 1;
 				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 10, color: "purple"});
 				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 10, color: "purple"});
 
@@ -253,14 +263,20 @@
 				d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
 				d3.select(this).select("text").style("fill", "#FF8800"); // change color to orange
 				pinned_nodes.push(d.name);
-				if (pinned_nodes.length ==2) {
-					self._getStoryTelling(pinned_nodes[0], pinned_nodes[1]);
-					$("#selectedD3Node1").text("Telling story: " + pinned_nodes[0] + " <-> " + pinned_nodes[1]);					
-					pinned_nodes = [];
-				}
-				else
-					$("#selectedD3Node1").text("Selected: " + d.name);
-					
+
+				/** storytelling action
+
+
+				 //if (pinned_nodes.length ==2) {
+				//	self._getStoryTelling(pinned_nodes[0], pinned_nodes[1]);
+				//	$("#selectedD3Node1").text("Telling story: " + pinned_nodes[0] + " <-> " + pinned_nodes[1]);
+				//	pinned_nodes = [];
+				//}
+				//else
+				//	$("#selectedD3Node1").text("Selected: " + d.name);
+
+				 */
+
 				force.resume();
 				console.log("Selected: " + d.name);
 				$("#selectedD3Node1").show();
