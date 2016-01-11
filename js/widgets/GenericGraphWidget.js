@@ -197,7 +197,7 @@
 				}
 			}
 
-			this._renderGraph(this.tf, links);
+			this._renderGraph(this.tf, final_links);
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
