@@ -167,6 +167,13 @@
 						continue;
 					}
 					link = {'source': source_item, 'target': target_item, 'weight': obj['count']};
+					if (max_freq==0) {
+						link.weight = 20;
+					}
+					else {
+						link.weight = link.weight / max_freq;
+					}
+
 					links.push(link);
 					if (j==1) {
 						max_freq = obj['count'];
