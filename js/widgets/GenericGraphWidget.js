@@ -182,7 +182,7 @@
 			final_links = [];
 			for (var il in links) {
 				link = links[il];
-				if (link.weight >= 0.2 * max_freq) {
+				if (link.weight >= 0.06 * max_freq) {
 					link.weight = Math.round(20 *  link.weight / max_freq); 		//normalization
 					final_links.push(link);
 					target_keys[link.target] = link.weight;
@@ -197,7 +197,7 @@
 					}
 				}
 			}
-			console.log(final_links.length);
+			console.log("Final links size", final_links.length);
 			this._renderGraph(this.tf, final_links);
 			$(this.target).removeClass("ui-loading-modal");
 		},
