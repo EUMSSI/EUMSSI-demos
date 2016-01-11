@@ -307,7 +307,7 @@
 				.enter().append("line")
 				.attr("class", "link")
 				.style('stroke', function(l) {
-					if (l.weight >0.8 * max_freq) {
+					if (l.weight >0.5 * max_freq) {
 						return '#9f9f9f';
 					}
 					else {
