@@ -148,6 +148,9 @@
 			response = JSON.parse(responsestr);
 			var temp = response['facet_counts'];
 			var facet_pivots = response['facet_counts']['facet_pivot'][this.pivots];
+
+			var max_freq = 0;
+			// indexing
 			for (var i in facet_pivots) {
 				obi = facet_pivots[i];
 
@@ -159,7 +162,7 @@
 						this.maxCount = obi['count'];
 					}
 				}
-				var max_freq = 0;
+
 				for (var j in obi['pivot']) {
 					obj = obi['pivot'][j];
 					target_item = obj['value'];
@@ -167,24 +170,22 @@
 						continue;
 					}
 					link = {'source': source_item, 'target': target_item, 'weight': obj['count']};
-					if (max_freq==0) {
-						link.weight = 20;
-					}
-					else {
-						link.weight = link.weight * 20 / max_freq;
-					}
-
 					links.push(link);
-					if (j==1) {
-						max_freq = obj['count'];
-					}
 
-					if (obj['count'] < 0.4 * max_freq) { // power law
-						break;
-					}
+					if (max_freq < obj['count']) max_freq = obj['count'];
 				}
 			}
 
+
+			// filtering
+			final_links = {};
+			for (var il in links) {
+				link = links[il];
+				if (link.weight >= 0.2 * max_freq) {
+					final_links.push(link);
+					target_keys[link.target] = link.weight;
+				}
+			}
 			for (var tk in target_keys) {
 				if (keys[tk] == undefined) {
 					this.tf.push({'text': tk, 'size': target_keys[tk]});
