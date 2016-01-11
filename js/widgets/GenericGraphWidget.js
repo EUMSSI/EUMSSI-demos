@@ -173,6 +173,9 @@
 					links.push(link);
 
 					if (j ==1 && max_freq < obj['count']) max_freq = obj['count'];
+					if (j>10) {
+						break;
+					}
 				}
 			}
 
@@ -183,7 +186,7 @@
 			final_links = [];
 			for (var il in links) {
 				link = links[il];
-				if (link.weight >= 0.06 * max_freq) {
+				if (link.weight >= 0.04 * max_freq) {
 					link.weight = Math.round(MAX_REND *  link.weight / max_freq); 		//normalization
 					final_links.push(link);
 					target_keys[link.target] = link.weight;
