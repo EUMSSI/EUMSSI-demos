@@ -171,7 +171,7 @@
 						link.weight = 20;
 					}
 					else {
-						link.weight = link.weight / max_freq;
+						link.weight = link.weight * 20 / max_freq;
 					}
 
 					links.push(link);
