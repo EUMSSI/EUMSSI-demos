@@ -37,7 +37,8 @@
 
 .genericgraph .link {
   fill: none;
-  stroke: #cccccc;
+  stroke: #dbdbdb;
+  /*stroke: #9f9f9f;*/
   /*stroke-width: 1px;*/
 }
 .genericgraph .node {

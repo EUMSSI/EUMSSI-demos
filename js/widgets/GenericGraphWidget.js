@@ -179,11 +179,12 @@
 			console.log(max_freq);
 			console.log("Linksize: ", links.length);
 			// filtering
+			var MAX_REND = 10;
 			final_links = [];
 			for (var il in links) {
 				link = links[il];
 				if (link.weight >= 0.06 * max_freq) {
-					link.weight = Math.round(10 *  link.weight / max_freq); 		//normalization
+					link.weight = Math.round(MAX_REND *  link.weight / max_freq); 		//normalization
 					final_links.push(link);
 					target_keys[link.target] = link.weight;
 				}
@@ -198,7 +199,7 @@
 				}
 			}
 			console.log("Final links size", final_links.length);
-			this._renderGraph(this.tf, final_links);
+			this._renderGraph(this.tf, final_links, MAX_REND);
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
@@ -211,7 +212,7 @@
 		},
 
 		
-		_renderGraph: function(tf, links){
+		_renderGraph: function(tf, links, max_freq){
 			var pinned_nodes = [];
 			
 			var self = this;
@@ -288,6 +289,7 @@
 
 				force.resume();
 				console.log("Selected: " + d.name);
+				$("#selectedD3Node1").text("Selected: " + d.name);
 				$("#selectedD3Node1").show();
 			}
 			function releasenode(d) {
@@ -304,6 +306,14 @@
 				.data(force.links())
 				.enter().append("line")
 				.attr("class", "link")
+				.style('stroke', function(l) {
+					if (l.weight >0.8 * max_freq) {
+						return '#9f9f9f';
+					}
+					else {
+						return '#dbdbdb';
+					}
+			    })
 				.style('stroke-width', function(l) {
 					return l.weight;
 				});
