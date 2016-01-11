@@ -178,7 +178,7 @@
 
 
 			// filtering
-			final_links = {};
+			final_links = [];
 			for (var il in links) {
 				link = links[il];
 				if (link.weight >= 0.2 * max_freq) {
