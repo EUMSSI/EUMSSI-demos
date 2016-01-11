@@ -172,7 +172,7 @@
 						max_freq = obj['count'];
 					}
 
-					if (obj['count'] < 0.3 * max_freq) { // power law
+					if (obj['count'] < 0.4 * max_freq) { // power law
 						break;
 					}
 				}
