@@ -156,7 +156,8 @@
 
 				source_item = obi['value'];
 				if (keys[source_item] == undefined) {
-					this.tf.push({'text': source_item, 'size': obi['count']});
+					anode = {'text': source_item, 'size': obi['count']};
+					this.tf.push(anode);
 					keys[source_item] = 1;
 					if (obi['count'] > this.maxCount) {
 						this.maxCount = obi['count'];
@@ -184,17 +185,28 @@
 			// filtering
 			var MAX_REND = 10;
 			final_links = [];
+			final_nodes = [];
+
 			for (var il in links) {
 				link = links[il];
-				if (link.weight >= 0.04 * max_freq) {
+				if (link.weight >= 0.04 * max_freq && link.weight >1) {
 					link.weight = Math.round(MAX_REND *  link.weight / max_freq); 		//normalization
 					final_links.push(link);
 					target_keys[link.target] = link.weight;
+					target_keys[link.source] = link.weight;
 				}
+			}
+			for (itf in this.tf) {
+				kw = this.tf[itf].text;
+				if (target_keys[kw] == undefined) {
+					continue;
+				}
+				final_nodes.push(this.tf[itf]);
 			}
 			for (var tk in target_keys) {
 				if (keys[tk] == undefined) {
 					this.tf.push({'text': tk, 'size': target_keys[tk]});
+					final_nodes.push({'text': tk, 'size': target_keys[tk]});
 					keys[tk] = 1;
 					if (target_keys[tk] > this.maxCount) {
 						this.maxCount = target_keys[tk];
@@ -202,7 +214,8 @@
 				}
 			}
 			console.log("Final links size", final_links.length);
-			this._renderGraph(this.tf, final_links, MAX_REND);
+			//this._renderGraph(this.tf, final_links, MAX_REND);
+			this._renderGraph(final_nodes, final_links, MAX_REND);
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
