@@ -156,7 +156,8 @@
 
 				source_item = obi['value'];
 				if (keys[source_item] == undefined) {
-					this.tf.push({'text': source_item, 'size': obi['count']});
+					anode = {'text': source_item, 'size': obi['count']};
+					this.tf.push(anode);
 					keys[source_item] = 1;
 					if (obi['count'] > this.maxCount) {
 						this.maxCount = obi['count'];
@@ -184,12 +185,15 @@
 			// filtering
 			var MAX_REND = 10;
 			final_links = [];
+
+
 			for (var il in links) {
 				link = links[il];
-				if (link.weight >= 0.04 * max_freq && link.weight > 1) {
+				if (link.weight >= 0.04 * max_freq && link.weight >1) {
 					link.weight = Math.round(MAX_REND *  link.weight / max_freq); 		//normalization
 					final_links.push(link);
 					target_keys[link.target] = link.weight;
+					target_keys[link.source] = link.weight;
 				}
 			}
 			for (var tk in target_keys) {
@@ -202,7 +206,8 @@
 				}
 			}
 			console.log("Final links size", final_links.length);
-			this._renderGraph(this.tf, final_links, MAX_REND);
+			//this._renderGraph(this.tf, final_links, MAX_REND);
+			this._renderGraph(target_keys, final_links, MAX_REND);
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
