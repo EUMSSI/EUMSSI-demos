@@ -1,5 +1,5 @@
 (function ($) {
-	AjaxSolr.WordGraphWidget = AjaxSolr.AbstractFacetWidget.extend({
+	AjaxSolr.GenericGraphWidget = AjaxSolr.AbstractFacetWidget.extend({
 		init: function() {
 			this.$target = $(this.target);
 			this.$tabs = $(this.target).parents(".tabs-container");
@@ -8,15 +8,17 @@
 			this.graphSize = 200;
 			this.storyTelling = 10;
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
-			
-			this.$target.parent().find(".wordgraph-key-selector").selectmenu({
+			this.tf = [];
+			this.pivots = "";
+			this.maxCount =0;
+			this.$target.parent().find(".genericgraph-key-selector").selectmenu({
 				width: 200,
 				select: function( event, data ) {
 					console.log("Selected: " + data.item.value);
 					if(this.field != data.item.value){
 						this._onSelectKey(data.item.value);
 					}
-					$("#selectedD3Node").hide();
+					$("#selectedD3Node1").hide();
 				}.bind(this)
 			});
 			
@@ -28,8 +30,8 @@
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
 				this._getGraph();
 			} else {
-				this.$tabs.off("tabsactivate.wordgraphwidget");
-				this.$tabs.on("tabsactivate.wordgraphwidget", this._tabChange.bind(this) );
+				this.$tabs.off("tabsactivate.genericgraphwidget");
+				this.$tabs.on("tabsactivate.genericgraphwidget", this._tabChange.bind(this) );
 			}
 		},
 
@@ -40,14 +42,14 @@
 		_tabChange: function(){
 			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this.$tabs.off("tabsactivate.wordgraphwidget");
+				this.$tabs.off("tabsactivate.genericgraphwidget");
 				this._getGraph();
 			}
 		},
 
 		_getGraph: function(filter){
 			var language = $(".localeSelector").val();
-			$("#selectedD3Node").hide();
+			$("#selectedD3Node1").hide();
 
 			if (!language)
 				language = "all";
@@ -64,12 +66,39 @@
 			//Loading
 			$(this.target).addClass("ui-loading-modal");
 			$(this.target).empty();
-			$.when(
-				$.ajax( this.apiURL + "getSemanticCloud/json/"+this.wordNumber+"/" + q + "/" + language + "/" + this.field  + "/" + filterValue),
-				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/" + language + "/" + this.field  + "/" + filterValue)
-			).done(this._onGetWordGraph.bind(this));
+
+
+			var facet, count, i, l, size, tabPosition;
+			this.maxCount = 0;
+			this.tf = [];
+			for ( facet in this.manager.response.facet_counts.facet_fields[this.field]) {
+				count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
+				if (count > this.maxCount) {
+					this.maxCount = count;
+				}
+				this.tf.push({ text: facet, size: count });
+			}
+			this.tf.sort(function (a, b) {
+				return a.facet < b.facet ? -1 : 1;
+			});
+
+			var q = EUMSSI.Manager.getLastQuery() || "*:*";
+			this.pivots = this.field + "," + this.field;
+			var p_url = "select?q=" + q + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
+			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage", this.field]);
+			p_url +="&fq=" + filters;
+			console.log(p_url);
+			console.log(this.pivots);
+			$.ajax({
+				url: this.manager.solrUrl + p_url,
+				success: this._onGetWordGraph.bind(this)
+			});
+
+
 		},
-		
+
+
+
 //		_getGraph: function(filter){
 //			var filterValue = filter;
 //			if (!filter) {
@@ -107,8 +136,73 @@
 		 * @param {string} response.text
 		 * @private
 		 */
-		_onGetWordGraph: function(tf, links){
-			this._renderGraph(tf[0], links[0]);
+		_onGetWordGraph: function(responsestr){
+			keys = {};
+			target_keys = {};
+
+			for (var ik in this.tf) {
+				keys[this.tf[ik]['text']] = 1;
+			}
+
+			links = [];
+			response = JSON.parse(responsestr);
+			var temp = response['facet_counts'];
+			var facet_pivots = response['facet_counts']['facet_pivot'][this.pivots];
+
+			var max_freq = 0;
+			// indexing
+			for (var i in facet_pivots) {
+				obi = facet_pivots[i];
+
+				source_item = obi['value'];
+				if (keys[source_item] == undefined) {
+					this.tf.push({'text': source_item, 'size': obi['count']});
+					keys[source_item] = 1;
+					if (obi['count'] > this.maxCount) {
+						this.maxCount = obi['count'];
+					}
+				}
+
+				for (var j in obi['pivot']) {
+					obj = obi['pivot'][j];
+					target_item = obj['value'];
+					if (source_item == target_item) {
+						continue;
+					}
+					link = {'source': source_item, 'target': target_item, 'weight': obj['count']};
+					links.push(link);
+
+					if (j ==1 && max_freq < obj['count']) max_freq = obj['count'];
+					if (j>10) {
+						break;
+					}
+				}
+			}
+
+			console.log(max_freq);
+			console.log("Linksize: ", links.length);
+			// filtering
+			var MAX_REND = 10;
+			final_links = [];
+			for (var il in links) {
+				link = links[il];
+				if (link.weight >= 0.04 * max_freq) {
+					link.weight = Math.round(MAX_REND *  link.weight / max_freq); 		//normalization
+					final_links.push(link);
+					target_keys[link.target] = link.weight;
+				}
+			}
+			for (var tk in target_keys) {
+				if (keys[tk] == undefined) {
+					this.tf.push({'text': tk, 'size': target_keys[tk]});
+					keys[tk] = 1;
+					if (target_keys[tk] > this.maxCount) {
+						this.maxCount = target_keys[tk];
+					}
+				}
+			}
+			console.log("Final links size", final_links.length);
+			this._renderGraph(this.tf, final_links, MAX_REND);
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
@@ -121,25 +215,17 @@
 		},
 
 		
-		_renderGraph: function(tf, links){
+		_renderGraph: function(tf, links, max_freq){
 			var pinned_nodes = [];
 			
 			var self = this;
 			var nodes = {};
-			var size = 500;
+			var max_size = 50;
 
-			var scale = 1;
-
-			var max_size = size/tf.length;
-			for (var i in tf) { // get the scale
-				scale = 8 * max_size / tf[i].size;
-				break;
-			}
-			//update
-
+			var scale = max_size / this.maxCount;
 			for (var i in tf) {
-				tf[i].size = 12 + tf[i].size * scale;
-				nodes[tf[i].text] = {name: tf[i].text, size: tf[i].size, color: "purple"};
+				tf[i].size = 10 + tf[i].size * scale;
+				nodes[tf[i].text] = {name: tf[i].text, size: tf[i].size, color: "purple", group:1};
 			}
 
 
@@ -150,9 +236,10 @@
 			links.forEach(function(link) {
 				//link.source = nodes[link.source];
 				//link.target = nodes[link.target];
-				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 12, color: "purple"});
-				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 12, color: "purple"});
-				link.weight = 1;
+				link.value = link.weight;
+				link.weight = link.value;
+				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 10, color: "purple"});
+				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 10, color: "purple"});
 			});
 			// SVG constants
 			var width = 1060,
@@ -162,12 +249,12 @@
 				.nodes(d3.values(nodes))
 				.links(links)
 				.size([width, height])
-				.linkDistance(80)
-				.charge(-100)
+				.linkDistance(300)
+				.charge(-80)
 				.on("tick", tick)
 				.start();
 			// Append SVG to the html, with defined constants
-			var svg = d3.select("#my-wordgraph").append("svg")
+			var svg = d3.select("#my-genericgraph").append("svg")
 				.attr("width", "100%")
 				.attr("height", height);
 			// Code for pinnable nodes
@@ -189,17 +276,24 @@
 				d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
 				d3.select(this).select("text").style("fill", "#FF8800"); // change color to orange
 				pinned_nodes.push(d.name);
-				if (pinned_nodes.length ==2) {
-					self._getStoryTelling(pinned_nodes[0], pinned_nodes[1]);
-					$("#selectedD3Node").text("Telling story: " + pinned_nodes[0] + " <-> " + pinned_nodes[1]);					
-					pinned_nodes = [];
-				}
-				else
-					$("#selectedD3Node").text("Selected: " + d.name);
-					
+
+				/** storytelling action
+
+
+				 //if (pinned_nodes.length ==2) {
+				//	self._getStoryTelling(pinned_nodes[0], pinned_nodes[1]);
+				//	$("#selectedD3Node1").text("Telling story: " + pinned_nodes[0] + " <-> " + pinned_nodes[1]);
+				//	pinned_nodes = [];
+				//}
+				//else
+				//	$("#selectedD3Node1").text("Selected: " + d.name);
+
+				 */
+
 				force.resume();
 				console.log("Selected: " + d.name);
-				$("#selectedD3Node").show();
+				$("#selectedD3Node1").text("Selected: " + d.name);
+				$("#selectedD3Node1").show();
 			}
 			function releasenode(d) {
 				d.fixed = false; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
@@ -214,7 +308,19 @@
 			var link = svg.selectAll(".link")
 				.data(force.links())
 				.enter().append("line")
-				.attr("class", "link");
+				.attr("class", "link")
+				.style('stroke', function(l) {
+					if (l.weight >0.5 * max_freq) {
+						return '#9f9f9f';
+					}
+					else {
+						return '#dbdbdb';
+					}
+			    })
+				.style('stroke-width', function(l) {
+					return l.weight;
+				});
+
 			// Add circles to nodes and call the drag function
 			var node = svg.selectAll(".node")
 				.data(force.nodes())
@@ -360,7 +466,7 @@
 			//Set the current Filter
 			this.storedValue = this.field + ":" + value;
 			EUMSSI.FilterManager.addFilter(this.field, this.storedValue, this.id, this.field+": "+value);
-			$("#selectedD3Node").hide();
+			$("#selectedD3Node1").hide();
 		}, 
 
 		/**
