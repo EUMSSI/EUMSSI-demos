@@ -185,7 +185,7 @@
 			// filtering
 			var MAX_REND = 10;
 			final_links = [];
-
+			final_nodes = [];
 
 			for (var il in links) {
 				link = links[il];
@@ -196,9 +196,17 @@
 					target_keys[link.source] = link.weight;
 				}
 			}
+			for (itf in this.tf) {
+				kw = this.tf[itf].text;
+				if (target_keys[kw] == undefined) {
+					continue;
+				}
+				final_nodes.push(this.tf[itf]);
+			}
 			for (var tk in target_keys) {
 				if (keys[tk] == undefined) {
 					this.tf.push({'text': tk, 'size': target_keys[tk]});
+					final_nodes.push({'text': tk, 'size': target_keys[tk]});
 					keys[tk] = 1;
 					if (target_keys[tk] > this.maxCount) {
 						this.maxCount = target_keys[tk];
@@ -207,7 +215,7 @@
 			}
 			console.log("Final links size", final_links.length);
 			//this._renderGraph(this.tf, final_links, MAX_REND);
-			this._renderGraph(target_keys, final_links, MAX_REND);
+			this._renderGraph(final_nodes, final_links, MAX_REND);
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
