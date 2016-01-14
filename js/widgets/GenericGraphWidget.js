@@ -8,6 +8,7 @@
 			this.graphSize = 200;
 			this.storyTelling = 10;
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
+                        this.fieldTo = EUMSSI.CONF.CLOUD_FIELD_NAME;
 			this.tf = [];
 			this.pivots = "";
 			this.maxCount =0;
@@ -16,11 +17,21 @@
 				select: function( event, data ) {
 					console.log("Selected: " + data.item.value);
 					if(this.field != data.item.value){
-						this._onSelectKey(data.item.value);
+						this._onSelectKeyFrom(data.item.value);
 					}
 					$("#selectedD3Node1").hide();
 				}.bind(this)
 			});
+                        this.$target.parent().find(".genericgraph-key-selector-2").selectmenu({
+                                width: 200,
+                                select: function( event, data ) {
+                                        console.log("Selected: " + data.item.value);
+                                        if(this.field != data.item.value){
+                                                this._onSelectKeyTo(data.item.value);
+                                        }
+                                        $("#selectedD3Node1").hide();
+                                }.bind(this)
+                        });
 			
 		},
 
@@ -83,10 +94,10 @@
 			});
 
 			var q = EUMSSI.Manager.getLastQuery() || "*:*";
-			this.pivots = this.field + "," + this.field;
-			var p_url = "select?q=" + q + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
+			this.pivots = this.field + "," + this.fieldTo;
+			var p_url = "select?q=" + encodeURIComponent(q) + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
 			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage", this.field]);
-			p_url +="&fq=" + filters;
+			p_url +="&fq=" + encodeURIComponent(filters);
 			console.log(p_url);
 			console.log(this.pivots);
 			$.ajax({
@@ -462,13 +473,21 @@
 		},
 		
 		
-		_onSelectKey: function(keyValue){
+		_onSelectKeyFrom: function(keyValue){
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME = keyValue;
 			//this.field = keyValue;
 			EUMSSI.CONF.updateFacetingFields();
 			this.clearFilter();
 			EUMSSI.Manager.doRequest(0);
 		},
+
+                _onSelectKeyTo: function(keyValue){
+                        this.fieldTo = keyValue;
+                        //this.field = keyValue;
+                        EUMSSI.CONF.updateFacetingFields();
+                        this.clearFilter();
+                        EUMSSI.Manager.doRequest(0);
+                },
 
 		/**
 		 * Sets the main Solr query to the given string.
