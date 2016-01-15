@@ -397,6 +397,7 @@
 				self.setFilter(linktext);
 				self._getGraph(linktext);
 				EUMSSI.Manager.doRequest(0);
+				//
 			}
 
 			// Search functionality (copied/paste from http://www.coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
