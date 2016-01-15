@@ -396,7 +396,7 @@
 				//window.open("https://www.google.com/?gws_rd=ssl#q="+linktext);
 				self.setFilter(linktext);
 				self._getGraph(linktext);
-				
+				EUMSSI.Manager.doRequest(0);
 			}
 
 			// Search functionality (copied/paste from http://www.coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
@@ -467,7 +467,7 @@
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME = keyValue;
 			//this.field = keyValue;
 			EUMSSI.CONF.updateFacetingFields();
-			this.clearFilter();
+			//this.clearFilter();
 			EUMSSI.Manager.doRequest(0);
 		},
 
