@@ -85,7 +85,9 @@
 			var q = EUMSSI.Manager.getLastQuery() || "*:*";
 			this.pivots = this.field + "," + this.field;
 			var p_url = "select?q=" + q + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
-			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage", "source", this.field]);
+			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage", "source",
+				"meta.extracted.text_nerl.dbpedia.LOCATION", "meta.extracted.text_nerl.dbpedia.all", "meta.extracted.text_nerl.dbpedia.PERSON",
+				this.field]);
 			p_url +="&fq=" + encodeURIComponent(filters);
 
 			console.log(p_url);
@@ -397,7 +399,7 @@
 				self.setFilter(linktext);
 				self._getGraph(linktext);
 				EUMSSI.Manager.doRequest(0);
-				//
+
 			}
 
 			// Search functionality (copied/paste from http://www.coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
