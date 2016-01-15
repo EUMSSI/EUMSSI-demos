@@ -74,9 +74,18 @@
                 <!--<div class="dual-pie-chart"></div>-->
                 <!--<div class="complete-pie-chart"></div>-->
             </div>
-            <div class="tweet-time-chart"></div>
+            <div class="tweet-time-chart-placeholder"></div>
             <div class="tweet-map-chart"></div>
         </div>
+</script>
+
+<script type="text/template" id="tweet-time-chart-tpl">
+    <div class="time-chart"></div>
+    <div class="tweet-time-chart-buttons">
+        <button value="DAY">Days</button>
+        <button value="WEEK">Weeks</button>
+        <button class="state-active" value="MONTH">Months</button>
+    </div>
 </script>
 
 <script type="text/template" id="search-info-icon-tpl">

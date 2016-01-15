@@ -900,7 +900,8 @@ span.more {
 	.polarityCol {
 		height: 100%;
 		width: calc(~"50% - 20px");
-		margin: 0 5px;
+		float: left;
+		margin: 0 0 0 5px;
 		display: inline-block;
 		overflow-y: scroll;
 		overflow-x: hidden;
@@ -944,8 +945,10 @@ span.more {
 
 	.chartsCol {
 		display: inline-block;
-		width: 35%;
+		float: left;
+		width: ~"calc(40% - 20px)";
 		height: 100%;
+		margin: 0 5px;
 		& > div {
 			height: 33%;
 			width: 100%;
@@ -957,28 +960,40 @@ span.more {
 				height: 100%;
 			}
 
-			&.tweet-pie-chart > div {
-				width: 50%;
-				height: 100%;
-				float: left;
+			&.tweet-time-chart-placeholder {
+				.time-chart {
+					width: 100%;
+					height: 100%;
+					display: inline-block;
+				}
+
+				.tweet-time-chart-buttons{
+					display: block;
+					position: absolute;
+					top: 0;
+					right: 0;
+					margin: 10px 10px 0 0;
+
+					button{
+						cursor: pointer;
+						float: left;
+						width: 64px;
+						height: 26px;
+						border: none;
+						margin: 0 1px 0 0;
+						&:hover {
+							background-color: lighten(@rgb_blue, 20%);;
+						}
+						&.state-active {
+							background-color: @rgb_blue;
+						}
+					}
+				}
+
 			}
 
-			&.tweet-time-chart > div {
-				width: 100%;
-				height: 100%;
-				display: inline-block;
-			}
 
 		}
-		//.tweet-pie-chart {
-		//	background-color: lime;
-		//}
-		//.tweet-time-chart {
-		//	background-color: yellow;
-		//}
-		//.tweet-map-chart {
-		//	background-color: darkred;
-		//}
 	}
 }
 /* NEW UPDATE LAYOUT WITH CHARTS */

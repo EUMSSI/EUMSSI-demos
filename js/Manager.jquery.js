@@ -206,50 +206,9 @@
 					start: 0	// paginationGap start
 				};
 				return $.ajax({ url: url + $.param(params) });
-			},
-
-			/**
-			 * Get the tweets number by data ranges
-			 * @param {string} [polarity] - the polarity value adds a meta.extracted.text_polarity.discrete filter, "POSITIVE" || "NEGATIVE"
-			 * @returns {Deferred}
-			 */
-			getTweetsDateRanges: function(polarity){
-				var url = this.solrUrl + this.servlet + '?';
-				//var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage"]);
-				var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.inLanguage"]);
-
-				var facetPramsDays = {
-					"facet.date": "meta.source.datePublished",
-					"facet.date.start": "NOW/DAY-6MONTHS",
-					"facet.date.end": "NOW/DAY",
-					"facet.date.gap": "+1DAY"
-				};
-
-				var facetParamsMonth = {
-					"facet.date": "meta.source.datePublished",
-					"facet.date.start": "NOW/MONTHS-12MONTHS",
-					"facet.date.end": "NOW/MONTHS",
-					"facet.date.gap": "+1MONTHS"
-				};
-
-				if( polarity == "POSITIVE" || polarity == "NEGATIVE" ){
-					filters +="+meta.extracted.text_polarity.discrete:\"" + polarity +"\"";
-				}
-
-				var params = {
-					q : this.getLastQuery(),
-					fq : filters + "+source:Twitter",
-					facet : true,
-					'json.nl' : "map",
-					wt : "json",
-					indent : "true",
-					rows: 0,	// pageSize
-					start: 0	// paginationGap start
-				};
-
-				params = _.extend(params,facetPramsDays);
-				return $.ajax({ url: url + $.param(params) });
 			}
+
+
 			//</editor-fold>
 
 		});

@@ -55,11 +55,6 @@ window.EUMSSI = {
 			target: '#my-timeline'
 		}));
 
-		EUMSSI.Manager.addWidget(new AjaxSolr.WikipediaEventWidget({
-			id: 'my-wikievent',
-			target: '#my-wikievent'
-		}));
-
 		EUMSSI.Manager.addWidget(new AjaxSolr.GenericWordCloudWidget({
 			id: 'my-genericwordcloud',
 			target: '#my-genericwordcloud'
@@ -68,11 +63,6 @@ window.EUMSSI = {
 		EUMSSI.Manager.addWidget(new AjaxSolr.TwitterPolarityWidget({
 			id: 'twitterPolarity',
 			target: '.polarity-placeholder'
-		}));
-
-		EUMSSI.Manager.addWidget(new AjaxSolr.WordGraphWidget({
-			id: 'my-wordgraph',
-			target: '#my-wordgraph'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.GenericGraphWidget({

@@ -806,7 +806,8 @@ span.more {
 .polarity-placeholder .polarityCol {
   height: 100%;
   width: calc(50% - 20px);
-  margin: 0 5px;
+  float: left;
+  margin: 0 0 0 5px;
   display: inline-block;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -846,8 +847,10 @@ span.more {
 }
 .polarity-placeholder .chartsCol {
   display: inline-block;
-  width: 35%;
+  float: left;
+  width: calc(40% - 20px);
   height: 100%;
+  margin: 0 5px;
 }
 .polarity-placeholder .chartsCol > div {
   height: 33%;
@@ -859,15 +862,31 @@ span.more {
   width: 100%;
   height: 100%;
 }
-.polarity-placeholder .chartsCol > div.tweet-pie-chart > div {
-  width: 50%;
-  height: 100%;
-  float: left;
-}
-.polarity-placeholder .chartsCol > div.tweet-time-chart > div {
+.polarity-placeholder .chartsCol > div.tweet-time-chart-placeholder .time-chart {
   width: 100%;
   height: 100%;
   display: inline-block;
+}
+.polarity-placeholder .chartsCol > div.tweet-time-chart-placeholder .tweet-time-chart-buttons {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px 10px 0 0;
+}
+.polarity-placeholder .chartsCol > div.tweet-time-chart-placeholder .tweet-time-chart-buttons button {
+  cursor: pointer;
+  float: left;
+  width: 64px;
+  height: 26px;
+  border: none;
+  margin: 0 1px 0 0;
+}
+.polarity-placeholder .chartsCol > div.tweet-time-chart-placeholder .tweet-time-chart-buttons button:hover {
+  background-color: #c6d8f9;
+}
+.polarity-placeholder .chartsCol > div.tweet-time-chart-placeholder .tweet-time-chart-buttons button.state-active {
+  background-color: #6998f0;
 }
 /* NEW UPDATE LAYOUT WITH CHARTS */
 body #twitterpolarity .tab-content {

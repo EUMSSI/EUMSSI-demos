@@ -50,15 +50,17 @@ _.extend(FilterManager.prototype, {
 	 * @param {String} query - the query
 	 * @param {String} [widgetId] - If of the widget that apply the filter
 	 * @param {String} [filterText] - Auxiliar text to display the filter
+	 * @param {*} [filterData] - Auxiliar data to save/read the filter params
 	 * @returns {{filterName: *, query: *, widgetId: *}}
 	 */
-	addFilter: function(filterName, query, widgetId, filterText){
+	addFilter: function(filterName, query, widgetId, filterText, filterData){
 		console.log("Manager > addFilter: "+filterName+" | "+query+" | "+widgetId+" | "+filterText);
 		var filter = {
 			filterName: filterName,
 			query: query,
 			widgetId: widgetId,
-			filterText: filterText
+			filterText: filterText,
+			filterData: filterData
 		};
 
 		this._filters.push(filter);
