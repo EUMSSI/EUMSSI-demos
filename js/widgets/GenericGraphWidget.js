@@ -85,8 +85,9 @@
 			var q = EUMSSI.Manager.getLastQuery() || "*:*";
 			this.pivots = this.field + "," + this.field;
 			var p_url = "select?q=" + q + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
-			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage", this.field]);
-			p_url +="&fq=" + filters;
+			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage", "source", this.field]);
+			p_url +="&fq=" + encodeURIComponent(filters);
+
 			console.log(p_url);
 			console.log(this.pivots);
 			$.ajax({
@@ -395,7 +396,8 @@
 				//window.open("https://www.google.com/?gws_rd=ssl#q="+linktext);
 				self.setFilter(linktext);
 				self._getGraph(linktext);
-				
+				EUMSSI.Manager.doRequest(0);
+				//
 			}
 
 			// Search functionality (copied/paste from http://www.coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
@@ -466,7 +468,7 @@
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME = keyValue;
 			//this.field = keyValue;
 			EUMSSI.CONF.updateFacetingFields();
-			this.clearFilter();
+			//this.clearFilter();
 			EUMSSI.Manager.doRequest(0);
 		},
 
