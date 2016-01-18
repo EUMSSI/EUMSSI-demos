@@ -22,16 +22,16 @@
 					$("#selectedD3Node1").hide();
 				}.bind(this)
 			});
-                        this.$target.parent().find(".genericgraph-key-selector-2").selectmenu({
-                                width: 200,
-                                select: function( event, data ) {
-                                        console.log("Selected: " + data.item.value);
-                                        if(this.field != data.item.value){
-                                                this._onSelectKeyTo(data.item.value);
-                                        }
-                                        $("#selectedD3Node1").hide();
-                                }.bind(this)
-                        });
+			this.$target.parent().find(".genericgraph-key-selector-2").selectmenu({
+				width: 200,
+				select: function( event, data ) {
+					console.log("Selected: " + data.item.value);
+					if(this.fieldTo != data.item.value){
+						this._onSelectKeyTo(data.item.value);
+					}
+					$("#selectedD3Node1").hide();
+				}.bind(this)
+			});
 			
 		},
 
