@@ -489,13 +489,11 @@
 			EUMSSI.Manager.doRequest(0);
 		},
 
-                _onSelectKeyTo: function(keyValue){
-                        this.fieldTo = keyValue;
-                        //this.field = keyValue;
-                        EUMSSI.CONF.updateFacetingFields();
-                        this.clearFilter();
-                        EUMSSI.Manager.doRequest(0);
-                },
+		_onSelectKeyTo: function(keyValue){
+			this.fieldTo = keyValue;
+			EUMSSI.CONF.updateFacetingFields();
+			EUMSSI.Manager.doRequest(0);
+		},
 
 		/**
 		 * Sets the main Solr query to the given string.
