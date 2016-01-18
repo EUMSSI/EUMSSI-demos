@@ -96,8 +96,9 @@
 			var q = EUMSSI.Manager.getLastQuery() || "*:*";
 			this.pivots = this.field + "," + this.fieldTo;
 			var p_url = "select?q=" + encodeURIComponent(q) + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
-			p_url +="&fq=" + encodeURIComponent(filters);
 			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage", "source", this.field]);
+			p_url +="&fq=" + encodeURIComponent(filters);
+			p_url +="&facet.mincount=2&facet.limit=20";
 
 			console.log(p_url);
 			console.log(this.pivots);
@@ -245,7 +246,7 @@
 			
 			var self = this;
 			var nodes = {};
-			var max_size = 50;
+			var max_size = 30;
 
 			var scale = max_size / this.maxCount;
 			for (var i in tf) {
@@ -274,10 +275,15 @@
 				.nodes(d3.values(nodes))
 				.links(links)
 				.size([width, height])
-				.linkDistance(300)
-				.charge(-80)
+				.linkDistance(20)
+				.charge(charge)
+				.gravity(.4)
 				.on("tick", tick)
 				.start();
+			function charge(d) {
+				return d.size*d.size*-10;
+			}
+
 			// Append SVG to the html, with defined constants
 			var svg = d3.select("#my-genericgraph").append("svg")
 				.attr("width", "100%")
