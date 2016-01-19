@@ -63,7 +63,7 @@
 				"source",
 				"meta.extracted.text_nerl.dbpedia.LOCATION", "meta.extracted.text_nerl.dbpedia.all",
 				"meta.extracted.text_nerl.dbpedia.PERSON",
-				"meta.extracted.text_nerl.dbpedia.COUNTRY",
+				"meta.extracted.text_nerl.dbpedia.Country",
 				"meta.source.keywords",
 				this.field]);
 			//var cont = EUMSSI.Manager.getLastQuery();
