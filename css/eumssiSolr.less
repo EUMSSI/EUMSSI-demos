@@ -606,13 +606,17 @@ img.logo {
 			font-style: italic;
 		}
 	}
-	.videoOnlyWidget{
-		margin-top: 20px;
-		.ui-checkbox-container:hover {
-			background-color: fade(@rgb_orange, 15%);
+	.checkboxWidget{
+		margin-top: 5px;
+		margin-left: 18px;
+		input[type=checkbox] {
+			margin-left: -15px;
 		}
 		label{
 			font-weight: bold;
+		}
+		.ui-checkbox-container:hover {
+			background-color: fade(@rgb_orange, 15%);
 		}
 	}
 }
