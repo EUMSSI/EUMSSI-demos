@@ -59,9 +59,12 @@
 				language = "all";
 
 			var q = EUMSSI.Manager.getLastQuery() || "*";
-			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage",
+			var filters = EUMSSI.FilterManager.getFilterQueryString([
+				"meta.source.datePublished",
+				"meta.source.inLanguage",
 				"source",
-				"meta.extracted.text_nerl.dbpedia.LOCATION", "meta.extracted.text_nerl.dbpedia.all",
+				"meta.extracted.text_nerl.dbpedia.LOCATION",
+				"meta.extracted.text_nerl.dbpedia.all",
 				"meta.extracted.text_nerl.dbpedia.PERSON",
 				"meta.extracted.text_nerl.dbpedia.Country",
 				"meta.source.keywords",
