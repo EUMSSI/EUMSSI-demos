@@ -86,7 +86,10 @@
 			this.pivots = this.field + "," + this.field;
 			var p_url = "select?q=" + q + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
 			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage", "source",
-				"meta.extracted.text_nerl.dbpedia.LOCATION", "meta.extracted.text_nerl.dbpedia.all", "meta.extracted.text_nerl.dbpedia.PERSON",
+				"meta.extracted.text_nerl.dbpedia.LOCATION", "meta.extracted.text_nerl.dbpedia.all",
+				"meta.extracted.text_nerl.dbpedia.PERSON",
+				"meta.extracted.text_nerl.dbpedia.COUNTRY",
+				"meta.source.keywords",
 				this.field]);
 			p_url +="&fq=" + encodeURIComponent(filters);
 
