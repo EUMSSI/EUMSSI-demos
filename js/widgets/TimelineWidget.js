@@ -170,6 +170,7 @@
 		_onEnityClick: function(name){
 			this.setFilter(name);
 			this.getImportantEvents(name);
+			EUMSSI.Manager.doRequest(0);
 		},
 		
 		setFilter: function (value) {
@@ -177,6 +178,7 @@
 			this.storedValue = this.field + ":" + value;
 			//EUMSSI.FilterManager.addFilter("meta.extracted.text_nerl.ner.all:", "meta.extracted.text_nerl.ner.all:" + storedValue, this.id, "meta.extracted.text_nerl.ner.all: "+value);
 			EUMSSI.FilterManager.addFilter(this.field, this.storedValue, this.id, this.field+": "+value);
+			EUMSSI.Manager.doRequest(0);
 		}
 
 	});
