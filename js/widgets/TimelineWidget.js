@@ -60,7 +60,9 @@
 
 			var q = EUMSSI.Manager.getLastQuery() || "*";
 			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage",
-				"source", this.field]);
+				"source",
+				"meta.extracted.text_nerl.dbpedia.LOCATION", "meta.extracted.text_nerl.dbpedia.all", "meta.extracted.text_nerl.dbpedia.PERSON",
+				this.field]);
 			//var cont = EUMSSI.Manager.getLastQuery();
 			//var lastquery = cont.split(":");
 			var queryurl= "";
