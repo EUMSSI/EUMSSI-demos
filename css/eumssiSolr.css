@@ -340,6 +340,18 @@ img.logo {
   max-width: 80px;
   cursor: pointer;
 }
+.result-panel-content .result-video-person-thumbnails {
+  overflow-x: auto;
+}
+.result-panel-content .result-video-person-thumbnails .thumbnails-container {
+  white-space: nowrap;
+}
+.result-panel-content .result-video-person-thumbnails .thumbnails-container img {
+  max-height: 80px;
+  max-width: 80px;
+  box-shadow: 0px 0px 3px 3px #f1f1f1;
+  margin: 5px 3px 0px 3px;
+}
 .result-panel-content .twitter-logo {
   max-height: 18px;
   vertical-align: bottom;

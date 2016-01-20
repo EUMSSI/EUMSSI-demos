@@ -130,7 +130,8 @@ window.EUMSSI = {
 				{key:"meta.extracted.video_ocr.best",label:"Caption in video", showInResultCheck: true},
 				//{key:"meta.extracted.video_persons.amalia",label:"Person Identification", showInResultCheck: false},
 				{key:"meta.extracted.text_nerl.dbpedia.PERSON",label:"Person", showInResultCheck: true},
-				{key:"meta.extracted.text_nerl.dbpedia.LOCATION",label:"Location", showInResultCheck: true}
+				{key:"meta.extracted.text_nerl.dbpedia.LOCATION",label:"Location", showInResultCheck: true},
+				{key:"meta.extracted.video_persons.thumbnails",label:"Persons in video", showInResultCheck: true}
 				//...
 			]
 		}));
