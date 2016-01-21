@@ -82,11 +82,27 @@ window.EUMSSI = {
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
-			id: 'videoOnly',
+			id: 'videoDocuments',
 			key: 'meta.source.mediaurl',
-			label: 'Only video documents',
+			label: 'Video documents',
 			title: 'Check if only want results with video',
-			target: '.videoOnlyWidget-placeholder'
+			target: '.videoDocuments-placeholder'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
+			id: 'videoWithPersonIdent',
+			key: 'meta.extracted.video_persons.amalia',
+			label: 'Videos with person identification',
+			title: 'Check if only want results of videos with Persons Identifications',
+			target: '.videoWithPersonIdent-placeholder'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
+			id: 'videoWithAudioTranscript',
+			key: 'meta.extracted.audio_transcript',
+			label: 'Videos with audio transcript',
+			title: 'Check if only want results of videos with Audio Transcript',
+			target: '.videoWithAudioTrans-placeholder'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.DateFilterWidget({
@@ -112,9 +128,10 @@ window.EUMSSI = {
 				//{key:"meta.source.text",label:"Content Search", showInResultCheck: false},
 				{key:"meta.extracted.audio_transcript",label:"Audio Transcript", showInResultCheck: false},
 				{key:"meta.extracted.video_ocr.best",label:"Caption in video", showInResultCheck: true},
-				{key:"meta.extracted.video_persons.amalia",label:"Person Identification", showInResultCheck: true},
+				//{key:"meta.extracted.video_persons.amalia",label:"Person Identification", showInResultCheck: false},
 				{key:"meta.extracted.text_nerl.dbpedia.PERSON",label:"Person", showInResultCheck: true},
-				{key:"meta.extracted.text_nerl.dbpedia.LOCATION",label:"Location", showInResultCheck: true}
+				{key:"meta.extracted.text_nerl.dbpedia.LOCATION",label:"Location", showInResultCheck: true},
+				{key:"meta.extracted.video_persons.thumbnails",label:"Persons in video", showInResultCheck: true}
 				//...
 			]
 		}));

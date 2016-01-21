@@ -127,7 +127,9 @@
                 <div class="filterViewer-placeholder"></div>
 
                 <!--<h2>Search Options</h2>-->
-                <div class="videoOnlyWidget videoOnlyWidget-placeholder"></div>
+                <div class="videoDocuments-placeholder"></div>
+                <div class="videoWithPersonIdent-placeholder"></div>
+                <div class="videoWithAudioTrans-placeholder"></div>
 
                 <div class="dateFilterWidget-placeholder"></div>
 
@@ -246,7 +248,6 @@
                                         <option value="meta.source.hashtags">Twitter: Hashtags</option>
                                         <option value="meta.source.userMentions">Twitter: User Mentions</option>
                                         <option value="meta.source.author">Authors</option>
-                                        <option value="meta.source.text">Plain Text</option>
                                     </select>
                                 </div>
                                 <div id="my-genericwordcloud" class="genericwordcloud"></div>
@@ -256,17 +257,35 @@
                         <div id="genericgraphtab" data-tabpos="5">
                             <div class="tab-content">
                                 <div class='genericgraph-toolbar content-toolbar ui-widget-header ui-corner-all'>
-                                    <label>From Field</label>
+                                    <label>From Field:</label>
                                     <select style="width: 180px;" title="Select Field" class="genericgraph-key-selector">
                                         <option value="meta.source.keywords">Keywords</option>
-                                        <!-- <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option> -->
+                                        <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option>
                                         <option value="meta.extracted.text_nerl.dbpedia.PERSON">DBpedia Persons</option>
                                         <option value="meta.extracted.text_nerl.dbpedia.ORGANIZATION">DBpedia Organizations</option>
-                                        <!-- <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>-->
-                                        <!-- <option value="meta.extracted.text_nerl.ner.all">Ner All</option> -->
+                                        <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>
+                                        <option value="meta.extracted.text_nerl.ner.all">Ner All</option>
                                         <option value="meta.extracted.text_nerl.ner.PERSON">Ner Persons</option>
                                         <option value="meta.extracted.text_nerl.ner.ORGANIZATION">Ner Organizations</option>
-                                        <!--<option value="meta.source.text">Plain Text</option>-->
+					<option value="meta.extracted.text_nerl.ner.LOCATION">Ner Locations</option>
+					<option value="meta.source.hashtags">Twitter: Hashtags</option>
+					<option value="meta.source.userMentions">Twitter: User Mentions</option>
+					<option value="meta.source.author">Authors</option>
+                                    </select>
+                                    <label>To:</label>
+                                    <select style="width: 180px;" title="To Field" class="genericgraph-key-selector-2">
+                                        <option value="meta.source.keywords">Keywords</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.PERSON">DBpedia Persons</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.ORGANIZATION">DBpedia Organizations</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>
+                                        <option value="meta.extracted.text_nerl.ner.all">Ner All</option>
+                                        <option value="meta.extracted.text_nerl.ner.PERSON">Ner Persons</option>
+                                        <option value="meta.extracted.text_nerl.ner.ORGANIZATION">Ner Organizations</option>
+					<option value="meta.extracted.text_nerl.ner.LOCATION">Ner Locations</option>
+					<option value="meta.source.hashtags">Twitter: Hashtags</option>
+					<option value="meta.source.userMentions">Twitter: User Mentions</option>
+					<option value="meta.source.author">Authors</option>
                                     </select>
                                     <label style="display:none; position: absolute; color: green; right: 300px" id="selectedD3Node1">Selected From: </label>
                                 </div>

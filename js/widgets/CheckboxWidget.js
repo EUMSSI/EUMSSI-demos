@@ -7,6 +7,7 @@
 
 		init: function () {
 			this.$target = $(this.target);
+			this.$target.addClass("checkboxWidget");
 			this._render();
 			//Events
 			this.$target.find("input").click(this._onClickCheckbox.bind(this));

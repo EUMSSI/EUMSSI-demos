@@ -42,11 +42,11 @@
 
 		beforeRequest: function () {
 			return true;
-			//$(this.target).html($('<img>').attr('src', 'images/bar-ajax-loader.gif'));
 		},
 
 
 		afterRequest: function () {
+			$(this.target).parents(".ui-tabs-panel").scrollTop(0);
 			$(this.target).empty();
 			for (var i = 0, l = this.manager.response.response.docs.length; i < l; i++) {
 				var doc = this.manager.response.response.docs[i];
@@ -304,6 +304,10 @@
 						case "meta.extracted.text_nerl.dbpedia.LOCATION" :
 							value = this._locationCustomRender(text, $content);
 							break;
+						case "meta.extracted.video_persons.thumbnails" :
+							// Persons Thumbnails
+							value = this._personThumbnailsCustomRender(doc[key]);
+							break;
 						default :
 							//FIX - comma problem
 							text = text.replace(/,([^\s])/g, ", $1");
@@ -357,7 +361,6 @@
 		 * @private
 		 */
 		_generateHTMLLinks: function(text){
-			//var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 			var urlRegex = /(https?:\/\/[^\s,]+)/g; // Start with http:// | https:// , ends when whitespace|, found.
 			return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
 		},
@@ -430,6 +433,18 @@
 				}
 			});
 			return tempArray.join(", ")+".";
+		},
+
+		_personThumbnailsCustomRender : function(links){
+			var $value = $("<div class='result-video-person-thumbnails'>");
+			var $container = $("<div class='thumbnails-container'>");
+			if(links instanceof Array){
+				_.each(links, function(link){
+					$container.append($("<img class='person-thumbnail'>").prop("src",link));
+				});
+			}
+			$value.append($container);
+			return $value;
 		},
 
 		_renderWikipediaImages : function($content, response){
