@@ -59,8 +59,16 @@
 				language = "all";
 
 			var q = EUMSSI.Manager.getLastQuery() || "*";
-			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage",
-				"source", this.field]);
+			var filters = EUMSSI.FilterManager.getFilterQueryString([
+				"meta.source.datePublished",
+				"meta.source.inLanguage",
+				"source",
+				"meta.extracted.text_nerl.dbpedia.LOCATION",
+				"meta.extracted.text_nerl.dbpedia.all",
+				"meta.extracted.text_nerl.dbpedia.PERSON",
+				"meta.extracted.text_nerl.dbpedia.Country",
+				"meta.source.keywords",
+				this.field]);
 			//var cont = EUMSSI.Manager.getLastQuery();
 			//var lastquery = cont.split(":");
 			var queryurl= "";
@@ -168,6 +176,7 @@
 		_onEnityClick: function(name){
 			this.setFilter(name);
 			this.getImportantEvents(name);
+			EUMSSI.Manager.doRequest(0);
 		},
 		
 		setFilter: function (value) {
@@ -175,6 +184,7 @@
 			this.storedValue = this.field + ":" + value;
 			//EUMSSI.FilterManager.addFilter("meta.extracted.text_nerl.ner.all:", "meta.extracted.text_nerl.ner.all:" + storedValue, this.id, "meta.extracted.text_nerl.ner.all: "+value);
 			EUMSSI.FilterManager.addFilter(this.field, this.storedValue, this.id, this.field+": "+value);
+			EUMSSI.Manager.doRequest(0);
 		}
 
 	});
