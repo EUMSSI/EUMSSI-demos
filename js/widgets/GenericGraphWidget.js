@@ -94,6 +94,7 @@
 			});
 
 			var q = EUMSSI.Manager.getLastQuery() || "*:*";
+
 			this.pivots = this.field + "," + this.fieldTo;
 			var p_url = "select?q=" + encodeURIComponent(q) + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
 			var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage", "source", this.field]);
