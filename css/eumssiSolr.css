@@ -1,11 +1,48 @@
 /*************** MISC **************/
 /*************** ******** **************/
+.info-block .info-label {
+  cursor: pointer;
+}
+.info-block .info-label::after {
+  content: "";
+}
+.info-block .ui-icon {
+  display: inline-block;
+  vertical-align: bottom;
+}
+.wordcloud text {
+  cursor: pointer;
+}
+.genericwordcloud text {
+  cursor: pointer;
+}
+.wordgraph .link {
+  fill: none;
+  stroke: #cccccc;
+  stroke-width: 1.1px;
+}
+.wordgraph .node {
+  cursor: pointer;
+}
+.wordgraph .node circle {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+.wordgraph text {
+  font: 10px sans-serif;
+  pointer-events: none;
+}
 /*************** ******** **************/
 /*************** MISC **************/
 /*************************** Common ***************************/
 * {
   padding: 0;
   margin: 0;
+}
+html {
+  height: 100%;
+  min-width: 600px;
 }
 body {
   width: 100%;
@@ -21,6 +58,7 @@ img {
   border: none;
 }
 a {
+  cursor: pointer;
   color: #6998f0;
   text-decoration: none;
 }
@@ -38,6 +76,42 @@ p {
 video {
   background-color: black;
 }
+li {
+  list-style-type: none;
+  margin-top: 0.2em;
+}
+input[type=checkbox] {
+  vertical-align: text-bottom;
+  margin: 0 2px 1px 2px;
+}
+form {
+  padding: 10px;
+}
+form p {
+  width: auto;
+  position: relative;
+  margin-bottom: 1em;
+}
+form p > label {
+  width: calc(30% - 0.5em);
+  float: left;
+  text-align: right;
+  margin-right: 0.5em;
+  padding-top: 0.4em;
+}
+form p > input,
+form p > textarea,
+form p > select {
+  font-size: 1.2em !important;
+  width: calc(70% - 1em);
+  padding: 0.2em;
+}
+form p > select {
+  width: auto;
+}
+form.feedback-form {
+  width: 600px;
+}
 .click-menu.ui-menu {
   position: absolute;
   width: auto;
@@ -50,7 +124,58 @@ video {
   border: 1px solid transparent;
   cursor: default;
 }
+/*************************** INITIAL PAGE ***************************/
+.ui-section-initpage {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+}
+.ui-section-initpage button.ui-button-main {
+  height: 32px;
+  font-size: large;
+  width: 32px;
+  margin-left: -40px;
+  cursor: pointer;
+  border: none;
+  padding: 4px 4px;
+  background-color: white;
+}
+.ui-section-initpage button.ui-button-main:hover {
+  background-color: white;
+}
+.ui-section-initpage button.ui-button-main .icon-search {
+  background-image: url("../images/icon-search-grey.png");
+  width: 24px;
+  height: 24px;
+  background-repeat: no-repeat;
+}
+.ui-section-initpage img.logo {
+  margin-top: calc(20% - 100px);
+  margin-bottom: 25px;
+  margin-right: 0;
+  float: none;
+}
+.ui-section-initpage .filter-container input {
+  font-size: large;
+  width: 500px;
+  padding: 6px 10px 7px 10px;
+  border: none;
+  box-shadow: 2px 2px 4px grey;
+}
+.ui-section-initpage .filter-container h2 {
+  display: none;
+}
+.ui-section-initpage > div > * {
+  display: inline-block;
+  vertical-align: middle;
+}
 /*************************** LAYOUT GENERAL ***************************/
+.ui-section-mainlayout {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 .ui-layout-resizer {
   background-color: #777777;
 }
@@ -131,6 +256,7 @@ body,
   padding: 20px 0 5px 10px;
   font-size: 20px;
   color: #1b2c33;
+  float: left;
 }
 .header-panel h2 {
   padding-left: 10px;
@@ -138,8 +264,27 @@ body,
   font-size: 14px;
   font-weight: 100;
 }
+.header-panel .btn-do-feedback {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  height: 26px;
+  border: none;
+  width: 100px;
+  font-size: larger;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 1px 1px;
+  opacity: 0.5;
+}
+.header-panel .btn-do-feedback:hover {
+  opacity: 1;
+  background-color: #97b8f5;
+  transition: all 200ms ease-in;
+}
 img.logo {
   float: right;
+  margin-right: 70px;
 }
 /*************************** Center (Result) ***************************/
 .result-panel-content {
@@ -147,7 +292,7 @@ img.logo {
   overflow: visible;
 }
 .result-panel-content h2 {
-  padding: 15px 0 5px 0;
+  margin-bottom: 5px;
   color: #1b2c33;
   font-size: 20px;
   font-weight: 100;
@@ -162,6 +307,12 @@ img.logo {
 }
 .result-panel-content .tab-content {
   padding: 10px 20px 50px 40px;
+}
+.result-panel-content .tab-content.expanded {
+  overflow: hidden;
+  position: relative;
+  width: calc(100% - 60px);
+  height: calc(100% - 60px);
 }
 .result-panel-content .date {
   font-size: 10px;
@@ -189,6 +340,18 @@ img.logo {
   max-width: 80px;
   cursor: pointer;
 }
+.result-panel-content .result-video-person-thumbnails {
+  overflow-x: auto;
+}
+.result-panel-content .result-video-person-thumbnails .thumbnails-container {
+  white-space: nowrap;
+}
+.result-panel-content .result-video-person-thumbnails .thumbnails-container img {
+  max-height: 80px;
+  max-width: 80px;
+  box-shadow: 0px 0px 3px 3px #f1f1f1;
+  margin: 5px 3px 0px 3px;
+}
 .result-panel-content .twitter-logo {
   max-height: 18px;
   vertical-align: bottom;
@@ -196,19 +359,48 @@ img.logo {
   cursor: pointer;
 }
 .result-panel-content .icon-play {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   display: inline-block;
   vertical-align: text-bottom;
   margin-right: 5px;
-  margin-bottom: 1px;
+  cursor: pointer;
+  background-image: url(../images/play-circle.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.result-panel-content .icon-play:hover {
+  background-image: url(../images/play-circle-hover.png);
+}
+.result-panel-content .icon-play-youtube {
+  width: 32px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: text-bottom;
+  cursor: pointer;
+  background-image: url(../images/play-youtube.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.result-panel-content .icon-play-youtube:hover {
+  background-image: url(../images/play-youtube-hover.png);
+}
+.result-panel-content .icon-play-segment {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  margin-top: -2px;
   cursor: pointer;
   background-image: url(../images/icon-play-32.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
 }
-.result-panel-content .icon-play:hover {
+.result-panel-content .icon-play-segment:hover {
   background-image: url(../images/icon-play-32-hover.png);
 }
 .result-panel-content .icon-link {
@@ -244,8 +436,37 @@ img.logo {
 .resultWidget-placeholder {
   padding-top: 1px;
 }
+.resultWidget-placeholder div.result-element {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.75);
+  background-image: url("../images/element-back-news.png");
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-origin: content-box;
+}
+.resultWidget-placeholder div.result-element.element-tweet {
+  background-image: url("../images/element-back-tweet.png");
+}
+.resultWidget-placeholder div.result-element.result-element-video {
+  background-image: url("../images/element-back-video.png");
+}
+.resultWidget-placeholder div.result-element.result-element-youtube {
+  background-image: url("../images/element-back-youtube.png");
+}
 .links {
   cursor: pointer;
+}
+.content-toolbar {
+  margin-bottom: 5px;
+}
+.content-toolbar * {
+  display: inline-block;
+  vertical-align: middle;
+}
+.content-toolbar label {
+  margin-right: 0.5em;
 }
 /*************************** search-panel (LEFT Side) ***************************/
 .search-panel-content {
@@ -263,7 +484,7 @@ img.logo {
 .search-panel-content h2,
 .advancedSearch-panel-content h2 {
   clear: left;
-  padding-top: 20px;
+  margin-top: 20px;
   color: #333333;
   font-size: 13px;
 }
@@ -274,6 +495,24 @@ img.logo {
 .search-panel-content select,
 .advancedSearch-panel-content select {
   width: 150px;
+}
+.search-panel-content div.search-info,
+.advancedSearch-panel-content div.search-info {
+  color: #ffffff;
+  background-color: #777777;
+  display: inline-block;
+  width: 17px;
+  vertical-align: text-bottom;
+  margin-left: 5px;
+  height: 17px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bolder;
+  cursor: pointer;
+}
+.search-panel-content div.search-info:hover,
+.advancedSearch-panel-content div.search-info:hover {
+  background-color: #ff4900;
 }
 .search-panel-content .filter-container,
 .advancedSearch-panel-content .filter-container {
@@ -293,6 +532,28 @@ img.logo {
 .advancedSearch-panel-content .filter-container .ui-checkbox-label {
   font-size: 10px;
   font-style: italic;
+}
+.search-panel-content .checkboxWidget,
+.advancedSearch-panel-content .checkboxWidget {
+  margin-top: 5px;
+  margin-left: 18px;
+}
+.search-panel-content .checkboxWidget input[type=checkbox],
+.advancedSearch-panel-content .checkboxWidget input[type=checkbox] {
+  margin-left: -15px;
+}
+.search-panel-content .checkboxWidget label,
+.advancedSearch-panel-content .checkboxWidget label {
+  font-weight: bold;
+}
+.search-panel-content .checkboxWidget .ui-checkbox-container:hover,
+.advancedSearch-panel-content .checkboxWidget .ui-checkbox-container:hover {
+  background-color: rgba(255, 73, 0, 0.15);
+}
+div.search-info-content h4 {
+  color: #ff4900;
+  background-color: #ffede5;
+  margin: 0.5em 0;
 }
 /*************************** Dialog ***************************/
 span.info-label {
@@ -385,11 +646,7 @@ span.more {
   width: 100%;
 }
 .tagfacet .ui-checkbox-container:hover {
-  background-color: rgba(255, 77, 0, 0.1);
-}
-.tagfacet .ui-checkbox-container input {
-  vertical-align: top;
-  margin: 2px 2px;
+  background-color: rgba(255, 73, 0, 0.15);
 }
 /*************************** TAG CLOUD WIDGET ***************************/
 .tagCloud-placeholder {
@@ -500,6 +757,9 @@ span.more {
   opacity: 1 !important;
 }
 /*************************** TAG CLOUD WIDGET ***************************/
+.filterViewer-placeholder {
+  display: inline-block;
+}
 .filterViewer-placeholder .ui-filters-label {
   display: none;
 }
@@ -517,20 +777,9 @@ span.more {
   text-overflow: ellipsis;
   overflow: hidden;
   width: calc(100% - 20px);
+  font-size: 8pt;
 }
 /************************ MAP GEOCHART WIDGET **************************/
-.tab-content.mapChart {
-  position: relative;
-  width: calc(100% - 60px);
-  height: calc(100% - 60px);
-}
-.tab-content.mapChart .mapChart-toolbar {
-  margin-bottom: 5px;
-}
-.tab-content.mapChart .mapChart-toolbar * {
-  display: inline-block;
-  vertical-align: middle;
-}
 .tab-content.mapChart .mapChart-placeholder {
   position: relative;
   width: 100%;
@@ -540,6 +789,237 @@ span.more {
   width: 100%;
   height: 100%;
 }
+/************************ POLARITY WIDGET **************************/
+.tab-content.expanded.polarity {
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 100%;
+}
+.polarity-placeholder {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.polarity-placeholder .polarityCol {
+  height: 100%;
+  width: calc(50% - 20px);
+  float: left;
+  margin: 0 0 0 5px;
+  display: inline-block;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.polarity-placeholder .polarityCol.agree .tweet-container {
+  background: linear-gradient(to bottom, rgba(0, 145, 201, 0.8) 0%, #ffffff 100%);
+}
+.polarity-placeholder .polarityCol.against .tweet-container {
+  background: linear-gradient(to bottom, rgba(224, 0, 0, 0.8) 0%, #ffffff 100%);
+}
+.polarity-placeholder .polarityCol .tweet-container-loading.loading {
+  width: 100%;
+  height: 200px;
+  margin-top: -200px;
+  background-image: url("../images/bar-ajax-loader.gif");
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 10;
+}
+.polarity-placeholder .polarityCol .tweet-container {
+  width: 100%;
+  padding-bottom: 200px;
+  padding-top: 5px;
+}
+.polarity-placeholder .polarityCol .tweet-container .tweet {
+  margin: 10px auto;
+  max-width: 500px;
+  min-width: 250px;
+  width: calc(100% - 20px);
+  text-align: center;
+}
+.polarity-placeholder .polarityCol .tweet-container h3 {
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: -50px;
+  text-shadow: 0px 0px 2px white;
+}
+.polarity-placeholder .chartsCol {
+  display: inline-block;
+  float: left;
+  width: calc(40% - 20px);
+  height: 100%;
+  margin: 0 5px;
+}
+.polarity-placeholder .chartsCol > div {
+  height: 33%;
+  width: 100%;
+  position: relative;
+  display: inline-block;
+}
+.polarity-placeholder .chartsCol > div.tweet-pie-chart > svg {
+  width: 100%;
+  height: 100%;
+}
+.polarity-placeholder .chartsCol > div.tweet-time-chart-placeholder .time-chart {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+}
+.polarity-placeholder .chartsCol > div.tweet-time-chart-placeholder .tweet-time-chart-buttons {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px 10px 0 0;
+}
+.polarity-placeholder .chartsCol > div.tweet-time-chart-placeholder .tweet-time-chart-buttons button {
+  cursor: pointer;
+  float: left;
+  width: 64px;
+  height: 26px;
+  border: none;
+  margin: 0 1px 0 0;
+}
+.polarity-placeholder .chartsCol > div.tweet-time-chart-placeholder .tweet-time-chart-buttons button:hover {
+  background-color: #c6d8f9;
+}
+.polarity-placeholder .chartsCol > div.tweet-time-chart-placeholder .tweet-time-chart-buttons button.state-active {
+  background-color: #6998f0;
+}
+/* NEW UPDATE LAYOUT WITH CHARTS */
+body #twitterpolarity .tab-content {
+  padding: 0;
+  width: 100%;
+}
+body #twitterpolarity .polarity-placeholder .polarityCol {
+  width: 30%;
+}
+/************************ VIDEO PLAYER WIDGET **************************/
+.player-minimize {
+  background-image: url("../images/arrow-player-mini.png");
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.player-maximize {
+  display: none;
+  background-image: url("../images/arrow-player-max.png");
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 5px;
+  cursor: pointer;
+  opacity: 0.2;
+}
+.player-maximize:hover {
+  opacity: 1;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player {
+  width: 320px !important;
+  height: 240px !important;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .ui-dialog-titlebar {
+  display: none;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .player-minimize {
+  display: none;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .player-maximize {
+  display: block;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .youtube-placeholder {
+  padding: 0;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .youtube-placeholder embed {
+  width: 320px;
+  height: 240px;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .amalia-placeholder .amalia-player-placeholder {
+  width: 320px;
+  height: 240px;
+}
+html body .ui-dialog.video-dialog.ui-widget.minimized-player .amalia-placeholder .amalia-player-row {
+  padding: 0;
+}
+body .ui-dialog.video-dialog.ui-widget {
+  background: #333333;
+  overflow: visible;
+  width: 530px !important;
+}
+body .ui-dialog.video-dialog.ui-widget.plugin-on {
+  width: 855px !important;
+}
+body .ui-dialog.video-dialog.ui-widget .ui-dialog-title {
+  color: whitesmoke;
+}
+body .ui-dialog.video-dialog.ui-widget .ui-dialog-content {
+  overflow: visible;
+  padding: 0;
+}
+.youtube-placeholder {
+  height: 320px;
+  width: 520px;
+  padding: 0 5px;
+}
+.amalia-placeholder {
+  /* OVERRIDE AMALIA PLUGIN CSS */
+}
+.amalia-placeholder .amalia-player-row {
+  padding: 0 5px;
+}
+.amalia-placeholder .amalia-player-row > div {
+  display: inline-block;
+  height: 320px;
+}
+.amalia-placeholder .amalia-player-placeholder {
+  width: 520px;
+}
+.amalia-placeholder .amalia-plugin-tsync-placeholder {
+  width: 320px;
+}
+.amalia-placeholder .ajs-plugin.plugin-text-sync {
+  background: #333333;
+  height: 320px;
+}
+.amalia-placeholder .ajs-plugin.plugin-text-sync .line-component {
+  padding: 0;
+}
+.amalia-placeholder .ajs-plugin.plugin-text-sync .line-component .line {
+  color: white;
+  margin: 5px;
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.amalia-placeholder .ajs-plugin.plugin-text-sync .line-component .line.on {
+  background-color: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 1px 3px #0cf;
+}
+/**************************** DATE FILTER WIDGET ****************************/
+.dateFilterWidget-placeholder {
+  margin-top: 20px;
+}
+.dateFilterWidget-placeholder div {
+  margin-top: 8px;
+}
+.dateFilterWidget-placeholder label {
+  font-weight: bold;
+  text-align: right;
+  display: inline-block;
+  width: 35px;
+  margin-right: 0.5em;
+}
+.dateFilterWidget-placeholder input {
+  width: 157px;
+}
 /*************************** OVERRIDE - jQuery UI ***************************/
 body .ui-widget-header {
   border: none;
@@ -547,4 +1027,21 @@ body .ui-widget-header {
 }
 body .ui-widget-content a {
   color: #6998f0;
+}
+body .ui-dialog {
+  border: none;
+  box-shadow: 1px 1px 4px black;
+}
+body .ui-dialog .ui-dialog-title {
+  font-size: large;
+}
+body .tweet-tooltip {
+  background: none;
+}
+body .ui-dialog-titlebar-close .ui-button-text {
+  display: none;
+}
+body .ui-datepicker {
+  z-index: 10 !important;
+  font-size: inherit;
 }

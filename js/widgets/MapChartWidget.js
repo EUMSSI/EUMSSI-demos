@@ -34,7 +34,8 @@
 			$.getScript( "http://www.google.com/jsapi" )
 				.done(function( script, textStatus ) {
 					google.load("visualization", "1", {
-						packages:["geochart"],
+						//packages:["geochart", "corechart"],
+						packages:["corechart"],
 						callback: this._initChart.bind(this)
 					});
 
@@ -53,6 +54,7 @@
 
 			//Region Selector
 			this.$target.find(".mapChart-region-selector").selectmenu({
+				width: 170,
 				select: function( event, data ) {
 					this._chartOptions.region = data.item.value;
 					this._refreshChartData();
@@ -129,6 +131,7 @@
 			}
 
 			this.chart.draw(data, this._chartOptions);
+			this._lastData = data;
 		},
 
 		/**
@@ -140,11 +143,12 @@
 
 			//Chart Events
 			google.visualization.events.addListener(this.chart, 'regionClick', this._onRegionClick.bind(this));
-			//google.visualization.events.addListener(this.chart, 'select', this._onRegionClick.bind(this));
+			google.visualization.events.addListener(this.chart, 'select', this._onChartSelect.bind(this));
 			google.visualization.events.addListener(this.chart, 'ready', this._refreshExportBtn.bind(this));
 
 			var data = google.visualization.arrayToDataTable([ ['Country', 'Count'] ]);
 			this.chart.draw(data, this._chartOptions);
+			this._lastData = data;
 
 			//If a request is maded before map loading
 			if(this._loadAfterInit){
@@ -187,9 +191,9 @@
 
 			if(regionName){
 				$menu.append('<div class="ui-widget-header">'+regionName+'</div>');
-				if( EUMSSI.FilterManager.checkFilterByWidgetId(this.id) ){
+				if( EUMSSI.FilterManager.checkFilterByWidgetId(this.id+"_Country") ){
 					$menu.append('<li class="filter"><span class="ui-icon ui-icon-plusthick"></span>Add country to filter</li>');
-					$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear filter</li>');
+					$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear Countries filters</li>');
 				} else {
 					$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by country</li>');
 				}
@@ -211,6 +215,59 @@
 			}
 		},
 
+		_onChartSelect: function(){
+			if(this._chartOptions.displayMode === "markers"){
+				var selection = this.chart.getSelection();
+				if(typeof selection[0] !== "undefined") {
+					var value = this._lastData.getValue(selection[0].row, 0);
+					this._openCityContextMenu(value);
+				}
+			}
+		},
+
+		/**
+		 * When click on a City shows a menu to perform some actions.
+		 * @param {string} city - city name to be filtered
+		 * @private
+		 */
+		_openCityContextMenu: function(city){
+			var $menu = $('<ul>');
+
+			if(city){
+				$menu.append('<div class="ui-widget-header">'+city+'</div>');
+				if( EUMSSI.FilterManager.checkFilterByWidgetId(this.id+"_City") ){
+					$menu.append('<li class="filter"><span class="ui-icon ui-icon-plusthick"></span>Add City to filter</li>');
+					$menu.append('<li class="filter-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear Cities filters</li>');
+				} else {
+					$menu.append('<li class="filter"><span class="ui-icon ui-icon-search"></span>Filter by City</li>');
+				}
+				$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
+
+				$menu.on("click",".filter",this._addCityFilter.bind(this,city));
+				$menu.on("click",".filter-clear",this._cleanCityFilter.bind(this,true));
+				$menu.on("click",".open-wikipedia",function(){
+					window.open("http://wikipedia.org/wiki/"+city,"_blank");
+				});
+
+				EUMSSI.UTIL.showContextMenu($menu);
+			}
+		},
+
+		/**
+		 * Add a filter with the selected City
+		 * @param {String} city
+		 * @private
+		 */
+		_addCityFilter: function(city){
+			EUMSSI.FilterManager.addFilter(
+				EUMSSI.CONF.MAP_CITIES_FIELD_NAME,
+				EUMSSI.CONF.MAP_CITIES_FIELD_NAME + ':("' +city+ '")',
+				this.id+"_City",
+				"City: "+city
+			);
+			this.doRequest();
+		},
+
 		/**
 		 * Remove the last filter query and adds a new one with the
 		 * country code of the selected country.
@@ -221,8 +278,8 @@
 			//Create new FQ
 			EUMSSI.FilterManager.addFilter(
 				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME,
-				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + ':("' + EUMSSI.UTIL.countryCode_SWAP[regionCode]+ '")',
-				this.id,
+				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + ':("' + EUMSSI.UTIL.countryCode_SWAP[regionCode].replace(" ","_") + '")',
+				this.id+"_Country",
 				"Location: "+EUMSSI.UTIL.countryCode_SWAP[regionCode]
 			);
 			this.doRequest();
@@ -234,9 +291,19 @@
 		 * @private
 		 */
 		_cleanCountryFilter: function(fetch){
-			//Clean FQ
-			EUMSSI.FilterManager.removeFilterByWidget(this.id);
+			EUMSSI.FilterManager.removeFilterByWidget(this.id+"_Country");
+			if(fetch){
+				this.doRequest();
+			}
+		},
 
+		/**
+		 * Remove the current filter
+		 * @param {Boolean} fetch - true if want to perform a request
+		 * @private
+		 */
+		_cleanCityFilter: function(fetch){
+			EUMSSI.FilterManager.removeFilterByWidget(this.id+"_City");
 			if(fetch){
 				this.doRequest();
 			}
@@ -249,6 +316,7 @@
 		 * @private
 		 */
 		_getCountryCode: function(facetName){
+			facetName = facetName.replace("_"," ");
 			return EUMSSI.UTIL.countryCode[facetName];
 		}
 

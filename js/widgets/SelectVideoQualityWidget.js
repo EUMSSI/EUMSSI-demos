@@ -46,7 +46,7 @@
 
 			switch(value){
 				case "allvideo" :
-					filterQuery = "meta.source.httpHigh:* OR meta.source.httpMedium:*";
+					filterQuery = "meta.source.httpHigh:* OR meta.source.httpMedium:* OR meta.source.mediaurl:*";
 					filterText += "Any quality";
 					break;
 				//case "low" :
@@ -57,7 +57,7 @@
 					filterText += "HD quality";
 					break;
 				case "youtube" :
-					filterQuery = "meta.source.httpHigh:* AND meta.source.youtubeVideoID:*";
+					filterQuery = "meta.source.youtubeVideoID:*";
 					filterText += "Youtube only";
 					break;
 				//case "twitter" :

@@ -61,11 +61,30 @@
 			},
 
 			/**
+			 * Custom AddWidget function that initializes the widget if the manager has been already init.
+			 * Adds a widget to the manager.
+			 * @overrides
+			 * @param {AjaxSolr.AbstractWidget} widget
+			 */
+			addWidget: function (widget) {
+				widget.manager = this;
+				this.widgets[widget.id] = widget;
+				if (this.initialized) {
+					this.widgets[widget.id].init();
+				}
+			},
+
+			/**
 			 * Refresh the Filter query
 			 * @private
 			 */
 			_regenFilter: function(){
+				var q = EUMSSI.FilterManager.getQueryString();
 				var fq = EUMSSI.FilterManager.getFilterQueryString();
+
+				this.store.addByValue("q",q);
+				this._lastq = q;
+
 				this.store.removeByValue("fq",this._lastfq);
 				if(fq.length > 0){
 					this.store.addByValue("fq",fq);
@@ -73,19 +92,6 @@
 				} else {
 					this._lastfq = "";
 				}
-			},
-
-			/**
-			 * Fetch the current indexed fields on Solr
-			 * and save it in Manager._solrFields
-			 */
-			retrieveSolrFieldsNames: function(){
-				$.ajax({
-					url: this.solrUrl + this.servlet + '?' + "q=*%3A*&rows=0&wt=csv&indent=true",
-					success: function(response){
-						this._solrFields = response.split(",").sort();
-					}.bind(this)
-				});
 			},
 
 			_showLoader: function(){
@@ -107,8 +113,105 @@
 
 			removeFilterByWidget: function(widgetId){
 				EUMSSI.FilterManager.removeFilterByWidget(widgetId);
+			},
+
+			getLastFilterQuery: function(){
+				return this._lastfq || "";
+			},
+
+			getLastQuery: function(){
+				return this._lastq || "*:*";
+			},
+
+			//<editor-fold desc="CUSTOM SOLR SERVICES">
+
+			/**
+			 * Fetch the current indexed fields on Solr
+			 * and save it in Manager._solrFields
+			 */
+			retrieveSolrFieldsNames: function(){
+				$.ajax({
+					url: this.solrUrl + this.servlet + '?' + "q=*%3A*&rows=0&wt=csv&indent=true",
+					success: function(response){
+						this._solrFields = response.split(",").sort();
+					}.bind(this)
+				});
+			},
+
+			/**
+			 * Obtain the Segments of the given Item
+			 * @param parentId
+			 */
+			getSegmentsByParentId: function(parentId){
+				var url = this.segmentsCoreUrl + this.servlet + '?';
+				var params = {
+					q : this.getLastQuery(),
+					fq : "parent_id:"+AjaxSolr.Parameter.escapeValue(parentId),
+					sort : "beginOffset asc",
+					wt : "json",
+					indent : "true",
+					rows : "15"
+				};
+				return $.ajax({
+					url: url + $.param(params),
+					success: function(response){
+						this._solrFields = response.split(",").sort();
+					}.bind(this)
+				});
+			},
+
+			/**
+			 * Retrieve Tweets with the current Query
+			 * @param {number} [start=0] - The current page start index for the current search.
+			 * @param {string} [order=desc] - Sort for the Solr.
+			 * @param {number} [gapsize=10] - The paginagion gap size.
+			 * @returns {*}
+			 */
+			getTweets: function(start, order, gapsize){
+				var url = this.solrUrl + this.servlet + '?';
+				var sort = "meta.extracted.text_polarity.numeric " + (order || "desc");
+				var discretePolarity = order === "asc" ? "NEGATIVE" : "POSITIVE";
+				var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage"]);
+
+				var params = {
+					q : this.getLastQuery(),
+					//For the moment only retrieve the NEGATIVE OR POSITIVE excluding NEUTRAL
+					fq : filters + "+source:Twitter +meta.extracted.text_polarity.discrete:\"" + discretePolarity +"\"",
+					sort : sort,
+					wt : "json",
+					indent : "true",
+					rows: (gapsize || 10),		// pageSize
+					start: (start || 0)			// paginationGap start
+				};
+				return $.ajax({ url: url + $.param(params) });
+			},
+
+			/**
+			 * Obtain the Tweets Counts grouped by Polarity
+			 * @returns {Deferred}
+			 */
+			getTweetsPolarityTotal: function(){
+				var url = this.solrUrl + this.servlet + '?';
+				var filters = EUMSSI.FilterManager.getFilterQueryString(["meta.source.datePublished","meta.source.inLanguage"]);
+
+				var params = {
+					q : this.getLastQuery(),
+					fq : filters + "+source:Twitter",
+					facet : true,
+					'facet.field' : "meta.extracted.text_polarity.discrete",
+					'json.nl' : "map",
+					wt : "json",
+					indent : "true",
+					rows: 0,	// pageSize
+					start: 0	// paginationGap start
+				};
+				return $.ajax({ url: url + $.param(params) });
 			}
 
+
+			//</editor-fold>
+
 		});
+
 
 }));

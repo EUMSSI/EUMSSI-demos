@@ -2,21 +2,47 @@
 
 window.EUMSSI = {
 	Manager : {},
+	SegmentManager : {},
 	FilterManager : new FilterManager(),
 	EventManager : new EventManager(),
 	CONF : CONF || {},
 	UTIL : UTIL || {},
 	pageLayout : undefined,
-	contentLayout : undefined
+	contentLayout : undefined,
+	$tabs : undefined
 };
 
 (function ($) {
 
 	$(function () {
 
+		//<editor-fold desc="MAIN CORE MANAGER">
+
 		EUMSSI.Manager = new AjaxSolr.Manager({
-			solrUrl : 'http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/'
+			solrUrl : 'http://demo.eumssi.eu/Solr_EUMSSI/content_items/',
+			segmentsCoreUrl : 'http://demo.eumssi.eu/Solr_EUMSSI/segments/'
 		});
+
+		EUMSSI.Manager.init();
+		EUMSSI.Manager.retrieveSolrFieldsNames();
+
+		//Set Main Query to search on All
+		EUMSSI.Manager.store.addByValue('q', '*:*');
+		//Example: Search Only items with headline
+		//Manager.store.addByValue('q', 'meta.source.headline:[* TO *]');
+		EUMSSI.Manager.store.addByValue('ident', 'true');
+
+		//Faceting Parametres
+		var params = {
+			'facet': true,
+			//'facet.mincount': 1,	// Min count to appear
+			'json.nl': 'map'
+		};
+		for (var name in params) {
+			EUMSSI.Manager.store.addByValue(name, params[name]);
+		}
+		EUMSSI.CONF.updateFacetingFields();
+
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.FilterViewerWidget({
 			id: 'filterViewer',
@@ -29,9 +55,19 @@ window.EUMSSI = {
 			target: '#my-timeline'
 		}));
 
-		EUMSSI.Manager.addWidget(new AjaxSolr.WordCloudWidget({
-			id: 'my-wordcloud',
-			target: '#my-wordcloud'
+		EUMSSI.Manager.addWidget(new AjaxSolr.GenericWordCloudWidget({
+			id: 'my-genericwordcloud',
+			target: '#my-genericwordcloud'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.TwitterPolarityWidget({
+			id: 'twitterPolarity',
+			target: '.polarity-placeholder'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.GenericGraphWidget({
+			id: 'my-genericgraph',
+			target: '#my-genericgraph'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.ResultWidget({
@@ -45,16 +81,41 @@ window.EUMSSI = {
 			attributeName: 'meta.source.inLanguage'
 		}));
 
-		EUMSSI.Manager.addWidget(new AjaxSolr.SelectVideoQualityWidget({
-			id: 'videoQuality',
-			target: '.videoQualityWidget-placeholder'
+		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
+			id: 'videoDocuments',
+			key: 'meta.source.mediaurl',
+			label: 'Video documents',
+			title: 'Check if only want results with video',
+			target: '.videoDocuments-placeholder'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
+			id: 'videoWithPersonIdent',
+			key: 'meta.extracted.video_persons.amalia',
+			label: 'Videos with person identification',
+			title: 'Check if only want results of videos with Persons Identifications',
+			target: '.videoWithPersonIdent-placeholder'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
+			id: 'videoWithAudioTranscript',
+			key: 'meta.extracted.audio_transcript',
+			label: 'Videos with audio transcript',
+			title: 'Check if only want results of videos with Audio Transcript',
+			target: '.videoWithAudioTrans-placeholder'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.DateFilterWidget({
+			id: 'dateFilterWidget',
+			key: 'meta.source.datePublished',
+			target: '.dateFilterWidget-placeholder'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.DynamicSearchWidget({
 			id: 'mainFilter',
 			target: '.mainSearch-placeholder',
 			preload: [
-				{key:"meta.source.text",label:"Content Search", showInResultCheck: false}
+				{key:"GENERAL_SEARCH",label:"Content Search", showInResultCheck: false}
 			]
 		}));
 
@@ -65,10 +126,12 @@ window.EUMSSI = {
 			preload: [
 				// Place here the infor to create TextWidgets Automatically
 				//{key:"meta.source.text",label:"Content Search", showInResultCheck: false},
-				{key:"meta.extracted.audio_transcript",label:"Audio Transcript", showInResultCheck: true},
-				{key:"meta.extracted.video_ocr.best",label:"OCR", showInResultCheck: true},
-				{key:"meta.extracted.text.dbpedia.PERSON",label:"Person", showInResultCheck: true},
-				{key:"meta.extracted.text.dbpedia.LOCATION",label:"Location", showInResultCheck: true}
+				{key:"meta.extracted.audio_transcript",label:"Audio Transcript", showInResultCheck: false},
+				{key:"meta.extracted.video_ocr.best",label:"Caption in video", showInResultCheck: true},
+				//{key:"meta.extracted.video_persons.amalia",label:"Person Identification", showInResultCheck: false},
+				{key:"meta.extracted.text_nerl.dbpedia.PERSON",label:"Person", showInResultCheck: true},
+				{key:"meta.extracted.text_nerl.dbpedia.LOCATION",label:"Location", showInResultCheck: true},
+				{key:"meta.extracted.video_persons.thumbnails",label:"Persons in video", showInResultCheck: true}
 				//...
 			]
 		}));
@@ -77,7 +140,8 @@ window.EUMSSI = {
 			id: "source",
 			label: "Source",
 			target: '.source-placeholder',
-			field: "source"
+			field: "source",
+			persistentFilter: true
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.MapChartWidget({
@@ -107,143 +171,184 @@ window.EUMSSI = {
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.VideoPlayerWidget({
 			id: "videoPlayer"
-			//target: '.mapChart-placeholder'
 		}));
 
+		//Perform an initial Search
+		//EUMSSI.Manager.doRequest();
+		//</editor-fold>
 
-		EUMSSI.Manager.init();
-		EUMSSI.Manager.retrieveSolrFieldsNames();
 
-		//Set Main Query to search on All
-		EUMSSI.Manager.store.addByValue('q', '*:*');
-		//Example: Search Only items with headline
-		//Manager.store.addByValue('q', 'meta.source.headline:[* TO *]');
-		EUMSSI.Manager.store.addByValue('ident', 'true');
+/*
+		//DATEPICKER Default LOCALE
+		var language = window.navigator.userLanguage || window.navigator.language;
+		if(language) {
+			$.datepicker.setDefaults( $.datepicker.regional[language] );
+		}
+*/
+		$.datepicker.setDefaults( $.datepicker.regional[''] );
 
-		//Faceting Parametres
-		var params = {
-			'facet': true,
-			'facet.field': [
-				'source',
-				EUMSSI.CONF.MAP_LOCATION_FIELD_NAME,
-				EUMSSI.CONF.MAP_CITIES_FIELD_NAME,
-				EUMSSI.CONF.PERSON_FIELD_NAME
-			],
+		//<editor-fold desc="JQUERY.TABS">
 
-			//'facet.limit': 20,	// Tagclud Size
-			'facet.mincount': 1,	// Min count to appear
+		EUMSSI.$tabs = $(".tabs-container").tabs({
+			active: 0
+		});
 
-			'f.source.facet.limit': 20,
-			//'f.meta.extracted.text.dbpedia.PERSON.facet.limit' : 50,
-			//'f.meta.extracted.text.ner.LOCATION.facet.prefix': 'LOCATION',
+		//</editor-fold>
 
-			//'facet.date': 'date',
-			//'facet.date.start': '1987-02-26T00:00:00.000Z/DAY',
-			//'facet.date.end': '1987-10-20T00:00:00.000Z/DAY+1DAY',
-			//'facet.date.gap': '+1DAY',
-			'json.nl': 'map'
-			//'timeAllowed': 100		// Tiempo límite para la consulta (ms)
-		};
-		params['f.' + EUMSSI.CONF.MAP_LOCATION_FIELD_NAME + '.facet.limit'] = 250;
-		params['f.' + EUMSSI.CONF.MAP_CITIES_FIELD_NAME + '.facet.limit'] = 25;
-		params['f.' + EUMSSI.CONF.PERSON_FIELD_NAME + '.facet.limit'] = 50;
 
-		for (var name in params) {
-			EUMSSI.Manager.store.addByValue(name, params[name]);
+		//<editor-fold desc="JQUERY.LAYOUT">
+
+		function initLayout(){
+			/******************** <JQUERY.LAYOUT> ********************/
+			/*
+			 NORTH	HEADER (TITLE + LOGO)
+			 WEST	SIMPLE SEARCH
+			 CENTER	CONTENT LAYOUT
+			 EAST	-void-
+			 SOUTH	FOOTER (HIDDEN)
+			 */
+			EUMSSI.pageLayout = $("div.ui-section-mainlayout").layout({
+				defaults:{
+					//applyDefaultStyles: true
+				},
+				north: {
+					size: 85,
+					resizable: false,
+					closable: false,
+					slidable: false,
+					resizerClass: "ui-layout-resizer-none" // displayNone
+
+				},
+				south: {
+					size: 45,
+					initHidden: true
+				},
+				west: {
+					size: 230,
+					resizable: false,
+					resizerClass: "ui-layout-resizer-none" // displayNone
+				}
+			});
+
+			EUMSSI.pageLayout.allowOverflow("center");
+
+			/*
+			 NORTH	-void-
+			 WEST	ADVANCED FILTER
+			 CENTER	RESULT CONTENT
+			 EAST	AUXILIAR WIDGETS
+			 FOOTER	-void-
+			 */
+			EUMSSI.contentLayout = $("body .content-panel").layout({
+				west: {
+					size: 230,
+					initClosed: true,
+					resizable: false,
+					closable: true,
+					slidable: true,
+					togglerClass: "ui-layout-toggler-none",
+					sliderTip: "Advanced Filter"
+				}
+				//east: {
+				//	size: 420,
+				//	initClosed: true,
+				//	resizable: false,
+				//	closable: true,
+				//	slidable: true,
+				//	togglerClass: "ui-layout-toggler-none",
+				//	sliderTip: "Auxiliar Widgets"
+				//}
+			});
+
+			EUMSSI.contentLayout.addPinBtn(".button-pin-west", "west");
+			//EUMSSI.contentLayout.addPinBtn(".button-pin-east", "east");
+			/***************** </JQUERY.LAYOUT> *******************/
 		}
 
-		//Perform an initial Search
-		EUMSSI.Manager.doRequest();
+		//</editor-fold>
 
-		/** ADDITIONAL FUNCTIONS **/
+
+		//<editor-fold desc="MISC">
+
+		function showMainLayout(){
+			//Move the input to search
+			var $mainSearchInput = $(".ui-section-initpage .mainSearch-placeholder").detach();
+			$(".ui-section-mainlayout .filterViewer-placeholder").after($mainSearchInput);
+			//Append help icon - may improve this
+			$mainSearchInput.find(".filter-container h2").after($("#search-info-icon-tpl").text());
+			$mainSearchInput.find(".search-info").click(UTIL.showSearchHelp);
+			//Change the panels and initialize the layout
+			$(".ui-section-initpage").hide();
+			$(".ui-section-mainlayout").show();
+			initLayout();
+		}
+
+		$(".ui-section-initpage input").focus().bind('keydown', function(e) {
+			if (e.which == $.ui.keyCode.ENTER) {
+				showMainLayout();
+			}
+		});
+
+		$("button.btn-do-search-initpage").click(function(){
+			showMainLayout();
+			//Make the initial request
+			EUMSSI.Manager.doRequest(0);
+		});
 
 		//Search Button
 		$("button.btn-do-search").click(function(){
 			EUMSSI.Manager.doRequest(0);
 		});
 
-		/******************** JQUERY.TABS ********************/
-		$(".tabs-container").tabs({
-			active: 0
-		});
-
-		/******************** <JQUERY.LAYOUT> ********************/
-		/*
-			NORTH	HEADER (TITLE + LOGO)
-			WEST	SIMPLE SEARCH
-			CENTER	CONTENT LAYOUT
-			EAST	-void-
-			SOUTH	FOOTER (HIDDEN)
-		 */
-		EUMSSI.pageLayout = $("body").layout({
-			defaults:{
-				//applyDefaultStyles: true
-			},
-			north: {
-				size: 85,
-				resizable: false,
-				closable: false,
-				slidable: false,
-				resizerClass: "ui-layout-resizer-none" // displayNone
-
-			},
-			south: {
-				size: 45,
-				initHidden: true
-			},
-			west: {
-				size: 230,
-				resizable: false,
-				resizerClass: "ui-layout-resizer-none" // displayNone
-			}
-		});
-
-		EUMSSI.pageLayout.allowOverflow("center");
-
-		/*
-			NORTH	-void-
-			WEST	ADVANCED FILTER
-			CENTER	RESULT CONTENT
-			EAST	AUXILIAR WIDGETS
-			FOOTER	-void-
-		 */
-		EUMSSI.contentLayout = $("body .content-panel").layout({
-			west: {
-				size: 230,
-				initClosed: true,
-				resizable: false,
-				closable: true,
-				slidable: true,
-				togglerClass: "ui-layout-toggler-none",
-				sliderTip: "Advanced Filter"
-			},
-			east: {
-				size: 420,
-				initClosed: true,
-				resizable: false,
-				closable: true,
-				slidable: true,
-				togglerClass: "ui-layout-toggler-none",
-				sliderTip: "Auxiliar Widgets"
-
-				// pseudoClose Option Syntax
-				//onclose: $.layout.callbacks.pseudoClose
-
-				// assign the 'slideOffscreen' effect to any pane(s) you wish
-				//fxName:   "slideOffscreen",
-				//fxSpeed:  500 // optional
-			}
-		});
-
-		EUMSSI.contentLayout.addPinBtn(".button-pin-west", "west");
-		EUMSSI.contentLayout.addPinBtn(".button-pin-east", "east");
-		/***************** </JQUERY.LAYOUT> *******************/
-
 		// Record mouse position in order to display contextual menus
 		$(document).mousemove(function(e) {
 			window.mouse_x = e.pageX;
 			window.mouse_y = e.pageY;
 		});
+
+		//</editor-fold>
+
+		//<editor-fold desc="FEEDBACK">
+
+		function sendFeedback(event){
+			var $form = $(this).find("form");
+			var formData = {
+				user : $form.find(".user").val(),
+				//email : $form.find(".email").val(),
+				type : $form.find(".type").val(),
+				comment : $form.find(".comment").val(),
+				state : JSON.stringify(UTIL.serializeCurrentState())
+			};
+
+			$.ajax({
+				url: 'http://demo.eumssi.eu/EumssiApi/webapp/feedback/report?' + $.param(formData),
+				success: function(response){
+					$(this).dialog("destroy").remove();
+				}.bind(this)
+			});
+
+		}
+
+		//Open feedback dialog
+		$("button.btn-do-feedback").click(function(){
+			var $dialogContent = $($("#feedback-dialog-tpl").html());
+			var dialog = $dialogContent.dialog({
+				title: "Post Feedback",
+				modal: true,
+				width: 'auto',
+				buttons: {
+					"Submit": sendFeedback,
+					Cancel: function() {
+						dialog.dialog( "close" );
+					}
+				}
+			});
+		});
+
+
+
+
+		//</editor-fold>
 
 	});
 

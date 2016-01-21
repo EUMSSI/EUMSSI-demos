@@ -87,7 +87,8 @@
 			//Remove previous Value
 			this.clearFilter(true);
 			//Set the current Filter
-			this.storedValue = attributeName + ":" + AjaxSolr.Parameter.escapeValue(value);
+			//this.storedValue = attributeName + ":" + AjaxSolr.Parameter.escapeValue(value);
+			this.storedValue = attributeName + ":" + value;
 			EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id);
 		},
 
