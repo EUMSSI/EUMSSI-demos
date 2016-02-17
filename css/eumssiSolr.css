@@ -130,6 +130,9 @@ form.feedback-form {
   width: 100%;
   text-align: center;
 }
+.ui-section-initpage h1 {
+  opacity: 0.2;
+}
 .ui-section-initpage button.ui-button-main {
   height: 32px;
   font-size: large;
