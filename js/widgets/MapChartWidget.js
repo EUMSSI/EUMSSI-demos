@@ -8,78 +8,101 @@
 	 */
 	AjaxSolr.MapChartWidget = AjaxSolr.AbstractWidget.extend({
 
-		start:0,	//Reset the pagination with doRequest on this Widget
+		start: 0,	//Reset the pagination with doRequest on this Widget
 
-		_chartOptions : {
+		_chartOptions: {
 			//backgroundColor: {fill:'#FFFFFF',stroke:'#FFFFFF' ,strokeWidth:0 },
-			colorAxis:  { colors: ['#FFD5C5','#FF4900', '#712000']},
-			//legend: 'none',
-			displayMode: 'regions', // "regions", "markers"
+			colorAxis                : {colors: ['#FFD5C5', '#FF4900', '#712000']}, //legend: 'none',
+			displayMode              : 'regions', // "regions", "markers"
 			enableRegionInteractivity: 'true',
-			resolution: 'countries',
-			region: 'world', // 001 World, 002 Africa, 005 South America, 013 Central America, 021 Northern America, 019 Americas, 142 Asia, 150 Europe, 009 Oceania
+			resolution               : 'countries',
+			region                   : 'world', // 001 World, 002 Africa, 005 South America, 013 Central America, 021 Northern America, 019 Americas, 142 Asia, 150 Europe, 009 Oceania
 			//sizeAxis: {minValue: 1, maxValue:1,minSize:10,  maxSize: 10},
 			//magnifyingGlass: {enable: true, zoomFactor: 7.5},
 			//tooltip: {textStyle: {color: '#444444'}, trigger:'focus'},
-			keepAspectRatio: true
+			keepAspectRatio          : true
 			//width:800,
 			//height:600
 		},
 
-
-		init: function(){
+		init: function() {
 			this.$target = $(this.target);
 			this.$tabs = this.$target.parents(".tabs-container");
 
-			$.getScript( "http://www.google.com/jsapi" )
-				.done(function( script, textStatus ) {
-					google.load("visualization", "1", {
-						//packages:["geochart", "corechart"],
-						packages:["corechart"],
-						callback: this._initChart.bind(this)
-					});
+			$.getScript("http://www.google.com/jsapi")
+			 .done(function(script, textStatus) {
+				 google.load("visualization", "1", {
+					 //packages:["geochart", "corechart"],
+					 packages: ["corechart"],
+					 callback: this._initChart.bind(this)
+				 });
 
-				}.bind(this))
-				.fail(function( jqxhr, settings, exception ) {
-					this.$target.text( "Error when try to load Google API." );
-				}.bind(this)
-			);
+			 }.bind(this))
+			 .fail(function(jqxhr, settings, exception) {
+				 this.$target.text("Error when try to load Google API.");
+			 }.bind(this));
 
 			//Cange MapType Radio Buttons
-			this.$target.find("#mapChart-displayMode-btn").buttonset();
-			this.$target.find("#mapChart-displayMode-btn input[type=radio]").change(function(event) {
-				this._chartOptions.displayMode = event.target.value;
-				this._refreshChartData();
-			}.bind(this));
+			this.$target.find("#mapChart-displayMode-btn")
+			    .buttonset();
+			this.$target.find("#mapChart-displayMode-btn input[type=radio]")
+			    .change(function(event) {
+				    this._chartOptions.displayMode = event.target.value;
+				    this._refreshChartData();
+			    }.bind(this));
 
 			//Region Selector
-			this.$target.find(".mapChart-region-selector").selectmenu({
-				width: 170,
-				select: function( event, data ) {
-					this._chartOptions.region = data.item.value;
-					this._refreshChartData();
-				}.bind(this)
-			});
+			this.$target.find(".mapChart-region-selector")
+			    .selectmenu({
+				    width : 170,
+				    select: function(event, data) {
+					    this._chartOptions.region = data.item.value;
+					    this._refreshChartData();
+				    }.bind(this)
+			    });
 
 			//Export Button
-			this.$target.find(".mapChart-export-btn").button({
-				icons: {
-					primary: "ui-icon-extlink"
-				}
-			});
+			this.$target.find(".mapChart-export-btn")
+			    .button({
+				    icons: {
+					    primary: "ui-icon-extlink"
+				    }
+			    });
+
+			EUMSSI.EventManager.on("leftside", this._render.bind(this));
 		},
 
-		beforeRequest: function(){
+		beforeRequest: function() {
 			return true;
 		},
 
-		afterRequest: function(){
-			if(!this.manager.flag_PaginationRequest){
-				if(this.chart){
-					this._renderIfTabActivated();
+		afterRequest: function() {
+			if(!this.manager.flag_PaginationRequest) {
+				if(this.chart) {
+					this._render();
 				} else {
 					this._loadAfterInit = true;
 				}
+			}
+		},
+
+		_render: function() {
+			if(EUMSSI.demoMode){
+				this._renderIfTabActivated();
+			} else {
+				this._renderIfWidgetActivated();
+			}
+		},
+
+		_renderIfWidgetActivated: function(){
+			if(this.$target.closest(".widget-placeholder").hasClass("active-widget")){
+				this._refreshChartData();
+			} else {
+				EUMSSI.EventManager.off("activatewidget:map");
+				EUMSSI.EventManager.on("activatewidget:map", function(){
+					EUMSSI.EventManager.off("activatewidget:map");
+					this._refreshChartData();
+				}.bind(this));
 			}
 		},
 
@@ -90,6 +113,18 @@
 			} else {
 				this.$tabs.off("tabsactivate.mapchartwidget");
 				this.$tabs.on("tabsactivate.mapchartwidget", this._tabChange.bind(this));
+			}
+		},
+
+		/**
+		 * Check if the current open tab is this widget tab and then load it
+		 * @private
+		 */
+		_tabChange: function(){
+			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
+			if(this.$tabs.tabs( "option", "active") === tabPosition) {
+				this.$tabs.off("tabsactivate.mapchartwidget");
+				this._refreshChartData();
 			}
 		},
 
@@ -152,19 +187,7 @@
 
 			//If a request is maded before map loading
 			if(this._loadAfterInit){
-				this._renderIfTabActivated();
-			}
-		},
-
-		/**
-		 * Check if the current open tab is this widget tab and then load it
-		 * @private
-		 */
-		_tabChange: function(){
-			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
-			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this.$tabs.off("tabsactivate.mapchartwidget");
-				this._refreshChartData();
+				this.render();
 			}
 		},
 

@@ -1,0 +1,185 @@
+@import "common/eumssi-common.less";
+
+body {
+	height: 100%;
+	position: relative;
+
+	//background-color: purple;
+}
+
+.eumssi-tool {
+	overflow-x: hidden;
+}
+
+
+.content {
+	height: ~"calc(100% - 48px)";
+	width: 100%;
+	position: relative;
+
+	.widget-placeholder{
+
+		height: 100%;
+
+		//Visibility
+		&.active-widget{
+			display: block;
+		}
+		&:not(.active-widget){
+			display: none;
+		}
+	}
+
+	> div {
+		display: inline-block;
+		vertical-align: top;
+		height: ~"calc(100% - 20px)";
+		width: ~"calc(50% - 22px)";
+		padding: 10px;
+		position: relative;
+	}
+
+	&.slide-open {
+		.left-slide-toggler{
+			left: ~"calc(50% - 2px)";
+		}
+	}
+
+	&.slide-closed {
+		.left-slide-toggler {
+			left: 0;
+		}
+		.left-slide {
+			display: none;
+		}
+		.content-body {
+			width: ~"calc(100% - 20px)";
+		}
+	}
+
+	.left-slide-toggler {
+		width: 20px;
+		height: 40px;
+		position: absolute;
+		top: ~"calc(50% - 20px)";
+		margin-left: -15px;
+		background-color: deeppink;
+		cursor: pointer;
+		z-index: 1;
+		opacity: 0.3;
+		border-radius: 0 40px 40px 0;
+		&:hover{
+			opacity: 1;
+		}
+	}
+
+	.left-slide {
+		z-index: 2;
+		#richeditor-placeholder {
+			height: 100%;
+		}
+
+		//background-color: yellow;
+	}
+
+	.content-body {
+		overflow: auto;
+
+		//background-color: lightgrey;
+	}
+
+}
+
+
+.widget-menu {
+	width: 74px;
+	//height: 300px;
+	position: absolute;
+	right: -69px;
+	top: 25%;
+	box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
+
+	.menu-item{
+		width: 64px;
+		height: 64px;
+		margin: 5px;
+		cursor: pointer;
+
+		&:hover{
+			background-color: rgba(255, 255, 255, 0.1);
+			box-shadow: 0 0 1px 1px rgba(0,0,0,0.5);
+		}
+
+		&.active-widget{
+			cursor: auto;
+			background-color: rgba(255, 255, 255, 0.6);
+			box-shadow: 0 0 3px 1px rgba(0,0,0,0.5);
+		}
+
+		background-color: orangered;
+	}
+
+	&:hover {
+		right: 0;
+	}
+
+	background-color: orange;
+}
+
+.header {
+	height: 48px;
+	width: 100%;
+
+	background-color: rgba(0,0,0,0.5);
+
+	.mainSearch-placeholder{
+		line-height: 46px;
+		margin: 0 10px;
+		//float: right;
+	}
+
+	button.ui-button-main {
+		height: 32px;
+		font-size: large;
+		width: 32px;
+		margin-left: -40px;
+		cursor: pointer;
+		border: none;
+		padding: 4px 4px;
+		background-color: white;
+		&:hover {
+			background-color: white;
+		}
+
+		.icon-search {
+			background-image: url("../images/icon-search-grey.png");
+			width: 24px;
+			height: 24px;
+			background-repeat: no-repeat;
+		}
+	}
+
+	.filter-container {
+		input {
+			font-size: large;
+			width: 500px;
+			padding: 6px 10px 7px 10px;
+			border: none;
+			box-shadow: 2px 2px 4px grey;
+		}
+		h2 {
+			display: none;
+		}
+	}
+
+	& > div > * {
+		display: inline-block;
+		vertical-align: middle;
+	}
+}
+
+body .cke_editor_richeditor-placeholder{
+	box-shadow: 0 0 10px 5px grey;
+	border-radius: 5px;
+}
+

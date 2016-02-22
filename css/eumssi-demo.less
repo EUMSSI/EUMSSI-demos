@@ -1,0 +1,60 @@
+@import "common/eumssi-common.less";
+
+
+/*************************** INITIAL PAGE ***************************/
+
+.ui-section-initpage {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+
+  h1 {
+    opacity: 0.2;
+  }
+
+  button.ui-button-main {
+    height: 32px;
+    font-size: large;
+    width: 32px;
+    margin-left: -40px;
+    cursor: pointer;
+    border: none;
+    padding: 4px 4px;
+    background-color: white;
+    &:hover {
+      background-color: white;
+    }
+
+    .icon-search {
+      background-image: url("../images/icon-search-grey.png");
+      width: 24px;
+      height: 24px;
+      background-repeat: no-repeat;
+    }
+  }
+
+  img.logo {
+    margin-top: ~"calc(20% - 100px)";
+    margin-bottom: 25px;
+    margin-right: 0;
+    float: none;
+  }
+  .filter-container {
+    input {
+      font-size: large;
+      width: 500px;
+      padding: 6px 10px 7px 10px;
+      border: none;
+      box-shadow: 2px 2px 4px grey;
+    }
+    h2 {
+      display: none;
+    }
+  }
+
+  & > div > * {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+

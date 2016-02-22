@@ -9,7 +9,8 @@ window.EUMSSI = {
 	UTIL : UTIL || {},
 	pageLayout : undefined,
 	contentLayout : undefined,
-	$tabs : undefined
+	$tabs : undefined,
+	demoMode : true
 };
 
 (function ($) {

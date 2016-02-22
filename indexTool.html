@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>EUMSSI</title>
+	<link rel="icon" type="image/png" href="images/favicon-2.png" />
+
+	<!--POLYFILLS-->
+	<script type="text/javascript" src="lib/webcomponentsjs-0.7.15/HTMLImports.min.js"></script>
+	<link rel="stylesheet" href="css/eumssi-tool.css">
+
+	<link title="timeline-styles" rel="stylesheet" href="//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+	<script src="//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
+	<script src="lib/d3/d3.layout.cloud.js"></script>
+	<script src="lib/d3/nv/nv.d3.min.js"></script>
+	<link href="lib/d3/nv/nv.d3.min.css" rel="stylesheet">
+
+	<script src="lib/underscore/underscore-min.js"></script>
+	<script src="lib/jquery/jquery-1.11.2.min.js"></script>
+	<script src="lib/jquery/jquery-ui.min.js"></script>
+	<script src="lib/jquery/ui/i18n/datepicker-all.js"></script>
+	<!--<script src="lib/jquery/jquery.layout-1.4.4.js"></script>-->
+	<!--<script src="lib/jquery/jquery.freetile.js"></script>-->
+	<link rel="stylesheet" href="lib/jquery/jquery-ui.min.css">
+
+    <!-- CKEditor -->
+    <script src="lib/ckeditor/ckeditor.js"></script>
+
+	<!-- amalia.js -->
+	<script src="lib/amalia.js-1.3.1/components/raphael/raphael.js"></script>
+	<script src="lib/amalia.js-1.3.1/js/amalia.js.min.js"></script>
+	<link rel="stylesheet" href="lib/amalia.js-1.3.1/css/amalia.js.min.css">
+	<script type="text/javascript" src="lib/amalia.js-1.3.1/js/i18n/amalia.js-message-en.js"></script>
+	<script type="text/javascript" src="lib/amalia.js-1.3.1/js/amalia.js-plugin-text-sync.min.js"></script>
+
+	<script src="js/Utils.js"></script>
+	<script src="js/EventManager.js"></script>
+	<script src="js/FilterManager.js"></script>
+	<!--<script src="js/eumssiSolr.js"></script>-->
+	<script src="js/eumssiSolr-tool.js"></script>
+
+	<script src="lib/ajax-solr/Core.js"></script>
+	<script src="lib/ajax-solr/AbstractManager.js"></script>
+	<script src="lib/ajax-solr/Parameter.js"></script>
+	<script src="lib/ajax-solr/ParameterStore.js"></script>
+	<script src="lib/ajax-solr/AbstractWidget.js"></script>
+	<script src="lib/ajax-solr/AbstractFacetWidget.js"></script>
+	<script src="lib/ajax-solr/AbstractTextWidget.js"></script>
+
+	<script src="js/Manager.jquery.js"></script>
+
+	<script src="js/widgets/ResultWidget.js"></script>
+	<script src="js/widgets/PagerWidget.js"></script>
+	<script src="js/widgets/TextWidget.js"></script>
+
+	<script src="js/widgets/TimelineWidget.js"></script>
+
+	<script src="js/widgets/GenericGraphWidget.js"></script>
+
+	<script src="js/widgets/GenericWordCloudWidget.js"></script>
+	<script src="js/widgets/TwitterPolarityWidget.js"></script>
+
+	<script src="js/widgets/SelectLocaleWidget.js"></script>
+	<script src="js/widgets/CheckboxWidget.js"></script>
+	<script src="js/widgets/DateFilterWidget.js"></script>
+	<script src="js/widgets/SelectVideoQualityWidget.js"></script>
+	<script src="js/widgets/DynamicSearchWidget.js"></script>
+	<script src="js/widgets/TagFacetWidget.js"></script>
+	<script src="js/widgets/MapChartWidget.js"></script>
+	<script src="js/widgets/TagCloudWidget.js"></script>
+	<script src="js/widgets/VideoPlayerWidget.js"></script>
+	<script src="js/widgets/FilterViewerWidget.js"></script>
+	<script src="js/components/TweetTimelineChart.js"></script>
+
+    <!--TOOLS NEW WIDGETS-->
+    <script src="js/widgets/RichEditorWidget.js"></script>
+
+
+	<!-- TEMPLATES -->
+	<script>
+		function onImport() {
+			$('#templates-container').append($(document.querySelector('link[rel="import"]').import).find("script"));
+		}
+	</script>
+	<link rel="import" href="templates/templates.html" onload="onImport(event)" >
+
+</head>
+<body class="eumssi-tool">
+
+    <div class="header header-panel">
+	    <div class="mainSearch-placeholder"></div>
+	    <button class="btn-do-feedback" title="Send Feedback Message">Feedback</button>
+    </div>
+
+    <div class="content slide-open">
+        <div class="left-slide">
+            <div id="richeditor-placeholder"></div>
+        </div>
+	    <div class="left-slide-toggler"></div>
+	    <div class="content-body">
+
+		    <!--RESULT widget-->
+		    <div class="result-widget widget-placeholder tab-content active-widget" data-widget="result">
+			    <div class="navigation">
+				    <ul class="pager"></ul>
+				    <div class="pager-header"></div>
+			    </div>
+			    <div class="result-panel-content resultWidget-placeholder"></div>
+			    <br>
+			    <div class="navigation">
+				    <ul class="pager"></ul>
+			    </div>
+		    </div>
+
+		    <!--MAP widget-->
+		    <div class="mapChart widget-placeholder tab-content" data-widget="map">
+			    <div class='mapChart-placeholder'>
+				    <div class='mapChart-toolbar content-toolbar ui-widget-header ui-corner-all'>
+					    <div id="mapChart-displayMode-btn">
+						    <input type="radio" id="mapChart-displayMode-regions" value="regions" name="displayMode-radio" checked="checked"><label for="mapChart-displayMode-regions">Countries</label>
+						    <input type="radio" id="mapChart-displayMode-markers" value="markers" name="displayMode-radio"><label for="mapChart-displayMode-markers">Cities</label>
+					    </div>
+					    <select style="width: 160px;" title="Select Region" class="mapChart-region-selector">
+						    <option value="world">World</option>
+						    <option value="002">Africa</option>
+						    <option value="019">Americas</option>
+						    <option value="013">America (Central)</option>
+						    <option value="021">America (Northern)</option>
+						    <option value="005">America (South)</option>
+						    <option value="142">Asia</option>
+						    <option value="150">Europe</option>
+						    <option value="009">Oceania</option>
+					    </select>
+					    <a class="mapChart-export-btn" download="chart.png" title="Download map as image">Export</a>
+					    <img class="mapChart-loading" style="display:none;" src="images/circular-loader.gif" title="Loading Map...">
+				    </div>
+				    <div class="mapChart-chart"></div>
+			    </div>
+		    </div>
+
+
+		    <div class="people widget-placeholder" data-widget="people">
+			    <h1>People</h1>
+		    </div>
+
+		    <div class="timeline widget-placeholder" data-widget="timeline">
+			    <h1>Timeline</h1>
+		    </div>
+
+		    <div class="wordCloud widget-placeholder" data-widget="word-cloud">
+			    <h1>Word Cloud</h1>
+		    </div>
+
+		    <div class="wordGraph widget-placeholder" data-widget="word-graph">
+			    <h1>Word Graph</h1>
+		    </div>
+
+		    <div class="polarity widget-placeholder" data-widget="polarity">
+			    <h1>Polarity</h1>
+		    </div>
+
+	    </div>
+    </div>
+
+    <div class="widget-menu">
+	    <div class="menu-item active-widget" data-widget="result">Result</div>
+	    <div class="menu-item" data-widget="map">Map</div>
+	    <div class="menu-item" data-widget="people">People</div>
+	    <div class="menu-item" data-widget="timeline">Timeline</div>
+	    <div class="menu-item" data-widget="word-cloud">Word Cloud</div>
+	    <div class="menu-item" data-widget="word-graph">Word Graph</div>
+	    <div class="menu-item" data-widget="polarity">Polarity</div>
+    </div>
+
+    <div id="templates-container" style="display:none;"></div>
+
+</body>
+</html>
