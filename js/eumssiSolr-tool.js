@@ -105,6 +105,14 @@ window.EUMSSI = {
 			target: '.mapChart'
 		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.TagcloudWidget({
+			id: 'TagCloudWidget',
+			target: '.tagCloud-placeholder',
+			field: EUMSSI.CONF.PERSON_FIELD_NAME
+		}));
+
+
+
 		//</editor-fold>
 
 
