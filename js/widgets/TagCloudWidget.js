@@ -45,30 +45,12 @@
 				$(this.target).append(this._renderItem(objectedItems[i],size));
 			}
 
-
-			if(EUMSSI.demoMode){
-				tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
-				if(this.$tabs.tabs( "option", "active") === tabPosition) {
-					this._getThumbnails(objectedItems);
-				} else {
-					this.$tabs.off("tabsactivate.tagcloudwidget");
-					this.$tabs.on("tabsactivate.tagcloudwidget", this._tabChange.bind(this, objectedItems));
-				}
-			} else {
-				this._renderIfWidgetActivated(objectedItems);
-			}
-
-		},
-
-		_renderIfWidgetActivated : function(objectedItems){
-			if(this.$target.closest(".widget-placeholder").hasClass("active-widget")){
+			tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
+			if(this.$tabs.tabs( "option", "active") === tabPosition) {
 				this._getThumbnails(objectedItems);
 			} else {
-				EUMSSI.EventManager.off("activatewidget:people");
-				EUMSSI.EventManager.on("activatewidget:people", function(){
-					EUMSSI.EventManager.off("activatewidget:people");
-					this._getThumbnails(objectedItems);
-				}.bind(this));
+				this.$tabs.off("tabsactivate.tagcloudwidget");
+				this.$tabs.on("tabsactivate.tagcloudwidget", this._tabChange.bind(this, objectedItems));
 			}
 		},
 
@@ -185,18 +167,18 @@
 			this.$target.freetile({
 				containerAnimate: true
 			});
-			//Bind Event
-			if(EUMSSI.demoMode){
-				var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
-				//Bind refresh when change to the tab
-				this.$tabs.on( "tabsactivate", function(){
-					if( this.$tabs.tabs( "option", "active") === tabPosition && this.$target.data("FreetileData") ) {
-						this._refreshFreeTile();
-					}
-				}.bind(this));
-			} else {
-				EUMSSI.EventManager.on("leftside", this._refreshFreeTile.bind(this));
-			}
+
+			//Bind Events
+			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
+			//Bind refresh when change to the tab
+			this.$tabs.on( "tabsactivate", function(){
+				if( this.$tabs.tabs( "option", "active") === tabPosition && this.$target.data("FreetileData") ) {
+					this._refreshFreeTile();
+				}
+			}.bind(this));
+
+			EUMSSI.EventManager.on("leftside", this._refreshFreeTile.bind(this));
+
 		},
 
 		/**

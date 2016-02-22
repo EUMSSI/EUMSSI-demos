@@ -87,23 +87,7 @@
 		},
 
 		_render: function() {
-			if(EUMSSI.demoMode){
-				this._renderIfTabActivated();
-			} else {
-				this._renderIfWidgetActivated();
-			}
-		},
-
-		_renderIfWidgetActivated: function(){
-			if(this.$target.closest(".widget-placeholder").hasClass("active-widget")){
-				this._refreshChartData();
-			} else {
-				EUMSSI.EventManager.off("activatewidget:map");
-				EUMSSI.EventManager.on("activatewidget:map", function(){
-					EUMSSI.EventManager.off("activatewidget:map");
-					this._refreshChartData();
-				}.bind(this));
-			}
+			this._renderIfTabActivated();
 		},
 
 		_renderIfTabActivated: function(){

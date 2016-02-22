@@ -23,7 +23,6 @@
 	<script src="lib/jquery/jquery-1.11.2.min.js"></script>
 	<script src="lib/jquery/jquery-ui.min.js"></script>
 	<script src="lib/jquery/ui/i18n/datepicker-all.js"></script>
-	<!--<script src="lib/jquery/jquery.layout-1.4.4.js"></script>-->
 	<script src="lib/jquery/jquery.freetile.js"></script>
 	<link rel="stylesheet" href="lib/jquery/jquery-ui.min.css">
 
@@ -40,7 +39,6 @@
 	<script src="js/Utils.js"></script>
 	<script src="js/EventManager.js"></script>
 	<script src="js/FilterManager.js"></script>
-	<!--<script src="js/eumssiSolr.js"></script>-->
 	<script src="js/eumssiSolr-tool.js"></script>
 
 	<script src="lib/ajax-solr/Core.js"></script>
@@ -101,84 +99,105 @@
             <div id="richeditor-placeholder"></div>
         </div>
 	    <div class="left-slide-toggler"></div>
-	    <div class="content-body">
+	    <div class="result-panel-content">
 
-		    <!--RESULT widget-->
-		    <div class="result-widget widget-placeholder tab-content active-widget" data-widget="result">
-			    <div class="navigation">
-				    <ul class="pager"></ul>
-				    <div class="pager-header"></div>
-			    </div>
-			    <div class="result-panel-content resultWidget-placeholder"></div>
-			    <br>
-			    <div class="navigation">
-				    <ul class="pager"></ul>
-			    </div>
-		    </div>
-
-		    <!--MAP widget-->
-		    <div class="mapChart widget-placeholder tab-content" data-widget="map">
-			    <div class='mapChart-placeholder'>
-				    <div class='mapChart-toolbar content-toolbar ui-widget-header ui-corner-all'>
-					    <div id="mapChart-displayMode-btn">
-						    <input type="radio" id="mapChart-displayMode-regions" value="regions" name="displayMode-radio" checked="checked"><label for="mapChart-displayMode-regions">Countries</label>
-						    <input type="radio" id="mapChart-displayMode-markers" value="markers" name="displayMode-radio"><label for="mapChart-displayMode-markers">Cities</label>
+		    <div class="tabs-container">
+			    <ul>
+				    <li><a href="#fragment-1">Result</a></li>
+				    <li><a href="#fragment-2">Map</a></li>
+				    <li><a href="#fragment-3">People</a></li>
+				    <li><a href="#timelinetab">Timeline</a></li>
+				    <li><a href="#genericwordcloudtab">Word Cloud</a></li>
+				    <li><a href="#genericgraphtab">Word Graph</a></li>
+				    <li><a href="#twitterpolarity">Polarity</a></li>
+				    <li><a href="#dashboard">Dashboard</a></li>
+			    </ul>
+			    <div id="fragment-1" data-tabpos="0">
+				    <!--RESULT widget-->
+				    <div class="result-widget widget-placeholder tab-content active-widget" data-widget="result">
+					    <div class="navigation">
+						    <ul class="pager"></ul>
+						    <div class="pager-header"></div>
 					    </div>
-					    <select style="width: 160px;" title="Select Region" class="mapChart-region-selector">
-						    <option value="world">World</option>
-						    <option value="002">Africa</option>
-						    <option value="019">Americas</option>
-						    <option value="013">America (Central)</option>
-						    <option value="021">America (Northern)</option>
-						    <option value="005">America (South)</option>
-						    <option value="142">Asia</option>
-						    <option value="150">Europe</option>
-						    <option value="009">Oceania</option>
-					    </select>
-					    <a class="mapChart-export-btn" download="chart.png" title="Download map as image">Export</a>
-					    <img class="mapChart-loading" style="display:none;" src="images/circular-loader.gif" title="Loading Map...">
+					    <div class="result-panel-content resultWidget-placeholder"></div>
+					    <br>
+					    <div class="navigation">
+						    <ul class="pager"></ul>
+					    </div>
 				    </div>
-				    <div class="mapChart-chart"></div>
 			    </div>
-		    </div>
 
-		    <!--PEOPLE widget (tagCloud)-->
-		    <div class="people widget-placeholder tab-content" data-widget="people">
-			    <h1>People</h1>
-			    <div class="tagCloud-placeholder"></div>
-		    </div>
+			    <div id="fragment-2" data-tabpos="1">
+				    <!--MAP widget-->
+				    <div class="mapChart widget-placeholder tab-content expanded" data-widget="map">
+					    <div class='mapChart-placeholder'>
+						    <div class='mapChart-toolbar content-toolbar ui-widget-header ui-corner-all'>
+							    <div id="mapChart-displayMode-btn">
+								    <input type="radio" id="mapChart-displayMode-regions" value="regions" name="displayMode-radio" checked="checked"><label for="mapChart-displayMode-regions">Countries</label>
+								    <input type="radio" id="mapChart-displayMode-markers" value="markers" name="displayMode-radio"><label for="mapChart-displayMode-markers">Cities</label>
+							    </div>
+							    <select style="width: 160px;" title="Select Region" class="mapChart-region-selector">
+								    <option value="world">World</option>
+								    <option value="002">Africa</option>
+								    <option value="019">Americas</option>
+								    <option value="013">America (Central)</option>
+								    <option value="021">America (Northern)</option>
+								    <option value="005">America (South)</option>
+								    <option value="142">Asia</option>
+								    <option value="150">Europe</option>
+								    <option value="009">Oceania</option>
+							    </select>
+							    <a class="mapChart-export-btn" download="chart.png" title="Download map as image">Export</a>
+							    <img class="mapChart-loading" style="display:none;" src="images/circular-loader.gif" title="Loading Map...">
+						    </div>
+						    <div class="mapChart-chart"></div>
+					    </div>
+				    </div>
+			    </div>
 
-		    <div class="timeline widget-placeholder" data-widget="timeline">
-			    <h1>Timeline</h1>
-			    <p>in progres...</p>
-		    </div>
+			    <div id="fragment-3" data-tabpos="2">
+				    <!--PEOPLE widget (tagCloud)-->
+				    <div class="people widget-placeholder tab-content" data-widget="people">
+					    <h1>People</h1>
+					    <div class="tagCloud-placeholder"></div>
+				    </div>
+			    </div>
 
-		    <div class="wordCloud widget-placeholder" data-widget="word-cloud">
-			    <h1>Word Cloud</h1>
-			    <p>in progres...</p>
-		    </div>
+			    <div id="timelinetab" data-tabpos="3">
+				    <div class="timeline widget-placeholder tab-content" data-widget="timeline">
+					    <h1>Timeline</h1>
+					    <p>in progres...</p>
+				    </div>
+			    </div>
 
-		    <div class="wordGraph widget-placeholder" data-widget="word-graph">
-			    <h1>Word Graph</h1>
-			    <p>in progres...</p>
-		    </div>
+			    <div id="genericwordcloudtab" data-tabpos="4">
+				    <div class="wordCloud widget-placeholder tab-content" data-widget="word-cloud">
+					    <h1>Word Cloud</h1>
+					    <p>in progres...</p>
+				    </div>
+			    </div>
 
-		    <div class="polarity widget-placeholder" data-widget="polarity">
-			    <h1>Polarity</h1>
-			    <p>in progres...</p>
-		    </div>
+			    <div id="genericgraphtab" data-tabpos="5">
+				    <div class="wordGraph widget-placeholder tab-content" data-widget="word-graph">
+					    <h1>Word Graph</h1>
+					    <p>in progres...</p>
+				    </div>
+			    </div>
+
+			    <div id="twitterpolarity" data-tabpos="6">
+				    <div class="polarity widget-placeholder tab-content expanded" data-widget="polarity">
+					    <div class="polarity-placeholder"></div>
+				    </div>
+			    </div>
+
+			    <div id="dashboard" data-tabpos="7">
+				    <div class="dashboard widget-placeholder tab-content" data-widget="dashboard">
+					    <h1>Dashboard</h1>
+					    <p>in progres...</p>
+				    </div>
+			    </div>
 
 	    </div>
-    </div>
-
-    <div class="widget-menu">
-	    <div class="menu-item active-widget" data-widget="result">Result</div>
-	    <div class="menu-item" data-widget="map">Map</div>
-	    <div class="menu-item" data-widget="people">People</div>
-	    <div class="menu-item" data-widget="timeline">Timeline</div>
-	    <div class="menu-item" data-widget="word-cloud">Word Cloud</div>
-	    <div class="menu-item" data-widget="word-graph">Word Graph</div>
-	    <div class="menu-item" data-widget="polarity">Polarity</div>
     </div>
 
     <div id="templates-container" style="display:none;"></div>

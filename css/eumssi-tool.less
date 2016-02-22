@@ -3,39 +3,39 @@
 body {
 	height: 100%;
 	position: relative;
-
-	//background-color: purple;
 }
 
 .eumssi-tool {
 	overflow-x: hidden;
 }
 
-
 .content {
 	height: ~"calc(100% - 48px)";
 	width: 100%;
 	position: relative;
 
-	.widget-placeholder{
+	.tabs-container{
+		width: 100%;
+		padding: 0;
+		border-width: 0;
+		border-radius: 3px 0 0 3px;
+		box-shadow: 0 0 10px 5px grey;
+	}
 
-		height: 100%;
+	.left-slide {
+		padding: 10px 10px 10px 0;
+	}
 
-		//Visibility
-		&.active-widget{
-			display: block;
-		}
-		&:not(.active-widget){
-			display: none;
-		}
+	.result-panel-content{
+		padding: 10px 0 10px 10px;
 	}
 
 	> div {
 		display: inline-block;
 		vertical-align: top;
 		height: ~"calc(100% - 20px)";
-		width: ~"calc(50% - 22px)";
-		padding: 10px;
+		width: ~"calc(50% - 12px)";
+		//padding: 10px;
 		position: relative;
 	}
 
@@ -52,20 +52,20 @@ body {
 		.left-slide {
 			display: none;
 		}
-		.content-body {
-			width: ~"calc(100% - 20px)";
+		.result-panel-content{
+			width: ~"calc(100% - 10px)";
 		}
 	}
 
 	.left-slide-toggler {
-		width: 20px;
-		height: 40px;
+		width: 30px;
+		height: 60px;
 		position: absolute;
-		top: ~"calc(50% - 20px)";
-		margin-left: -15px;
-		background-color: deeppink;
+		top: ~"calc(50% - 30px)";
+		margin-left: -10px;
+		background-color: orangered;
 		cursor: pointer;
-		z-index: 1;
+		z-index: 10;
 		opacity: 0.3;
 		border-radius: 0 40px 40px 0;
 		&:hover{
@@ -78,53 +78,16 @@ body {
 		#richeditor-placeholder {
 			height: 100%;
 		}
-
-		//background-color: yellow;
 	}
 
-	.content-body {
+	.result-panel-content{
 		overflow: auto;
-
-		//background-color: lightgrey;
 	}
+
 
 }
 
 
-.widget-menu {
-	width: 74px;
-	//height: 300px;
-	position: absolute;
-	right: -69px;
-	top: 25%;
-	box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
-
-	.menu-item{
-		width: 64px;
-		height: 64px;
-		margin: 5px;
-		cursor: pointer;
-
-		&:hover{
-			background-color: rgba(255, 255, 255, 0.1);
-			box-shadow: 0 0 1px 1px rgba(0,0,0,0.5);
-		}
-
-		&.active-widget{
-			cursor: auto;
-			background-color: rgba(255, 255, 255, 0.6);
-			box-shadow: 0 0 3px 1px rgba(0,0,0,0.5);
-		}
-
-		background-color: orangered;
-	}
-
-	&:hover {
-		right: 0;
-	}
-
-	background-color: orange;
-}
 
 .header {
 	height: 48px;
@@ -178,8 +141,67 @@ body {
 	}
 }
 
-body .cke_editor_richeditor-placeholder{
-	box-shadow: 0 0 10px 5px grey;
-	border-radius: 5px;
+//OVERRIDE VENDOR CSS
+
+body{
+
+	.cke_editor_richeditor-placeholder{
+		box-shadow: 0 0 10px 5px grey;
+		border-radius: 0 5px 5px 0;
+	}
+
+	//NAVIGATION TABS
+	.ui-tabs .ui-tabs-nav {
+		width: 74px;
+		position: fixed;
+		top: 25%;
+		right: -71px;
+		z-index: 1000;
+		border-radius: 4px 0 0 4px;
+		box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
+		background-color: orange;
+
+		&:hover {
+			right: 0;
+		}
+
+		li{
+			float: none;
+			height: 64px;
+			width: 64px;
+			border-radius: 0;
+			overflow: hidden;
+			position: relative;
+			border-bottom-width: 1px;
+			padding: 0;
+			white-space: nowrap;
+			margin: 5px;
+			cursor: pointer;
+			border: none;
+			background-color: orangered;
+			background-image: none;
+
+			&:hover{
+				background-color: rgba(255, 255, 255, 0.1);
+				box-shadow: 0 0 1px 1px rgba(0,0,0,0.5);
+			}
+
+			&.active-widget,
+			&.ui-state-active{
+				cursor: auto;
+				background-color: rgba(255, 255, 255, 0.6);
+				box-shadow: 0 0 3px 1px rgba(0,0,0,0.5);
+			}
+
+			.ui-tabs-anchor{
+				float: none;
+				display: block;
+				height: 100%;
+				width: 100%;
+				padding: 0;
+			}
+		}
+	}
 }
+
 

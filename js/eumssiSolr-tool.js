@@ -111,6 +111,11 @@ window.EUMSSI = {
 			field: EUMSSI.CONF.PERSON_FIELD_NAME
 		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.TwitterPolarityWidget({
+			id: 'twitterPolarity',
+			target: '.polarity-placeholder'
+		}));
+
 
 
 		//</editor-fold>
@@ -124,6 +129,10 @@ window.EUMSSI = {
 		 $.datepicker.setDefaults( $.datepicker.regional[language] );
 		 }*/
 		$.datepicker.setDefaults($.datepicker.regional['']);
+
+		EUMSSI.$tabs = $(".tabs-container").tabs({
+			active: 0
+		});
 
 		// Record mouse position in order to display contextual menus
 		$(document).mousemove(function(e){
