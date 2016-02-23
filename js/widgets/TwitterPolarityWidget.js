@@ -6,8 +6,10 @@
 		init: function() {
 			this.$target = $(this.target);
 			this.$tabs = $(this.target).parents(".tabs-container");
-		},
 
+			//TODO only need to Repaint the graphics
+			EUMSSI.EventManager.on("leftside", this._reloadGraphics.bind(this));
+		},
 
 		_initLayout: function(){
 			//Initial View
@@ -51,7 +53,7 @@
 			if(sourceWidget){
 				return sourceWidget.isKeyActive('Twitter');
 			}
-			return false;
+			return true;
 		},
 
 		/**
@@ -198,7 +200,7 @@
 				{	'label': 'Negative',	'value': polarityCounts["NEGATIVE"]	},
 				{	'label': 'Neutral',		'value': polarityCounts["NEUTRAL"] } //disabled: true
 			];
-
+			var self = this;
 			nv.addGraph(function() {
 				var graph = d3.select(".tweet-pie-chart svg");
 				var chart = nv.models.pieChart()
@@ -223,8 +225,18 @@
 					.call(chart);
 
 				nv.utils.windowResize(chart.update);
+				self._pieChart = chart;
 				return chart;
 			});
+		},
+
+		_reloadGraphics: function(){
+			if(this._pieChart){
+				this._pieChart.update();
+			}
+			if(this.tweetTimeline){
+				this.tweetTimeline.reloadChart();
+			}
 		}
 
 	});

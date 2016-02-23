@@ -137,12 +137,14 @@
 		},
 
 		_renderTimeTweetsChart: function(responsePositive, responseNegative){
-			var resposneObjPositive = JSON.parse(responsePositive[0]);
-			var dateCountsPositive = resposneObjPositive.facet_counts.facet_dates["meta.source.datePublished"];
-			var resposneObjNegative = JSON.parse(responseNegative[0]);
-			var dateCountsNegative = resposneObjNegative.facet_counts.facet_dates["meta.source.datePublished"];
+			if(responsePositive || responseNegative){
+				var resposneObjPositive = JSON.parse(responsePositive[0]);
+				var dateCountsPositive = resposneObjPositive.facet_counts.facet_dates["meta.source.datePublished"];
+				var resposneObjNegative = JSON.parse(responseNegative[0]);
+				var dateCountsNegative = resposneObjNegative.facet_counts.facet_dates["meta.source.datePublished"];
 
-			var dataTable = this._generateDataTable(dateCountsPositive, dateCountsNegative);
+				this._last_dataTable = this._generateDataTable(dateCountsPositive, dateCountsNegative);
+			}
 
 			var options = {
 				title: 'Tweets Timeline',
@@ -159,10 +161,10 @@
 			};
 
 			var chart = new google.visualization.LineChart(this.$el.find(".time-chart").get(0));
-			chart.draw(dataTable, options);
+			chart.draw(this._last_dataTable, options);
 			this.$el.removeClass("ui-loading-modal");
 			//Chart Events
-			google.visualization.events.addListener(chart, 'select', this._onTimeTweetSelect.bind(this, chart, dataTable));
+			google.visualization.events.addListener(chart, 'select', this._onTimeTweetSelect.bind(this, chart, this._last_dataTable));
 		},
 
 		_generateDataTable : function(dateCountsPositive, dateCountsNegative){
@@ -225,6 +227,10 @@
 				dateFrom: dateFrom,
 				dateTo: dateTo
 			});
+		},
+
+		reloadChart: function(){
+			this._renderTimeTweetsChart();
 		}
 
 
