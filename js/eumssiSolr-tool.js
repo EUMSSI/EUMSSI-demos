@@ -116,7 +116,20 @@ window.EUMSSI = {
 			target: '.polarity-placeholder'
 		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.GenericGraphWidget({
+			id: 'my-genericgraph',
+			target: '#my-genericgraph'
+		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.GenericWordCloudWidget({
+			id: 'my-genericwordcloud',
+			target: '#my-genericwordcloud'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.TimelineWidget({
+			id: 'my-timeline',
+			target: '#my-timeline'
+		}));
 
 		//</editor-fold>
 

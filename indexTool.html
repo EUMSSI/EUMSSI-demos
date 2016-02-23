@@ -165,22 +165,70 @@
 
 			    <div id="timelinetab" data-tabpos="3">
 				    <div class="timeline widget-placeholder tab-content" data-widget="timeline">
-					    <h1>Timeline</h1>
-					    <p>in progres...</p>
+					    <div id="my-timeline" style="width: 100%; height: 600px"> </div>
+					    <div class="event-placeholder"> </div>
 				    </div>
 			    </div>
 
 			    <div id="genericwordcloudtab" data-tabpos="4">
 				    <div class="wordCloud widget-placeholder tab-content" data-widget="word-cloud">
-					    <h1>Word Cloud</h1>
-					    <p>in progres...</p>
+					    <div class='genericwordcloud-toolbar content-toolbar ui-widget-header ui-corner-all'>
+						    <label>Cloud Key</label>
+						    <select style="width: 180px;" title="Select Keyword" class="genericwordcloud-key-selector">
+							    <option value="meta.source.keywords">Keywords</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.PERSON">DBpedia Persons</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.ORGANIZATION">DBpedia Organizations</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>
+							    <option value="meta.extracted.text_nerl.ner.all">Ner All</option>
+							    <option value="meta.extracted.text_nerl.ner.PERSON">Ner Persons</option>
+							    <option value="meta.extracted.text_nerl.ner.ORGANIZATION">Ner Organizations</option>
+							    <option value="meta.extracted.text_nerl.ner.LOCATION">Ner Locations</option>
+							    <option value="meta.source.hashtags">Twitter: Hashtags</option>
+							    <option value="meta.source.userMentions">Twitter: User Mentions</option>
+							    <option value="meta.source.author">Authors</option>
+						    </select>
+					    </div>
+					    <div id="my-genericwordcloud" class="genericwordcloud"></div>
 				    </div>
 			    </div>
 
 			    <div id="genericgraphtab" data-tabpos="5">
 				    <div class="wordGraph widget-placeholder tab-content" data-widget="word-graph">
-					    <h1>Word Graph</h1>
-					    <p>in progres...</p>
+					    <div class='genericgraph-toolbar content-toolbar ui-widget-header ui-corner-all'>
+						    <label>From Field:</label>
+						    <select style="width: 180px;" title="Select Field" class="genericgraph-key-selector">
+							    <option value="meta.source.keywords">Keywords</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.PERSON">DBpedia Persons</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.ORGANIZATION">DBpedia Organizations</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>
+							    <option value="meta.extracted.text_nerl.ner.all">Ner All</option>
+							    <option value="meta.extracted.text_nerl.ner.PERSON">Ner Persons</option>
+							    <option value="meta.extracted.text_nerl.ner.ORGANIZATION">Ner Organizations</option>
+							    <option value="meta.extracted.text_nerl.ner.LOCATION">Ner Locations</option>
+							    <option value="meta.source.hashtags">Twitter: Hashtags</option>
+							    <option value="meta.source.userMentions">Twitter: User Mentions</option>
+							    <option value="meta.source.author">Authors</option>
+						    </select>
+						    <label>To:</label>
+						    <select style="width: 180px;" title="To Field" class="genericgraph-key-selector-2">
+							    <option value="meta.source.keywords">Keywords</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.PERSON">DBpedia Persons</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.ORGANIZATION">DBpedia Organizations</option>
+							    <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>
+							    <option value="meta.extracted.text_nerl.ner.all">Ner All</option>
+							    <option value="meta.extracted.text_nerl.ner.PERSON">Ner Persons</option>
+							    <option value="meta.extracted.text_nerl.ner.ORGANIZATION">Ner Organizations</option>
+							    <option value="meta.extracted.text_nerl.ner.LOCATION">Ner Locations</option>
+							    <option value="meta.source.hashtags">Twitter: Hashtags</option>
+							    <option value="meta.source.userMentions">Twitter: User Mentions</option>
+							    <option value="meta.source.author">Authors</option>
+						    </select>
+						    <label style="display:none; position: absolute; color: green; right: 300px" id="selectedD3Node1">Selected From: </label>
+					    </div>
+					    <div id="my-genericgraph" class="genericgraph"></div>
 				    </div>
 			    </div>
 
