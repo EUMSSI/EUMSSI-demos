@@ -22,6 +22,7 @@
 					$("#selectedD3Node1").hide();
 				}.bind(this)
 			});
+
 			this.$target.parent().find(".genericgraph-key-selector-2").selectmenu({
 				width: 200,
 				select: function( event, data ) {
@@ -32,7 +33,9 @@
 					$("#selectedD3Node1").hide();
 				}.bind(this)
 			});
-			
+
+			//Refresh the graphic when expand collapse the editor
+			EUMSSI.EventManager.on("leftside", this._reloadGraph.bind(this));
 		},
 
 		afterRequest: function () {
@@ -158,6 +161,8 @@
 		 * @private
 		 */
 		_onGetWordGraph: function(responsestr){
+			$(this.target).empty();
+			this._last_responsestr = responsestr;
 			keys = {};
 			target_keys = {};
 
@@ -248,6 +253,10 @@
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
+		_reloadGraph : function(){
+			this._onGetWordGraph(this._last_responsestr);
+		},
+
 		
 		_renderGraph: function(tf, links, max_freq){
 			var pinned_nodes = [];
@@ -255,6 +264,9 @@
 			var self = this;
 			var nodes = {};
 			var max_size = 30;
+			var width = this.$target.closest(".ui-tabs-panel").width() - 80;
+			var height = this.$target.closest(".ui-tabs-panel").height() - 100;
+
 
 			var scale = max_size / this.maxCount;
 			for (var i in tf) {
@@ -275,9 +287,6 @@
 				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, size: 10, color: "purple"});
 				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, size: 10, color: "purple"});
 			});
-			// SVG constants
-			var width = 1060,
-				height = 800;
 			// Setup the force layout
 			var force = d3.layout.force()
 				.nodes(d3.values(nodes))
@@ -294,7 +303,8 @@
 
 			// Append SVG to the html, with defined constants
 			var svg = d3.select("#my-genericgraph").append("svg")
-				.attr("width", "100%")
+//				.attr("width", "100%")
+				.attr("width", width)
 				.attr("height", height);
 			// Code for pinnable nodes
 			var node_drag = d3.behavior.drag()

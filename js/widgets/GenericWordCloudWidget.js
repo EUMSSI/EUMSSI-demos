@@ -76,8 +76,8 @@
 			var self = this,
 			//size = 500,
 			scale = 50,
-			width = this.$target.closest(".ui-widget-content").width() - 80,
-			height = this.$target.closest(".ui-widget-content").height() - 100;
+			width = this.$target.closest(".ui-tabs-panel").width() - 80,
+			height = this.$target.closest(".ui-tabs-panel").height() - 100;
 
 			//update
 			for (var i in tf) {
