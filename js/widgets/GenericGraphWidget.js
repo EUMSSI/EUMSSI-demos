@@ -254,7 +254,9 @@
 		},
 
 		_reloadGraph : function(){
-			this._onGetWordGraph(this._last_responsestr);
+			if(this._last_responsestr){
+				this._onGetWordGraph(this._last_responsestr);
+			}
 		},
 
 		

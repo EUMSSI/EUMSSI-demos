@@ -54,20 +54,25 @@
 			var facet, count,
 				maxCount = 0,
 				objectedItems = [];
-			for ( facet in this.manager.response.facet_counts.facet_fields[this.field]) {
-				count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
-				if (count > maxCount) {
-					maxCount = count;
+			if(this.manager.response.facet_counts){
+				for ( facet in this.manager.response.facet_counts.facet_fields[this.field]) {
+					count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
+					if (count > maxCount) {
+						maxCount = count;
+					}
+					objectedItems.push({ text: facet, size: count });
 				}
-				objectedItems.push({ text: facet, size: count });
+				objectedItems.sort(function (a, b) {
+					return a.facet < b.facet ? -1 : 1;
+				});
+
+				this.maxCount = maxCount;
+
+				this._renderWords(objectedItems);
+			} else {
+				//empty - NO FACETING ITEMS
 			}
-			objectedItems.sort(function (a, b) {
-				return a.facet < b.facet ? -1 : 1;
-			});
 
-			this.maxCount = maxCount;
-
-			this._renderWords(objectedItems);
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
