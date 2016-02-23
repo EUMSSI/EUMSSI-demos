@@ -18,6 +18,9 @@
 					}
 				}.bind(this)
 			});
+
+			//Refresh the graphic when expand collapse the editor
+			EUMSSI.EventManager.on("leftside", this._getWordCloud.bind(this));
 		},
 
 		afterRequest: function () {
@@ -48,7 +51,7 @@
 			$(this.target).addClass("ui-loading-modal");
 			$(this.target).empty();
 
-			var facet, count, i, l, size, tabPosition,
+			var facet, count,
 				maxCount = 0,
 				objectedItems = [];
 			for ( facet in this.manager.response.facet_counts.facet_fields[this.field]) {
@@ -68,12 +71,13 @@
 			$(this.target).removeClass("ui-loading-modal");
 		},
 
-
 		_renderWords: function(tf){
 			console.log("data received: ", tf);
-			var self = this;
-			var size = 500;
-			var scale = 50;
+			var self = this,
+			//size = 500,
+			scale = 50,
+			width = this.$target.closest(".ui-widget-content").width() - 80,
+			height = this.$target.closest(".ui-widget-content").height() - 100;
 
 			//update
 			for (var i in tf) {
@@ -83,7 +87,7 @@
 			console.log("data is: ", tf);
 			var fill = d3.scale.category20();
 
-			d3.layout.cloud().size([size * 2, size * 2])
+			d3.layout.cloud().size([width, height])
 				.words(tf)
 				.padding(5)
 				.rotate(function() { return ~~(-1) * (Math.random() * 2); })
@@ -93,10 +97,10 @@
 				.start();
 			function draw(words) {
 				d3.select("#my-genericwordcloud").append("svg")
-					.attr("width", size*2)
-					.attr("height", size*2)
+					.attr("width", width)
+					.attr("height", height)
 					.append("g")
-					.attr("transform", "translate(450,350)")
+                    .attr("transform", "translate("+width/2+","+height/2+")")
 					.selectAll("text")
 					.data(words)
 					.enter().append("text")
