@@ -131,6 +131,56 @@ window.EUMSSI = {
 			target: '#my-timeline'
 		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.DateFilterWidget({
+			id: 'dateFilterWidget',
+			key: 'meta.source.datePublished',
+			target: '.dateFilterWidget-placeholder'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.TagFacetWidget({
+			id: "source",
+			label: "Source",
+			target: '.source-placeholder',
+			field: "source",
+			persistentFilter: true
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.FilterViewerWidget({
+			id: 'filterViewer',
+			target: '.filterViewer-placeholder',
+			label: "Custom Filters"
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.SelectLocaleWidget({
+			id: 'locale',
+			target: '.localeWidget-placeholder',
+			attributeName: 'meta.source.inLanguage'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
+			id: 'videoDocuments',
+			key: 'meta.source.mediaurl',
+			label: 'Video documents',
+			title: 'Check if only want results with video',
+			target: '.videoDocuments-placeholder'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
+			id: 'videoWithPersonIdent',
+			key: 'meta.extracted.video_persons.amalia',
+			label: 'Videos with person identification',
+			title: 'Check if only want results of videos with Persons Identifications',
+			target: '.videoWithPersonIdent-placeholder'
+		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.CheckboxWidget({
+			id: 'videoWithAudioTranscript',
+			key: 'meta.extracted.audio_transcript',
+			label: 'Videos with audio transcript',
+			title: 'Check if only want results of videos with Audio Transcript',
+			target: '.videoWithAudioTrans-placeholder'
+		}));
+
 		//</editor-fold>
 
 
@@ -210,6 +260,21 @@ window.EUMSSI = {
 			}
 		});
 
+		// TOGGLER filter
+		$(".filter-toggler").on("click", function(event){
+			var $parent = $(event.target).parent();
+			if($parent.hasClass("filter-open")){
+				$parent.removeClass("filter-open");
+				$parent.addClass("filter-closed");
+			} else {
+				$parent.removeClass("filter-closed");
+				$parent.addClass("filter-open");
+			}
+		});
+
+
+
+/*
 		//TODO Widget change Management
 		$(".widget-menu .menu-item").on('click', function(event){
 			var $target = $(event.target);
@@ -228,7 +293,7 @@ window.EUMSSI = {
 
 			}
 		});
-
+*/
 
 	});
 
