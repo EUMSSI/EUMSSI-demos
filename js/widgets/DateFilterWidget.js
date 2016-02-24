@@ -20,10 +20,46 @@
 			$from.html("<label>From </label><input type='text'><class='dateFilter-from'></input>");
 			var $to = $("<div>").addClass("dateFilter-to");
 			$to.html("<label>To </label><input type='text'><class='dateFilter-to'></input>");
-			$from.find("input").datepicker();
-			$to.find("input").datepicker();
+			this._fromDatepicker = $from.find("input").datepicker();
+			this._toDatepicker = $to.find("input").datepicker();
+			var $range = $("<div>").addClass("dateFilter-range");
+			$range.html("<select class='dateFilter-to'>" +
+				"<option value='0' selected>Custom Range</option>" +
+				"<option value='1'>Last Week</option>" +
+				"<option value='2'>Last Month</option>" +
+				"<option value='3'>Last Year</option>" +
+			"</select>");
+
+			$range.find("select").selectmenu({
+				width : 150,
+				select: function(event, data) {
+					var toDate = new Date();
+					var fromDate = new Date();
+					switch (data.item.value) {
+						case "0" :
+							toDate = null;
+							fromDate = null;
+							break;
+						case "1" :
+							fromDate.setDate(toDate.getDate() - 7);
+							break;
+						case "2" :
+							fromDate.setMonth(toDate.getMonth() - 1);
+							break;
+						case "3" :
+							fromDate.setFullYear(toDate.getFullYear() - 1);
+							break;
+						default : break;
+					}
+					this._fromDatepicker.datepicker( "setDate", fromDate );
+					this._toDatepicker.datepicker( "setDate", toDate );
+					this._onChange();
+				}.bind(this)
+			});
+
 			this.$target.append($from);
 			this.$target.append($to);
+			this.$target.append($range);
 		},
 
 		/**
