@@ -44,14 +44,14 @@
 			return true;
 		},
 
-
 		afterRequest: function () {
-			$(this.target).parents(".ui-tabs-panel").scrollTop(0);
-			$(this.target).empty();
+			this.$target.parents(".ui-tabs-panel").scrollTop(0);
+			this.$target.empty();
 			for (var i = 0, l = this.manager.response.response.docs.length; i < l; i++) {
 				var doc = this.manager.response.response.docs[i];
-				$(this.target).append(this.defaultTemplate(doc));
+				this.$target.append(this.defaultTemplate(doc));
 			}
+			this._initDragables();
 		},
 
 		/**
@@ -59,7 +59,7 @@
 		 * @param message
 		 */
 		afterRequestError: function(message) {
-			$(this.target).html($("<div>").addClass("ui-error-text").text(message));
+			this.$target.html($("<div>").addClass("ui-error-text").text(message));
 		},
 
 		/**
@@ -468,6 +468,8 @@
 		},
 
 		init: function () {
+			this.$target = $(this.target);
+
 			$(document).on('click', 'span.more', function () {
 				var $this = $(this),
 					$hiddenText = $this.parent().find('.ui-slicetext-hidepart'),
@@ -492,6 +494,19 @@
 				}
 
 				return false;
+			});
+		},
+
+		_initDragables: function(){
+			this.$target.find(".result-element").draggable({
+				scope: "editorDrop",
+				delay: 150,
+				iframeFix: true,
+				helper: "clone",
+				zIndex : 100,
+				cursorAt: { left: -10, top: -15 },
+				appendTo: "body",
+				containment: "body"
 			});
 		}
 

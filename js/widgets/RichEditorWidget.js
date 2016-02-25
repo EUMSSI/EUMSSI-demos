@@ -50,6 +50,8 @@
 				// TODO we can consider displaying some info box that
 				// without wysiwygarea the classic editor may not work.
 			}
+
+			this._setDroppable();
 		},
 
 		_isWysiwygareaAvailable : function(){
@@ -60,6 +62,23 @@
 			}
 
 			return !!CKEDITOR.plugins.get('wysiwygarea');
+		},
+
+		_setDroppable : function(){
+			this.$target.parent().droppable({
+				activeClass: "ui-droppable-active",
+				hoverClass: "ui-droppable-hover",
+//				accept: function(d) {
+//					if(d.hasClass("result-element")){
+//						return true;
+//					}
+//				},
+				scope: "editorDrop",
+				drop: function( event, ui ) {
+					var oEditor = CKEDITOR.instances["richeditor-placeholder"];
+					oEditor.insertHtml( ui.draggable.html() );
+				}
+			});
 		}
 
 
