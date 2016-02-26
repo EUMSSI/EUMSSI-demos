@@ -165,8 +165,31 @@
 					dnt: true
 					//conversation: "none",
 					//cards: "hidden"
-				});
+				}).then(this._renderSendToEditorBtn.bind(this, $el, tweetId));
 			}
+		},
+
+		_renderSendToEditorBtn : function($element, tweetId){
+			if(!EUMSSI.demoMode && CKEDITOR && $element.find("iframe").length === 1 ){
+				var $sendToEditor = $('<div class="tweet-to-editor" title="Write tweet on text editor">')
+					.html('<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor');
+				$element.append($sendToEditor);
+				$sendToEditor.on("click", this._sendToEditor.bind(this, tweetId));
+			}
+		},
+
+		_sendToEditor: function(tweetId){
+			$.ajax({
+				url    : 'https://api.twitter.com/1.1/statuses/oembed.json?' + $.param({
+					id : tweetId,
+					omit_script: true,
+					hide_media : false
+				}),
+				success: function(response){
+					var oEditor = CKEDITOR.instances["richeditor-placeholder"];
+					oEditor.insertHtml( "" + response.html + "<p>&nbsp;</p>" );
+				}.bind(this)
+			});
 		},
 
 		_manageScroll : function(event){

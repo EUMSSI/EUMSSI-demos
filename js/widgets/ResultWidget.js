@@ -498,16 +498,18 @@
 		},
 
 		_initDragables: function(){
-			this.$target.find(".result-element").draggable({
-				scope: "editorDrop",
-				delay: 150,
-				iframeFix: true,
-				helper: "clone",
-				zIndex : 100,
-				cursorAt: { left: -10, top: -15 },
-				appendTo: "body",
-				containment: "body"
-			});
+			if(!EUMSSI.demoMode){
+				this.$target.find(".result-element").draggable({
+					scope: "editorDrop",
+					delay: 150,
+					iframeFix: true,
+					helper: "clone",
+					zIndex : 100,
+					cursorAt: { left: -10, top: -15 },
+					appendTo: "body",
+					containment: "body"
+				});
+			}
 		}
 
 	});

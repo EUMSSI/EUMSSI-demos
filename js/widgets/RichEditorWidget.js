@@ -68,11 +68,6 @@
 			this.$target.parent().droppable({
 				activeClass: "ui-droppable-active",
 				hoverClass: "ui-droppable-hover",
-//				accept: function(d) {
-//					if(d.hasClass("result-element")){
-//						return true;
-//					}
-//				},
 				scope: "editorDrop",
 				drop: function( event, ui ) {
 					var oEditor = CKEDITOR.instances["richeditor-placeholder"];
