@@ -11,6 +11,13 @@
 				CKEDITOR.tools.enableHtml5Elements(document);
 			}
 
+			CKEDITOR.on( 'instanceReady', function( ev ) {
+				var $editor = $(ev.editor.element.$);
+				var toolbarsHeight = $editor.find(".cke_top").height() + $editor.find(".cke_toolbox").height();
+
+				ev.editor.resize(null, $editor.parent().height() - toolbarsHeight);
+			});
+
 			_.delay(function(){
 				this._initCKEditor(this.$target.prop("id"));
 			}.bind(this), 500);
@@ -24,8 +31,10 @@
 		_initCKEditor : function(editorId){
 			// The trick to keep the editor in the sample quite small
 			// unless user specified own height.
-			CKEDITOR.config.height = this.$target.height() - 170;
 			CKEDITOR.config.width = 'auto';
+
+			//Toolbar configuration
+			CKEDITOR.config.removeButtons = 'Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CreateDiv,Language,Scayt,SelectAll,Anchor,Flash,Smiley,Iframe,Maximize,About';
 
 			var wysiwygareaAvailable = this._isWysiwygareaAvailable(),
 				isBBCodeBuiltIn = !!CKEDITOR.plugins.get('bbcode');
