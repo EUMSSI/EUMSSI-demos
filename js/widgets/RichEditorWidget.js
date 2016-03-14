@@ -1,4 +1,4 @@
-/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL, CKEDITOR */
+/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL, CKEDITOR, swal */
 (function ($) {
 
 	AjaxSolr.RichEditorWidget = AjaxSolr.AbstractTextWidget.extend({
@@ -12,11 +12,8 @@
 			}
 
 			CKEDITOR.on( 'instanceReady', function( ev ) {
-				var $editor = $(ev.editor.element.$);
-				var toolbarsHeight = $editor.find(".cke_top").height() + $editor.find(".cke_toolbox").height();
-
-				ev.editor.resize(null, $editor.parent().height() - toolbarsHeight);
-			});
+				this._resizeEditor(ev.editor);
+			}.bind(this));
 
 			_.delay(function(){
 				this._initCKEditor(this.$target.prop("id"));
@@ -32,6 +29,8 @@
 			// The trick to keep the editor in the sample quite small
 			// unless user specified own height.
 			CKEDITOR.config.width = 'auto';
+
+//			CKEDITOR.config.extraPlugins = 'pluginEumssiSearch';
 
 			//Toolbar configuration
 			CKEDITOR.config.removeButtons = 'Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CreateDiv,Language,Scayt,SelectAll,Anchor,Flash,Smiley,Iframe,Maximize,About';
@@ -60,7 +59,11 @@
 				// without wysiwygarea the classic editor may not work.
 			}
 
+			this._addCustomButton();
+
 			this._setDroppable();
+
+			$(window).resize(this._resizeEditor);
 		},
 
 		_isWysiwygareaAvailable : function(){
@@ -83,8 +86,43 @@
 					oEditor.insertHtml( ui.draggable.html() );
 				}
 			});
-		}
+		},
 
+		_addCustomButton : function(){
+			var editor = CKEDITOR.instances["richeditor-placeholder"];
+
+			editor.addCommand("myEumssiSearch", { // create named command
+				exec: function(edt) {
+					var selectedText = edt.getSelection().getSelectedText();
+					if(selectedText){
+						this._getSuggestedQuery(selectedText);
+					} else {
+						swal({   title: "No Text Was Selected",   text: "You must select a text in order to use this functionality.",   type: "warning",   confirmButtonText: "Close" });
+					}
+				}.bind(this)
+			});
+
+			editor.ui.addButton('btnEumssiSearch', { // add new button and bind our command
+				label: "Get Related Content",
+				title: "Uses the selected text on EUMSSI engine to obtain filter suggestions",
+				command: 'myEumssiSearch',
+//				toolbar: 'document,0',
+				icon: '../../images/favicon-2.png'
+			});
+		},
+
+		_getSuggestedQuery : function(selectedText){
+			EUMSSI.EventManager.trigger("getRelatedFilters",selectedText);
+		},
+
+		_resizeEditor : function(editor){
+			if(editor.element === undefined){
+				editor = CKEDITOR.instances["richeditor-placeholder"];
+			}
+			var $editor = $(editor.element.$);
+			var toolbarsHeight = $editor.find(".cke_top").height() + $editor.find(".cke_toolbox").height();
+			editor.resize(null, $editor.parent().height() - toolbarsHeight);
+		}
 
 	});
 })(jQuery);

@@ -32,9 +32,14 @@ body {
 	.col-content {
 		width: ~"calc(100% - 10px)";
 		height: ~"calc(100% - 10px)";
-		padding: 15px 0 0 15px;
+		padding: 15px 0 15px 15px;
 	}
 }
+
+.cke_inner .cke_button__btneumssisearch .cke_button_label {
+	display: inline;
+}
+
 
 /************************ HEADER **************************/
 .header {
@@ -46,7 +51,7 @@ body {
 	.mainSearch-placeholder{
 		display: inline-block;
 		vertical-align: top;
-		line-height: 46px;
+		line-height: 41px;
 		margin: 0 10px;
 	}
 
@@ -118,9 +123,11 @@ body {
 		input {
 			font-size: large;
 			width: 500px;
-			padding: 6px 10px 7px 10px;
-			border: none;
-			box-shadow: 2px 2px 4px grey;
+			padding: 5px 10px 3px 10px;
+			border: 0;
+			border-radius: 3px;
+			box-shadow: 0 0 2px grey inset;
+			margin-top: 8px;
 		}
 		h2 {
 			display: none;
@@ -130,6 +137,7 @@ body {
 	label, h2, .filterText {
 		color: whitesmoke;
 	}
+
 }
 // ****************************************************************** //
 
@@ -140,7 +148,8 @@ body {
 	@media (max-width: 1000px) {
 		width: 100%;
 	}
-	width: 50%;
+	//width: 50%;
+	width: 100%;
 	position: absolute;
 	z-index: 10;
 
@@ -151,10 +160,11 @@ body {
 	}
 
 	.filter-panel-content{
-		height: 350px;
+		max-height: 500px;
 		width: 100%;
-		background-color: #EBEBEB;
-		box-shadow: 4px 4px 5px -2px rgba(0,0,0,0.5);
+		background-color: #F8F8F8;
+		box-shadow: 0px 20px 20px 10px rgba(0,0,0,0.5);
+		overflow-y: auto;
 	}
 
 	.filter-toggler {
@@ -186,6 +196,35 @@ body {
 			display: none;
 		}
 	}
+
+	.filter-related-content{
+		.item-header{
+			width: 30%;
+			display: inline-block;
+			&:not(:first-child){
+				text-align: center;
+			}
+		}
+
+		.item-row > * {
+			width: 30%;
+			margin: auto;
+			display: inline-block;
+		}
+
+		.button-row{
+			width: ~"calc(100% - 40px)";
+			text-align: right;
+			padding: 10px 20px;
+		}
+
+		.queries {
+			a {
+				margin-right: 10px;
+			}
+		}
+	}
+
 }
 
 
@@ -217,7 +256,7 @@ body {
 		display: inline-block;
 		vertical-align: top;
 		height: ~"calc(100% - 20px)";
-		width: ~"calc(50% - 12px)";
+		width: ~"calc(50% - 13px)";
 		position: relative;
 	}
 
@@ -263,7 +302,7 @@ body {
 		margin-left: -10px;
 		background-color: grey;
 		cursor: pointer;
-		z-index: 10;
+		z-index: 1;
 		opacity: 0.3;
 		border-radius: 0 40px 40px 0;
 		&:hover{
@@ -349,6 +388,24 @@ body {
 // **************************************************************** //
 
 
+/* ************************************************************************* */
+/* ************************ LOADING MODAL ANIMATION ************************ */
+.state-loading::before {
+	content: " ";
+	width: 100%;
+	position: absolute;
+	height: 100%;
+	z-index: 1000;
+	opacity:0.3;
+	background: repeating-linear-gradient(-55deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2) 20px, rgba(0,0,0,0.3) 20px, rgba(0,0,0,0.3) 50px);
+	background-size: 200% 120%;
+	animation: LoadingAnimation 10s linear infinite;
+}
+
+@keyframes LoadingAnimation {
+	0%{background-position:0% 0%}
+	100%{background-position:100% 0%}
+}
 
 
 /************************ OVERRIDE VENDOR CSS **************************/
@@ -379,7 +436,7 @@ body{
 		position: fixed;
 		top: 25%;
 		right: -115px;
-		z-index: 1000;
+		z-index: 9;
 		border-radius: 0;
 		box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
 		margin: 0;

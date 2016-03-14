@@ -15,6 +15,7 @@
 			this.$container = $('<div class="ui-filters-container">');
 			$(this.target).append(this.$title);
 			$(this.target).append(this.$container);
+			this.$title.hide();
 
 			//EVENTS
 			EUMSSI.EventManager.on("filterChange", this._onFilterChange.bind(this));
@@ -32,9 +33,15 @@
 		_renderFilters: function(){
 			var filters = EUMSSI.FilterManager.getAllFilters();
 			this.$container.empty();
-			_.each(filters,function(filterObject){
-				this.$container.append(this._renderFilterForm(filterObject));
-			}.bind(this));
+			if(filters.length > 0){
+				this.$title.show();
+				_.each(filters,function(filterObject){
+					this.$container.append(this._renderFilterForm(filterObject));
+				}.bind(this));
+			} else {
+				this.$title.hide();
+			}
+
 		},
 
 		_renderFilterForm: function(filterObj){

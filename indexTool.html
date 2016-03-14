@@ -27,6 +27,10 @@
     <!-- CKEditor -->
     <script src="lib/ckeditor/ckeditor.js"></script>
 
+	<!-- Sweet Alert -->
+	<script src="lib/sweetalert/dist/sweetalert.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="lib/sweetalert/dist/sweetalert.css">
+
 	<!-- amalia.js -->
 	<script src="lib/amalia.js-1.3.1/components/raphael/raphael.js"></script>
 	<script src="lib/amalia.js-1.3.1/js/amalia.js.min.js"></script>
@@ -52,6 +56,7 @@
 	<script src="js/widgets/ResultWidget.js"></script>
 	<script src="js/widgets/PagerWidget.js"></script>
 	<script src="js/widgets/TextWidget.js"></script>
+	<script src="js/widgets/FilterRelatedContentWidget.js"></script>
 
 	<script src="js/widgets/TimelineWidget.js"></script>
 	<script src="js/widgets/GenericGraphWidget.js"></script>
@@ -94,19 +99,29 @@
 
     <div class="filter filter-closed">
 	    <div class="filter-panel-content panel-content">
-		    <div class="col-2"><div class="col-content">
-			    <h2>Search Options</h2>
-			    <div class="videoDocuments-placeholder"></div>
-			    <div class="videoWithPersonIdent-placeholder"></div>
-			    <div class="videoWithAudioTrans-placeholder"></div>
-			    <h2>Language</h2>
-			    <div class="localeWidget-placeholder"></div>
-		    </div></div>
-		    <div class="col-2"><div class="col-content">
-			    <div class="source-placeholder tagfacet" ></div>
-		    </div></div>
+		    <div class="col-2">
+			    <!--Old filters-->
+			    <div class="col-2"><div class="col-content">
+				    <h2>Search Options</h2>
+				    <div class="videoDocuments-placeholder"></div>
+				    <div class="videoWithPersonIdent-placeholder"></div>
+				    <div class="videoWithAudioTrans-placeholder"></div>
+				    <h2>Language</h2>
+				    <div class="localeWidget-placeholder"></div>
+			    </div></div>
+			    <div class="col-2"><div class="col-content">
+				    <div class="source-placeholder tagfacet" ></div>
+			    </div></div>
+		    </div>
+		    <div class="col-2">
+			    <!-- Suggested Related Filters -->
+			    <div class="col-content">
+				    <div class="filterRelatedContent-placeholder"></div>
+				</div>
+		    </div>
+
 	    </div>
-	    <div class="filter-toggler"></div>
+	    <div class="filter-toggler" title="Toggle Filter"></div>
     </div>
 
     <div class="content slide-open">
@@ -263,7 +278,33 @@
 	    </div>
     </div>
 
-    <div id="templates-container" style="display:none;"></div>
+    <div id="templates-container" style="display:none;">
+
+	    <script type="text/template" id="filter-related-content-tpl">
+		    <div class="filter-related-content">
+			    <h2 class="item-header">Entities</h2>
+			    <h2 class="item-header">Must Include</h2>
+			    <h2 class="item-header">Shall Include</h2>
+			    <div class="entities"></div>
+			    <h2>Keywords</h2>
+			    <div class="keywords"></div>
+			    <h2>Suggested Queries</h2>
+			    <div class="queries"></div>
+			    <div class="button-row">
+				    <button class="search" >Search</button>
+			    </div>
+		    </div>
+	    </script>
+
+        <script type="text/template" id="filter-related-content-row-tpl">
+		    <div class="item-row <%=type%>-type" data-value="<%=item%>">
+			    <label class="items"><%=item%></label>
+			    <input type="checkbox" class="mustInclude"/>
+			    <input type="checkbox" disabled="disabled" class="shallInclude"/>
+		    </div>
+	    </script>
+
+    </div>
 
 </body>
 </html>

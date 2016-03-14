@@ -148,7 +148,7 @@ window.EUMSSI = {
 		EUMSSI.Manager.addWidget(new AjaxSolr.FilterViewerWidget({
 			id: 'filterViewer',
 			target: '.filterViewer-placeholder',
-			label: "Custom Filters"
+			label: "Applied Filters:"
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.SelectLocaleWidget({
@@ -180,6 +180,12 @@ window.EUMSSI = {
 			title: 'Check if only want results of videos with Audio Transcript',
 			target: '.videoWithAudioTrans-placeholder'
 		}));
+
+		EUMSSI.Manager.addWidget(new AjaxSolr.FilterRelatedContentWidget({
+			id: 'filterRelatedContent',
+			target: '.filterRelatedContent-placeholder'
+		}));
+
 
 		//</editor-fold>
 
@@ -272,28 +278,19 @@ window.EUMSSI = {
 			}
 		});
 
-
-
-/*
-		//TODO Widget change Management
-		$(".widget-menu .menu-item").on('click', function(event){
-			var $target = $(event.target);
-
-			if(!$target.hasClass("active-widget")){
-				//clean actives
-				$(".widget-menu .menu-item").removeClass("active-widget");
-				$target.addClass("active-widget");
-
-				var selectedWidget = $target.attr("data-widget");
-				var $widgets = $(".content-body .widget-placeholder");
-				$widgets.removeClass("active-widget");
-				$widgets.filter("[data-widget='"+selectedWidget+"']").addClass("active-widget");
-
-				EUMSSI.EventManager.trigger("activatewidget:"+selectedWidget);
-
+		EUMSSI.EventManager.on("OpenFilter",function(){
+			var $toggler = $(".filter-toggler");
+			if($toggler.parent().hasClass("filter-closed")){
+				$toggler.click();
 			}
 		});
-*/
+
+		EUMSSI.EventManager.on("CloseFilter",function(){
+			var $toggler = $(".filter-toggler");
+			if($toggler.parent().hasClass("filter-open")){
+				$toggler.click();
+			}
+		});
 
 	});
 
