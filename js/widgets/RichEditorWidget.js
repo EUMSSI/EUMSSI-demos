@@ -81,6 +81,7 @@
 				activeClass: "ui-droppable-active",
 				hoverClass: "ui-droppable-hover",
 				scope: "editorDrop",
+				tolerance: "pointer",
 				drop: function( event, ui ) {
 					var oEditor = CKEDITOR.instances["richeditor-placeholder"];
 					oEditor.insertHtml( ui.draggable.html() );

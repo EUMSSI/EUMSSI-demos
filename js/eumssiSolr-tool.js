@@ -292,6 +292,25 @@ window.EUMSSI = {
 			}
 		});
 
+		$(".hover-help-placeholder").show();
+
+		function moveHelpItems(){
+			$("#help-search").position({        my:"left top" ,   at:"left+10 top+13",    of:$("#generated-GENERAL_SEARCH")   }).show();
+			$("#help-filter-toggle").position({ my:"left center" ,   at:"left center",    of:$(".filter-toggler")             }).show();
+			$("#help-editor-toggle").position({ my:"center" ,   at:"center",    of:$(".left-slide-toggler")         }).show();
+			$("#help-editor").position({        my:"center" ,   at:"center center-25%",    of:$("#cke_richeditor-placeholder") }).show();
+			$("#help-widgets").position({       my:"center" ,   at:"center center-25%",    of:$(".tabs-container")             }).show();
+			$("#help-close").position({         my:"center" ,   at:"center bottom-15%",    of: window                          }).show();
+		}
+		setTimeout(moveHelpItems, 2500);
+
+		$(".hover-help-placeholder").click(function(){
+			$(".hover-help-placeholder").hide().remove();
+		});
+//		setTimeout(function(){
+//			$(".hover-help-placeholder").hide().remove();
+//		}, 10000);
+
 	});
 
 })(jQuery);
