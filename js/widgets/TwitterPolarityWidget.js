@@ -170,16 +170,21 @@
 		},
 
 		_renderSendToEditorBtn : function($element, tweetId){
-			if(!EUMSSI.demoMode && CKEDITOR && $element.find("iframe").length === 1 ){
-				var $sendToEditor = $('<div class="tweet-to-editor" title="Write tweet on text editor">')
-					.html('<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor');
-				$element.append($sendToEditor);
-				$sendToEditor.on("click", this._sendToEditor.bind(this, tweetId));
-			}
+			setTimeout(function($element, tweetId){
+				var iframeContentSize = $element.find("iframe").contents().find("body").html().length;
+				if(!EUMSSI.demoMode && CKEDITOR && iframeContentSize >= 1 ){
+					var $sendToEditor = $('<div class="tweet-to-editor" title="Write tweet on text editor">')
+						.html('<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor');
+					$element.append($sendToEditor);
+					$sendToEditor.on("click", this._sendToEditor.bind(this, tweetId));
+				}
+			}.bind(this, $element, tweetId),300);
 		},
 
 		_sendToEditor: function(tweetId){
 			$.ajax({
+				contentType: "*/*",
+				dataType: "jsonp",
 				url    : 'https://api.twitter.com/1.1/statuses/oembed.json?' + $.param({
 					id : tweetId,
 					omit_script: true,
