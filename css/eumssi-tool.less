@@ -406,71 +406,16 @@ body {
 	100%{background-position:100% 0%}
 }
 
-
-.hover-help-placeholder {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0,0,0,0.5);
-	display: none;
-	z-index: 9999;
-	animation: fadeInFromNone 1.5s ease-out;
-
-	& > * {
-		position: absolute;
-		color: white;
-		display: none;
-		max-width: 500px;
-		background-color: rgba(255,255,255,0.2);
-		box-shadow: 0 0 30px 20px rgba(255,255,255,0.2);
-		border-radius: 10px;
-
-		h1 {
-			font-size: 20px;
-		}
-		h2 {
-			font-size: 16px;
-			font-weight: bold;
-		}
-
-		p {
-			font-size: 16px;
-			margin-top: 0.5em;
-		}
-	}
-
-	#help-editor-toggle, #help-widgets, #help-editor{
-		text-align: center;
-	}
-
-}
-
-@keyframes fadeInFromNone {
-	0% {
-		display: none;
-		opacity: 0;
-	}
-
-	1% {
-		display: block;
-		opacity: 0;
-	}
-
-	100% {
-		display: block;
-		opacity: 1;
-	}
-}
-
-
-
-
-
 /************************ OVERRIDE VENDOR CSS **************************/
 
 body{
+
+	//INTRO JS
+	.introjs-tooltip{
+		min-width: 300px;
+		max-width: 400px;
+		z-index: 99999;
+	}
 
 
 	.ui-droppable-active{

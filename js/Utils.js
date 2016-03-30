@@ -269,6 +269,20 @@ UTIL.showSearchHelp = function(){
 	});
 };
 
+UTIL.formatIntroJsIntro = function(title, content, info){
+	var out = "";
+	if(title){
+		out += "<h3>" + title + "</h3>";
+	}
+	if(content){
+		out += "<br><p>" + content + "</p>"
+	}
+	if(info){
+		out += "<br><i>" + info + "</i>"
+	}
+	return out;
+};
+
 
 // Country Code ISO-3166-2
 UTIL.countryCode = [];

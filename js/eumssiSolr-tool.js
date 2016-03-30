@@ -213,7 +213,6 @@ window.EUMSSI = {
 
 
 		//<editor-fold desc="FEEDBACK">
-
 		function sendFeedback(event){
 			var $form = $(this).find("form");
 			var formData = {
@@ -248,10 +247,9 @@ window.EUMSSI = {
 				}
 			});
 		});
-
 		//</editor-fold>
 
-
+		//<editor-fold desc="TOGGLERS">
 		// TOGGLER left slide
 		$(".left-slide-toggler").on("click", function(event){
 			var $target = $(event.target).closest(".content");
@@ -291,25 +289,61 @@ window.EUMSSI = {
 				$toggler.click();
 			}
 		});
+		//</editor-fold>
 
-		$(".hover-help-placeholder").show();
-
-		function moveHelpItems(){
-			$("#help-search").position({        my:"left top" ,   at:"left+10 top+13",    of:$("#generated-GENERAL_SEARCH")   }).show();
-			$("#help-filter-toggle").position({ my:"left center" ,   at:"left center",    of:$(".filter-toggler")             }).show();
-			$("#help-editor-toggle").position({ my:"center" ,   at:"center",    of:$(".left-slide-toggler")         }).show();
-			$("#help-editor").position({        my:"center" ,   at:"center center-25%",    of:$("#cke_richeditor-placeholder") }).show();
-			$("#help-widgets").position({       my:"center" ,   at:"center center-25%",    of:$(".tabs-container")             }).show();
-			$("#help-close").position({         my:"center" ,   at:"center bottom-15%",    of: window                          }).show();
+		//<editor-fold desc="HELP">
+		/**
+		 * Interactive help guide
+		 */
+		function startIntro() {
+			var intro = introJs();
+			intro.setOptions({
+//				nextLabel: "Siguiente",
+//				prevLabel: "Anterior",
+//				skipLabel: "Saltar",
+//				doneLabel: "Terminar",
+				showStepNumbers: false,
+				showProgress: true,
+				steps: [
+					{
+						intro: UTIL.formatIntroJsIntro("Welcome to EUMSSI Web Page","Now we will take a quick visit to the website.")
+					},
+					{
+						element: document.querySelector('#generated-GENERAL_SEARCH'),
+						intro: UTIL.formatIntroJsIntro("Search","Type the text or query you want to search with EUMSSI")
+					},
+					{
+						element: document.querySelector('.filter-toggler'),
+						intro: UTIL.formatIntroJsIntro("Filter Toggle",null,"Click here to show/hide the advanced filter options")
+					},
+					{
+						element: document.querySelector('.left-slide-toggler'),
+						intro: UTIL.formatIntroJsIntro("Editor Toggle",null,"Click here to show/hide the text editor")
+					},
+					{
+						element: document.querySelector('.left-slide'),
+						intro: UTIL.formatIntroJsIntro("Text Editor","Write here your Article, News, Blog entry, etc..."),
+						position: "right"
+					},
+					{
+						element: document.querySelector('.tabs-container'),
+						intro: UTIL.formatIntroJsIntro("Widgets","Display the related information in many ways with the widgets.","Use the widget selector on the right to choose what information you want to see."),
+						position: "left"
+					},
+					{
+						element: document.querySelector('.tabs-container .ui-tabs-nav'),
+						intro: UTIL.formatIntroJsIntro("Widget Selector","Here are the current available widgets","Use the widget selector on the right to choose what information you want to see."),
+						position: "left"
+					},
+					{
+						intro: UTIL.formatIntroJsIntro("Visit End","Now we already saw the most important parts of the EUMSSI web site, now you can start writing your article or search for something on your interest.")
+					}
+				]
+			});
+			intro.start();
 		}
-		setTimeout(moveHelpItems, 2500);
-
-		$(".hover-help-placeholder").click(function(){
-			$(".hover-help-placeholder").hide().remove();
-		});
-//		setTimeout(function(){
-//			$(".hover-help-placeholder").hide().remove();
-//		}, 10000);
+		setTimeout(startIntro, 1500);
+		//</editor-fold>
 
 	});
 
