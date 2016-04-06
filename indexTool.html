@@ -81,6 +81,10 @@
     <!--TOOLS NEW WIDGETS-->
     <script src="js/widgets/RichEditorWidget.js"></script>
 
+<!--
+	&lt;!&ndash; google jsapi &ndash;&gt;
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
+
 
 	<!-- TEMPLATES -->
 	<script>
@@ -136,18 +140,35 @@
 
 		    <div class="tabs-container">
 			    <ul>
-				    <li><a href="#fragment-1">Result</a></li>
-				    <li><a href="#fragment-2">Map</a></li>
-				    <li><a href="#fragment-3">People</a></li>
+				    <li><a href="#dashboardtab">Dashboard</a></li>
+				    <li><a href="#resulttab">Result</a></li>
+				    <li><a href="#maptab">Map</a></li>
+				    <li><a href="#peopletab">People</a></li>
 				    <li><a href="#timelinetab">Timeline</a></li>
 				    <li><a href="#genericwordcloudtab">Word Cloud</a></li>
 				    <li><a href="#genericgraphtab">Word Graph</a></li>
 				    <li><a href="#twitterpolarity">Polarity</a></li>
-				    <li><a href="#dashboard">Dashboard</a></li>
 			    </ul>
-			    <div id="fragment-1" data-tabpos="0">
+
+			    <div id="dashboardtab" data-tabpos="0">
+				    <div class="dashboard widget-placeholder tab-content expanded active-widget" data-widget="dashboard">
+					    <div class="dashboard-placeholder">
+						    <!--<h1>Dashboard</h1>-->
+						    <div class="left-widgets">
+							    <div class="row-1 ui-widget-content"></div>
+							    <div class="row-2">
+								    <div class="col-2 ui-widget-content"></div>
+								    <div class="col-2 ui-widget-content"></div>
+							    </div>
+						    </div>
+						    <div class="right-widgets"></div>
+					    </div>
+				    </div>
+			    </div>
+
+			    <div id="resulttab" data-tabpos="1">
 				    <!--RESULT widget-->
-				    <div class="result-widget widget-placeholder tab-content active-widget" data-widget="result">
+				    <div class="result-widget widget-placeholder tab-content" data-widget="result">
 					    <div class="navigation">
 						    <ul class="pager"></ul>
 						    <div class="pager-header"></div>
@@ -160,7 +181,7 @@
 				    </div>
 			    </div>
 
-			    <div id="fragment-2" data-tabpos="1">
+			    <div id="maptab" data-tabpos="2">
 				    <!--MAP widget-->
 				    <div class="mapChart widget-placeholder tab-content expanded" data-widget="map">
 					    <div class='mapChart-placeholder'>
@@ -188,7 +209,7 @@
 				    </div>
 			    </div>
 
-			    <div id="fragment-3" data-tabpos="2">
+			    <div id="peopletab" data-tabpos="3">
 				    <!--PEOPLE widget (tagCloud)-->
 				    <div class="people widget-placeholder tab-content" data-widget="people">
 					    <h1>People</h1>
@@ -196,14 +217,14 @@
 				    </div>
 			    </div>
 
-			    <div id="timelinetab" data-tabpos="3">
+			    <div id="timelinetab" data-tabpos="4">
 				    <div class="timeline widget-placeholder tab-content" data-widget="timeline">
 					    <div id="my-timeline" style="width: 100%; height: 600px"> </div>
 					    <div class="event-placeholder"> </div>
 				    </div>
 			    </div>
 
-			    <div id="genericwordcloudtab" data-tabpos="4">
+			    <div id="genericwordcloudtab" data-tabpos="5">
 				    <div class="wordCloud genericwordcloud-placeholder widget-placeholder tab-content expanded" data-widget="word-cloud">
 					    <div class='genericwordcloud-toolbar content-toolbar ui-widget-header ui-corner-all'>
 						    <label>Cloud Key</label>
@@ -226,7 +247,7 @@
 				    </div>
 			    </div>
 
-			    <div id="genericgraphtab" data-tabpos="5">
+			    <div id="genericgraphtab" data-tabpos="6">
 				    <div class="wordGraph widget-placeholder tab-content" data-widget="word-graph">
 					    <div class='genericgraph-toolbar content-toolbar ui-widget-header ui-corner-all'>
 						    <label>From Field:</label>
@@ -265,25 +286,9 @@
 				    </div>
 			    </div>
 
-			    <div id="twitterpolarity" data-tabpos="6">
+			    <div id="twitterpolarity" data-tabpos="7">
 				    <div class="polarity widget-placeholder tab-content expanded" data-widget="polarity">
 					    <div class="polarity-placeholder"></div>
-				    </div>
-			    </div>
-
-			    <div id="dashboard" data-tabpos="7">
-				    <div class="dashboard widget-placeholder tab-content expanded" data-widget="dashboard">
-					    <div class="dashboard-placeholder">
-						    <!--<h1>Dashboard</h1>-->
-						    <div class="left-widgets">&nbsp;</div>
-						    <div class="right-widgets">
-							    <div class="right-row-1 ui-widget-content"></div>
-							    <div class="right-row-2">
-								    <div class="col-2 ui-widget-content"></div>
-								    <div class="col-2 ui-widget-content"></div>
-							    </div>
-						    </div>
-					    </div>
 				    </div>
 			    </div>
 

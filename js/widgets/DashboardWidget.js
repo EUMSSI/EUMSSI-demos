@@ -21,7 +21,7 @@
 
 			this._loadWidgets();
 
-			EUMSSI.EventManager.on("leftside", this._render.bind(this));
+//			EUMSSI.EventManager.on("leftside", this._render.bind(this));
 		},
 
 		/**
@@ -32,10 +32,14 @@
 			this.$map = $("<div>").addClass("dashboard-map");
 			this.$people = $("<div>").addClass("dashboard-people");
 			this.$wordcloud = $("<div>").addClass("dashboard-wordcloud");
+			this.$result = $("<div>").addClass("dashboard-result resultWidget-placeholder result-panel-content");
+			this.$twitter = $("<div>").addClass("dashboard-twitter polarity-placeholder");
 
-			this.$col2.find(".right-row-1").append(this.$map);
-			this.$col2.find(".right-row-2 .col-2").eq(0).append(this.$people);
-			this.$col2.find(".right-row-2 .col-2").eq(1).append(this.$wordcloud);
+			this.$col1.find(".row-1").append(this.$map);
+			this.$col1.find(".row-2 .col-2").eq(0).append(this.$people);
+			this.$col1.find(".row-2 .col-2").eq(1).append(this.$wordcloud);
+//			this.$col2.append(this.$result);
+			this.$col2.append(this.$twitter);
 
 			EUMSSI.Manager.addWidget(new AjaxSolr.MapChartWidget({
 				id: "dashboard-MapChartWidget",
@@ -54,20 +58,25 @@
 				target: this.$wordcloud[0],
 				maxWords: 50
 			}));
-		},
+
+//			EUMSSI.Manager.addWidget(new AjaxSolr.ResultWidget({
+//				id: 'dashboard-result',
+//				target: this.$result[0]
+//			}));
+
+			EUMSSI.Manager.addWidget(new AjaxSolr.TwitterPolarityWidget({
+				id: 'dashboard-twitter',
+				target: this.$twitter[0]
+			}));
+		}
+/*
 
 		beforeRequest: function() {
 			return true;
 		},
 
 		afterRequest: function() {
-			if(!this.manager.flag_PaginationRequest) {
-				if(this.chart) {
-					this._render();
-				} else {
-					this._loadAfterInit = true;
-				}
-			}
+			this._render();
 		},
 
 		_render: function() {
@@ -84,10 +93,10 @@
 			}
 		},
 
-		/**
+		/!**
 		 * Check if the current open tab is this widget tab and then load it
 		 * @private
-		 */
+		 *!/
 		_tabChange: function(){
 			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
@@ -96,13 +105,14 @@
 			}
 		},
 
-		/**
+		/!**
 		 * Reload the Dashboard
 		 * @private
-		 */
+		 *!/
 		_refresh: function(){
 
 		}
+*/
 
 	});
 

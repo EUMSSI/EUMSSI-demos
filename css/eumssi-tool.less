@@ -389,10 +389,10 @@ body {
 
 .content.slide-open .dashboard{
 	.left-widgets {
-		display: none;
+		width: calc(~"100% - 6px");
 	}
 	.right-widgets {
-		width: calc(~"100% - 6px");
+		display: none;
 	}
 }
 
@@ -406,24 +406,19 @@ body {
 	.dashboard-placeholder{
 		height:100%;
 	}
-	.left-widgets {
-		//background-color: green;
-		height: 100%;
-		display: inline-block;
-		width: calc(~"50% - 6px");
-	}
+
+	.left-widgets,
 	.right-widgets {
 		//background-color: yellow;
 		height: 100%;
 		display: inline-block;
 		width: calc(~"50% - 6px");
-		.right-row-1,
-		.right-row-2{
-			height:50%;
-		}
+		vertical-align: top;
 	}
-	svg {
-		overflow: visible;
+
+	.row-1,
+	.row-2{
+		height:50%;
 	}
 
 	.col-2{
@@ -435,6 +430,35 @@ body {
 
 	.ui-widget-content{
 		padding: 10px;
+	}
+
+	.genericwordcloud{
+		svg {
+			overflow: visible;
+		}
+	}
+
+	.dashboard-map,
+	.mapChart-chart{
+		height:100%;
+	}
+
+	.dashboard-result {
+		height: ~"calc(100% - 20px)";
+		padding: 10px;
+	}
+
+	.polarity-placeholder{
+		.polarityCol{
+			height: 66%;
+			width: ~"calc(50% - 10px)";
+		}
+		.chartsCol{
+			width: 100%;
+			&>div{
+				width: ~"calc(50% - 10px)";
+			}
+		}
 	}
 
 	//Override tagCloud image sizes
@@ -533,6 +557,9 @@ body {
 /************************ OVERRIDE VENDOR CSS **************************/
 
 body{
+	.ui-widget-content {
+		border-width: 0;
+	}
 
 	//INTRO JS
 	.introjs-tooltip{

@@ -147,7 +147,7 @@ window.EUMSSI = {
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.MapChartWidget({
 			id: "MapChartWidget",
-			target: '.mapChart'
+			target: '.mapChart-placeholder'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.TagcloudWidget({
