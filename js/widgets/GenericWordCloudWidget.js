@@ -5,9 +5,13 @@
 		init: function() {
 			this.$target = $(this.target);
 			this.$tabs = $(this.target).parents(".tabs-container");
-			this.wordNumber = 100;
+			this.maxWords = this.maxWords || 100;
 			this.maxCount = 1;
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
+
+			//WordCloud content
+			this.$placeholder = $('<div class="genericwordcloud"></div>');
+			this.$target.append(this.$placeholder);
 
 			//Key Selector
 			this.$target.parent().find(".genericwordcloud-key-selector").selectmenu({
@@ -48,8 +52,8 @@
 
 		_getWordCloud: function(){
 			//Loading
-			$(this.target).addClass("ui-loading-modal");
-			$(this.target).empty();
+			this.$target.addClass("ui-loading-modal");
+			this.$placeholder.empty();
 
 			var facet, count,
 				maxCount = 0,
@@ -63,7 +67,7 @@
 					objectedItems.push({ text: facet, size: count });
 				}
 				objectedItems.sort(function (a, b) {
-					return a.facet < b.facet ? -1 : 1;
+					return a.size < b.size ? 1 : -1;
 				});
 
 				this.maxCount = maxCount;
@@ -73,16 +77,17 @@
 				//empty - NO FACETING ITEMS
 			}
 
-			$(this.target).removeClass("ui-loading-modal");
+			this.$target.removeClass("ui-loading-modal");
 		},
 
 		_renderWords: function(tf){
 			console.log("data received: ", tf);
+			tf = tf.slice(0,this.maxWords);
 			var self = this,
 			//size = 500,
 			scale = 50,
-			width = this.$target.closest(".ui-tabs-panel").width() - 80,
-			height = this.$target.closest(".ui-tabs-panel").height() - 100;
+			width = this.$target.closest(".ui-widget-content").width() - 20,
+			height = this.$target.closest(".ui-widget-content").height() - 20;
 
 			//update
 			for (var i in tf) {
@@ -101,7 +106,8 @@
 				.on("end", draw)
 				.start();
 			function draw(words) {
-				d3.select("#my-genericwordcloud").append("svg")
+//				d3.select("#my-genericwordcloud").append("svg")
+				d3.select(self.$placeholder[0]).append("svg")
 					.attr("width", width)
 					.attr("height", height)
 					.append("g")
@@ -128,10 +134,7 @@
 		},
 
 		_onWordClick: function(d){
-			//Remove previous Value
-			//this.clearFilter(true);
 			this.setFilter(d.text);
-
 			EUMSSI.Manager.doRequest(0);
 		},
 
@@ -144,7 +147,6 @@
 		 */
 		_onSelectKey: function(keyValue){
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME = keyValue;
-			//this.field = keyValue;
 			EUMSSI.CONF.updateFacetingFields();
 			this.clearFilter();
 			EUMSSI.Manager.doRequest(0);
@@ -156,7 +158,6 @@
 		 * @param {String} value the value for the filter.
 		 */
 		setFilter: function (value) {
-			//Set the current Filter
 			this.storedValue = this.field + ":" + value;
 			EUMSSI.FilterManager.addFilter(this.field, this.storedValue, this.id, this.field+": "+value);
 		},

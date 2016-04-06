@@ -7,7 +7,9 @@
 
 		init: function() {
 			this.$target = $(this.target);
+			this.$target.addClass("tagCloud");
 			this.$tabs = this.$target.parents(".tabs-container");
+			this.maxItems = this.maxItems || 50;
 		},
 
 		beforeRequest: function(){
@@ -36,21 +38,24 @@
 				objectedItems.push({ facet: facet, count: count });
 			}
 			objectedItems.sort(function (a, b) {
-				return a.facet < b.facet ? -1 : 1;
+				return a.count < b.count ? 1 : -1;
 			});
 
-			$(this.target).empty();
+			objectedItems = objectedItems.slice(0,this.maxItems);
+
+			this.$target.empty();
 			for ( i = 0, l = objectedItems.length; i < l; i++) {
 				size = parseInt(objectedItems[i].count / maxCount * 10, 10);
-				$(this.target).append(this._renderItem(objectedItems[i],size));
+				this.$target.append(this._renderItem(objectedItems[i],size));
 			}
 
 			tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
+
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
 				this._getThumbnails(objectedItems);
 			} else {
-				this.$tabs.off("tabsactivate.tagcloudwidget");
-				this.$tabs.on("tabsactivate.tagcloudwidget", this._tabChange.bind(this, objectedItems));
+				this.$tabs.off("tabsactivate." + this.id);
+				this.$tabs.on("tabsactivate." + this.id, this._tabChange.bind(this, objectedItems));
 			}
 		},
 
@@ -62,7 +67,7 @@
 		_tabChange: function(objectedItems){
 			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this.$tabs.off("tabsactivate.tagcloudwidget");
+				this.$tabs.off("tabsactivate." + this.id);
 				this._getThumbnails(objectedItems);
 			}
 		},

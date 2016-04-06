@@ -58,7 +58,7 @@ window.EUMSSI = {
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.GenericWordCloudWidget({
 			id: 'my-genericwordcloud',
-			target: '#my-genericwordcloud'
+			target: '#genericwordcloudtab .genericwordcloud-placeholder'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.TwitterPolarityWidget({

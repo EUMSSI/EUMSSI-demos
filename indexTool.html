@@ -75,6 +75,7 @@
 	<script src="js/widgets/TagCloudWidget.js"></script>
 	<script src="js/widgets/VideoPlayerWidget.js"></script>
 	<script src="js/widgets/FilterViewerWidget.js"></script>
+	<script src="js/widgets/DashboardWidget.js"></script>
 	<script src="js/components/TweetTimelineChart.js"></script>
 
     <!--TOOLS NEW WIDGETS-->
@@ -182,7 +183,7 @@
 							    <a class="mapChart-export-btn" download="chart.png" title="Download map as image">Export</a>
 							    <img class="mapChart-loading" style="display:none;" src="images/circular-loader.gif" title="Loading Map...">
 						    </div>
-						    <div class="mapChart-chart"></div>
+						    <!--<div class="mapChart-chart"></div>-->
 					    </div>
 				    </div>
 			    </div>
@@ -203,7 +204,7 @@
 			    </div>
 
 			    <div id="genericwordcloudtab" data-tabpos="4">
-				    <div class="wordCloud widget-placeholder tab-content" data-widget="word-cloud">
+				    <div class="wordCloud genericwordcloud-placeholder widget-placeholder tab-content expanded" data-widget="word-cloud">
 					    <div class='genericwordcloud-toolbar content-toolbar ui-widget-header ui-corner-all'>
 						    <label>Cloud Key</label>
 						    <select style="width: 180px;" title="Select Keyword" class="genericwordcloud-key-selector">
@@ -221,7 +222,7 @@
 							    <option value="meta.source.author">Authors</option>
 						    </select>
 					    </div>
-					    <div id="my-genericwordcloud" class="genericwordcloud"></div>
+					    <!--<div id="my-genericwordcloud" class="genericwordcloud wordcloud-placeholder"></div>-->
 				    </div>
 			    </div>
 
@@ -271,9 +272,18 @@
 			    </div>
 
 			    <div id="dashboard" data-tabpos="7">
-				    <div class="dashboard widget-placeholder tab-content" data-widget="dashboard">
-					    <h1>Dashboard</h1>
-					    <p>in progres...</p>
+				    <div class="dashboard widget-placeholder tab-content expanded" data-widget="dashboard">
+					    <div class="dashboard-placeholder">
+						    <!--<h1>Dashboard</h1>-->
+						    <div class="left-widgets">&nbsp;</div>
+						    <div class="right-widgets">
+							    <div class="right-row-1 ui-widget-content"></div>
+							    <div class="right-row-2">
+								    <div class="col-2 ui-widget-content"></div>
+								    <div class="col-2 ui-widget-content"></div>
+							    </div>
+						    </div>
+					    </div>
 				    </div>
 			    </div>
 

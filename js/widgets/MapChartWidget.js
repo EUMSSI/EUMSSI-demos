@@ -29,6 +29,9 @@
 			this.$target = $(this.target);
 			this.$tabs = this.$target.parents(".tabs-container");
 
+			//Append chart container
+			this.$target.append('<div class="mapChart-chart"></div>');
+
 			$.getScript("http://www.google.com/jsapi")
 			 .done(function(script, textStatus) {
 				 google.load("visualization", "1", {

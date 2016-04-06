@@ -123,7 +123,7 @@ window.EUMSSI = {
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.GenericWordCloudWidget({
 			id: 'my-genericwordcloud',
-			target: '#my-genericwordcloud'
+			target: '#genericwordcloudtab .genericwordcloud-placeholder'
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.TimelineWidget({
@@ -186,6 +186,10 @@ window.EUMSSI = {
 			target: '.filterRelatedContent-placeholder'
 		}));
 
+		EUMSSI.Manager.addWidget(new AjaxSolr.DashboardWidget({
+			id: 'dashboard',
+			target: '.dashboard-placeholder'
+		}));
 
 		//</editor-fold>
 
@@ -342,7 +346,7 @@ window.EUMSSI = {
 			});
 			intro.start();
 		}
-		setTimeout(startIntro, 1500);
+//		setTimeout(startIntro, 1500);
 		//</editor-fold>
 
 	});
