@@ -50,7 +50,7 @@
 				id: 'dashboard-TagCloudWidget',
 				target: this.$people[0],
 				field: EUMSSI.CONF.PERSON_FIELD_NAME,
-				maxItems : 25
+				maxItems : 20
 			}));
 
 			EUMSSI.Manager.addWidget(new AjaxSolr.GenericWordCloudWidget({
@@ -66,7 +66,8 @@
 
 			EUMSSI.Manager.addWidget(new AjaxSolr.TwitterPolarityWidget({
 				id: 'dashboard-twitter',
-				target: this.$twitter[0]
+				target: this.$twitter[0],
+				renderOnClosedOnly: true
 			}));
 		}
 /*

@@ -7,8 +7,11 @@
 			this.$target = $(this.target);
 			this.$tabs = $(this.target).parents(".tabs-container");
 
-			//TODO only need to Repaint the graphics
-			EUMSSI.EventManager.on("leftside", this._reloadGraphics.bind(this));
+			if(this.renderOnClosedOnly === true){
+				EUMSSI.EventManager.on("leftside", this._tabChange.bind(this));
+			} else {
+				EUMSSI.EventManager.on("leftside", this._reloadGraphics.bind(this));
+			}
 		},
 
 		_initLayout: function(){
@@ -32,8 +35,8 @@
 				if(this.$tabs.tabs( "option", "active") === tabPosition) {
 					this._loadData();
 				} else {
-					this.$tabs.off("tabsactivate.twitterpolaritywidget");
-					this.$tabs.on("tabsactivate.twitterpolaritywidget", this._tabChange.bind(this) );
+					this.$tabs.off("tabsactivate."+this.id);
+					this.$tabs.on("tabsactivate."+this.id, this._tabChange.bind(this) );
 				}
 			} else {
 				if(this.$tabs.tabs( "option", "active") === tabPosition) {
@@ -62,9 +65,11 @@
 		 */
 		_tabChange: function(){
 			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
-			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this.$tabs.off("tabsactivate.twitterpolaritywidget");
-				this._loadData();
+			if(!this.renderOnClosedOnly || (this.renderOnClosedOnly && !UTIL.isEditorOpen())){
+				if(this.$tabs.tabs( "option", "active") === tabPosition) {
+					this.$tabs.off("tabsactivate."+this.id);
+					this._loadData();
+				}
 			}
 		},
 

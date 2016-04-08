@@ -283,6 +283,10 @@ UTIL.formatIntroJsIntro = function(title, content, info){
 	return out;
 };
 
+UTIL.isEditorOpen = function(){
+	return $("body").find("> .content").hasClass("slide-open");
+};
+
 
 // Country Code ISO-3166-2
 UTIL.countryCode = [];

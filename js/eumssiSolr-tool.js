@@ -314,24 +314,28 @@ window.EUMSSI = {
 					},
 					{
 						element: document.querySelector('#generated-GENERAL_SEARCH'),
-						intro: UTIL.formatIntroJsIntro("Search","Type the text or query you want to search with EUMSSI")
+						intro: UTIL.formatIntroJsIntro("Search","Type the text or query you want to search with EUMSSI","ex. type \"fracking\" and press Enter.")
+					},
+					{
+						element: document.querySelector('.dateFilterWidget-placeholder'),
+						intro: UTIL.formatIntroJsIntro("Date Range","In addition to the search field we can enter a range of dates in order to narrow the search.", "Or you can simply choose a predefined range like last month.")
 					},
 					{
 						element: document.querySelector('.filter-toggler'),
-						intro: UTIL.formatIntroJsIntro("Filter Toggle",null,"Click here to show/hide the advanced filter options")
+						intro: UTIL.formatIntroJsIntro("Filter Toggle","There is an advanced filter options such as language, document type, source, etc...","Click here to show/hide the advanced filter.")
 					},
 					{
 						element: document.querySelector('.left-slide-toggler'),
-						intro: UTIL.formatIntroJsIntro("Editor Toggle",null,"Click here to show/hide the text editor")
+						intro: UTIL.formatIntroJsIntro("Editor Toggle","We can Hide the Editor in order to maximize the widgets visual area.","Click here to show/hide the text editor.")
 					},
 					{
 						element: document.querySelector('.left-slide'),
-						intro: UTIL.formatIntroJsIntro("Text Editor","Write here your Article, News, Blog entry, etc..."),
+						intro: UTIL.formatIntroJsIntro("Text Editor","Write here your Article, News, Blog entry, etc...", "Also you can try to add content directly from widgets using drag & drop."),
 						position: "right"
 					},
 					{
 						element: document.querySelector('.tabs-container'),
-						intro: UTIL.formatIntroJsIntro("Widgets","Display the related information in many ways with the widgets.","Use the widget selector on the right to choose what information you want to see."),
+						intro: UTIL.formatIntroJsIntro("Widgets","Display the related information in many ways with the widgets.","Use the widget selector on the right to choose what widget you want to see."),
 						position: "left"
 					},
 					{
@@ -346,7 +350,7 @@ window.EUMSSI = {
 			});
 			intro.start();
 		}
-//		setTimeout(startIntro, 1500);
+		setTimeout(startIntro, 1500);
 		//</editor-fold>
 
 	});
