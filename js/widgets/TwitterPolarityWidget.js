@@ -1,4 +1,4 @@
-/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL, d3, twttr */
+/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL, d3, twttr, CKEDITOR, nv */
 (function ($) {
 
 	AjaxSolr.TwitterPolarityWidget = AjaxSolr.AbstractFacetWidget.extend({
@@ -155,11 +155,12 @@
 		},
 
 		_renderColumns: function(response, order){
+			var i, item, tweetId, $el;
 			var docs = response.response.docs;
-			for( var i in docs){
-				var item = docs[i];
-				var tweetId = item['meta.source.tweetId'];
-				var $el = $("<div class='tweet'>");
+			for( i in docs ){
+				item = docs[i];
+				tweetId = item['meta.source.tweetId'];
+				$el = $("<div class='tweet'>");
 				if(order == "desc"){
 					this.$target.find(".polarityCol.agree .tweet-container").append($el);
 				} else {
@@ -173,6 +174,7 @@
 				}).then(this._renderSendToEditorBtn.bind(this, $el, tweetId));
 			}
 		},
+
 
 		_renderSendToEditorBtn : function($element, tweetId){
 			setTimeout(function($element, tweetId){
@@ -197,7 +199,7 @@
 				}),
 				success: function(response){
 					var oEditor = CKEDITOR.instances["richeditor-placeholder"];
-					oEditor.insertHtml( "" + response.html + "<p>&nbsp;</p>" );
+					oEditor.insertHtml( response.html + "<p>&nbsp;</p>" );
 				}.bind(this)
 			});
 		},
@@ -235,10 +237,10 @@
 			];
 			var self = this;
 			nv.addGraph(function() {
-				var graph = d3.select(".tweet-pie-chart svg");
+				var graph = d3.select(self.$target.find(".tweet-pie-chart svg")[0]);
 				var chart = nv.models.pieChart()
-					.x(function(d) { return d.label })
-					.y(function(d) { return d.value })
+					.x(function(d) { return d.label; })
+					.y(function(d) { return d.value; })
 					.labelType("percent")
 					.color(['#33A7D4' ,'#E63333', '#999999'])
 					.legendPosition("right")
@@ -263,6 +265,10 @@
 			});
 		},
 
+		/**
+		 * Renders the charts with the same data in order to fit better to the current placeholder size.
+		 * @private
+		 */
 		_reloadGraphics: function(){
 			if(this._pieChart){
 				this._pieChart.update();
