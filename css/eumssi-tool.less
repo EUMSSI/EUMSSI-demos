@@ -586,28 +586,41 @@ body{
 		border-radius: 0 5px 5px 0;
 	}
 
+	@keyframes show-nav {
+		from {right: -155px;}
+		to {right: 0;}
+	}
+	@keyframes hide-nav {
+		from {right: 0;}
+		to {right: -155px;}
+	}
+
 	//NAVIGATION TABS
 	.ui-tabs .ui-tabs-nav {
-		width: 120px;
+		width: 160px;
 		position: fixed;
 		top: 15%;
-		right: -115px;
+		right: -155px;
 		z-index: 9;
 		border-radius: 0;
 		box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
 		margin: 0;
 		padding: 0;
 		opacity: 0.5;
+		animation-name: hide-nav;
+		animation-duration: 0.5s;
 
 		&:hover {
 			right: 0;
 			opacity: 1;
+			animation-name: show-nav;
+			animation-duration: 0.5s;
 		}
 
 		li{
 			float: none;
-			height: 50px;
-			width: 120px;
+			height: 42px;
+			width: 150px;
 			border-radius: 0;
 			overflow: hidden;
 			position: relative;
@@ -640,23 +653,28 @@ body{
 				color: white;
 			}
 
+			.fa{
+				vertical-align: middle;
+				min-width: 50px;
+			}
+
 			&.active-widget,
 			&.ui-state-active{
 				cursor: auto;
 				margin: 0;
-				width: 165px;
-				margin-left: -55px;
+				width: 192px;
+				margin-left: -42px;
 				z-index: 1;
-				//padding: 0;
 				box-shadow: -2px 2px 5px -2px black;
 			}
 
 			.ui-tabs-anchor{
-				float: none;
-				display: block;
+				//float: none;
 				height: 100%;
 				width: 100%;
 				padding: 0;
+				//display: inline-flex;
+				//white-space: normal;
 			}
 		}
 	}
