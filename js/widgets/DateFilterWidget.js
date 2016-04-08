@@ -20,15 +20,29 @@
 			$from.html("<label>From </label><input type='text'><class='dateFilter-from'></input>");
 			var $to = $("<div>").addClass("dateFilter-to");
 			$to.html("<label>To </label><input type='text'><class='dateFilter-to'></input>");
+
 			this._fromDatepicker = $from.find("input").datepicker();
 			this._toDatepicker = $to.find("input").datepicker();
+
+			this.$target.append($from);
+			this.$target.append($to);
+
+			this._renderRangeCombo();
+		},
+
+		/**
+		 * Creates and Render the Dates custom ranges selector
+		 * @private
+		 */
+		_renderRangeCombo: function(){
 			var $range = $("<div>").addClass("dateFilter-range");
 			$range.html("<select class='dateFilter-to'>" +
 				"<option value='0' selected>Custom Range</option>" +
-				"<option value='1'>Last Week</option>" +
-				"<option value='2'>Last Month</option>" +
-				"<option value='3'>Last Year</option>" +
-			"</select>");
+				"<option value='1'>Last Day</option>" +
+				"<option value='2'>Last Week</option>" +
+				"<option value='3'>Last Month</option>" +
+				"<option value='4'>Last Year</option>" +
+				"</select>");
 
 			$range.find("select").selectmenu({
 				width : 150,
@@ -41,12 +55,15 @@
 							fromDate = null;
 							break;
 						case "1" :
-							fromDate.setDate(toDate.getDate() - 7);
+							fromDate.setDate(toDate.getDate() - 1);
 							break;
 						case "2" :
-							fromDate.setMonth(toDate.getMonth() - 1);
+							fromDate.setDate(toDate.getDate() - 7);
 							break;
 						case "3" :
+							fromDate.setMonth(toDate.getMonth() - 1);
+							break;
+						case "4" :
 							fromDate.setFullYear(toDate.getFullYear() - 1);
 							break;
 						default : break;
@@ -56,9 +73,6 @@
 					this._onChange();
 				}.bind(this)
 			});
-
-			this.$target.append($from);
-			this.$target.append($to);
 			this.$target.append($range);
 		},
 
