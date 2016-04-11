@@ -6,7 +6,7 @@ body {
 	position: relative;
 
 	//DRAG AND DROP PROXY
-	.ui-draggable-dragging {
+	.ui-draggable-handle.ui-draggable-dragging {
 		max-width: 400px;
 		max-height: 300px;
 		overflow: hidden;
@@ -33,10 +33,6 @@ body {
 		height: ~"calc(100% - 10px)";
 		padding: 15px 0 15px 15px;
 	}
-}
-
-.cke_inner .cke_button__btneumssisearch .cke_button_label {
-	display: inline;
 }
 
 
@@ -66,13 +62,23 @@ body {
 			margin-left: 10px;
 		}
 
+		.ui-selectmenu-text{
+			background-color: white;
+		}
+
 		input {
 			width: 95px;
-			height: 16px;
-			FONT-SIZE: large;
-			padding: 6px 12px;
-			border: 1px solid #ccc;
 			border-radius: 3px;
+			font-size: large;
+			padding: 5px 10px 3px 10px;
+			border: solid 1px #dcdcdc;
+			transition: box-shadow 0.3s, border 0.3s;
+			&:focus{
+				border: solid 1px #707070;
+				box-shadow: 0 0 5px 1px #969696;
+			}
+
+
 		}
 	}
 
@@ -123,10 +129,14 @@ body {
 			font-size: large;
 			width: 500px;
 			padding: 5px 10px 3px 10px;
-			border: 0;
-			border-radius: 3px;
-			box-shadow: 0 0 2px grey inset;
 			margin-top: 8px;
+			border-radius: 3px;
+			border: solid 1px #dcdcdc;
+			transition: box-shadow 0.3s, border 0.3s;
+			&:focus{
+				border: solid 1px #707070;
+				box-shadow: 0 0 5px 1px #969696;
+			}
 		}
 		h2 {
 			display: none;
@@ -135,6 +145,32 @@ body {
 
 	label, h2, .filterText {
 		color: whitesmoke;
+	}
+
+	#header-menu{
+		color: white;
+		position: absolute;
+		text-align: right;
+		right: 0;
+		top: 0;
+		margin: 12px;
+		z-index: 1000;
+		.header-menu-button:hover{
+			color: @rgb_blue;
+		}
+		.header-menu-list{
+			background-color: #1d1d1d;
+			min-width: 150px;
+			li {
+				cursor: pointer;
+				padding: 10px;
+				font-weight: bold;
+				&:hover{
+					background-color: @rgb_blue;
+				}
+			}
+		}
+
 	}
 
 }
@@ -245,17 +281,36 @@ body {
 
 	.left-slide {
 		padding: 10px 10px 10px 0;
+		z-index: 2;
+
+		&.introjs-fixParent{
+			position: relative!important;
+		}
+
+		.cke_inner .cke_button__btneumssisearch{
+			&.introjs-relativePosition{
+				position: relative!important;
+			}
+			.cke_button_label {
+				display: inline;
+			}
+		}
+
+		#richeditor-placeholder {
+			height: 100%;
+		}
 	}
 
 	.result-panel-content{
 		padding: 10px 0 10px 10px;
+		overflow: auto;
 	}
 
 	> div {
 		display: inline-block;
 		vertical-align: top;
 		height: ~"calc(100% - 20px)";
-		width: ~"calc(50% - 13px)";
+		width: ~"calc(50% - 12px)";
 		position: relative;
 	}
 
@@ -309,16 +364,6 @@ body {
 		}
 	}
 
-	.left-slide {
-		z-index: 2;
-		#richeditor-placeholder {
-			height: 100%;
-		}
-	}
-
-	.result-panel-content{
-		overflow: auto;
-	}
 }
 // **************************************************************** //
 

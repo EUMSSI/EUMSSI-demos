@@ -206,6 +206,19 @@
 					start: 0	// paginationGap start
 				};
 				return $.ajax({ url: url + $.param(params) });
+			},
+
+			/**
+			 * This service returns a suggested Entities, Keywords, etc... related with the given text sentence.
+			 * @param text
+			 * @returns {Deferred}
+			 */
+			getTextFilterAnalyze : function(text){
+				var url = this.uimaServiceUrl + 'analyze' +'?';
+				var params = {
+					text: text || ""
+				};
+				return $.ajax({ url: url + $.param(params) });
 			}
 
 

@@ -33,11 +33,19 @@
 			return true;
 		},
 
+		/**
+		 * Parse the response and renders the filters related with it
+		 * @param response {data, meta}
+		 * @private
+		 */
 		_onGetRelatedFilters : function(response){
 			EUMSSI.EventManager.trigger("OpenFilter");
 			this.$entities.empty();
 			this.$keywords.empty();
 			this.$queries.empty();
+
+			//TODO when WS ready
+//			var entities = response.data.dbpedia;
 
 			_.each(response.entities, function(entity){
 				this.$entities.append(this._renderElementRow(entity, "entity"));
@@ -100,7 +108,8 @@
 		 * @param text
 		 * @private
 		 */
-		_retrieveRelatedFilters : function(text){
+		_retrieveRelatedFilters : function(event, text){
+//			EUMSSI.Manager.getTextFilterAnalyze(text).done(this._onGetRelatedFilters.bind(this));
 			var responseObj = {
 				entities : ["Merkel", "Germany", "USA", "Spain"],
 				keywords : ["fracking", "soccer", "euro", "nuclear", "refugee"],

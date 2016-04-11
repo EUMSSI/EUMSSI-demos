@@ -20,7 +20,8 @@ window.EUMSSI = {
 
 		EUMSSI.Manager = new AjaxSolr.Manager({
 			solrUrl        : 'http://demo.eumssi.eu/Solr_EUMSSI/content_items/',
-			segmentsCoreUrl: 'http://demo.eumssi.eu/Solr_EUMSSI/segments/'
+			segmentsCoreUrl: 'http://demo.eumssi.eu/Solr_EUMSSI/segments/',
+			uimaServiceUrl : 'http://demo.eumssi.eu/EumssiUimaService/'
 		});
 
 		EUMSSI.Manager.init();
@@ -237,7 +238,7 @@ window.EUMSSI = {
 		}
 
 		//Open feedback dialog
-		$("button.btn-do-feedback").click(function(){
+		function openFeedbackDialog(){
 			var $dialogContent = $($("#feedback-dialog-tpl").html());
 			var dialog = $dialogContent.dialog({
 				title  : "Post Feedback",
@@ -250,7 +251,8 @@ window.EUMSSI = {
 					}
 				}
 			});
-		});
+		}
+
 		//</editor-fold>
 
 		//<editor-fold desc="TOGGLERS">
@@ -295,6 +297,25 @@ window.EUMSSI = {
 		});
 		//</editor-fold>
 
+		//<editor-fold desc="MENU">
+
+		var $headerMenu = $("#header-menu");
+		$headerMenu.find(".header-menu-button").on("click", function(event){
+			var menu = $(this).parent().find("ul").show();
+			$( document ).one( "click", function() {
+				menu.hide();
+			});
+			return false;
+		});
+		$headerMenu.find(".menu-showGuide").on("click",startIntro);
+		$headerMenu.find(".menu-searchHelp").on("click",UTIL.showSearchHelp);
+		$headerMenu.find(".menu-sendFeedback").on("click",openFeedbackDialog);
+		$headerMenu.find(".menu-about").on("click",function(){
+			UTIL.openNewPage("http://www.eumssi.eu/");
+		});
+
+		//</editor-fold>
+
 		//<editor-fold desc="HELP">
 		/**
 		 * Interactive help guide
@@ -322,15 +343,20 @@ window.EUMSSI = {
 					},
 					{
 						element: document.querySelector('.filter-toggler'),
-						intro: UTIL.formatIntroJsIntro("Filter Toggle","There is an advanced filter options such as language, document type, source, etc...","Click here to show/hide the advanced filter.")
+						intro: UTIL.formatIntroJsIntro("Filter Toggle","There is an advanced filter with options such as language, document type, source, etc...","Click here to show/hide the advanced filter.")
 					},
 					{
 						element: document.querySelector('.left-slide-toggler'),
-						intro: UTIL.formatIntroJsIntro("Editor Toggle","We can Hide the Editor in order to maximize the widgets visual area.","Click here to show/hide the text editor.")
+						intro: UTIL.formatIntroJsIntro("Editor Toggle","We can hide the editor in order to maximize the widgets visual area.","Click here to show/hide the text editor.")
 					},
 					{
 						element: document.querySelector('.left-slide'),
 						intro: UTIL.formatIntroJsIntro("Text Editor","Write here your Article, News, Blog entry, etc...", "Also you can try to add content directly from widgets using drag & drop."),
+						position: "right"
+					},
+					{
+						element: document.querySelector('.cke_button__btneumssisearch'),
+						intro: UTIL.formatIntroJsIntro("Get Related Content","This action processes the selected text in the editor and generates related filter options of it.", "Select a section of your article and press the button, the advanced filter will appear with suggested filters."),
 						position: "right"
 					},
 					{
@@ -349,6 +375,10 @@ window.EUMSSI = {
 				]
 			});
 			intro.start();
+			//Open the editor if collapsed
+			if($(".content").hasClass("slide-closed")){
+				$(".left-slide-toggler").click();
+			}
 		}
 		setTimeout(startIntro, 1500);
 		//</editor-fold>
