@@ -228,6 +228,11 @@ body {
 				display: none;
 			}
 		}
+		.panel-content {
+			display: block;
+			animation-name: ShowFilterPanel;
+			animation-duration: 1s;
+		}
 	}
 
 	&.filter-closed {
@@ -240,6 +245,12 @@ body {
 			display: none;
 		}
 	}
+
+	@keyframes ShowFilterPanel {
+		from{max-height: 0; display: block; overflow: hidden}
+		to{max-height: 500px;}
+	}
+
 
 	.filter-related-content{
 		.item-header{
@@ -291,6 +302,7 @@ body {
 	.left-slide {
 		padding: 10px 10px 10px 0;
 		z-index: 2;
+		visibility:visible;
 
 		&.introjs-fixParent{
 			position: relative!important;
@@ -319,20 +331,15 @@ body {
 		display: inline-block;
 		vertical-align: top;
 		height: ~"calc(100% - 20px)";
-		width: ~"calc(50% - 12px)";
+		width: ~"calc(50% - 13px)";
 		position: relative;
 	}
 
 	&.slide-open {
 		.left-slide-toggler{
 			left: ~"calc(50% - 2px)";
-			&::before{
-				content: "<";
-				font-size: 24px;
-				line-height: 60px;
-				font-weight: bold;
-				margin-left: 2px;
-				vertical-align: middle;
+			i.fa-arrow-right{
+				display: none;
 			}
 		}
 	}
@@ -340,20 +347,19 @@ body {
 	&.slide-closed {
 		.left-slide-toggler {
 			left: 8px;
-			&::before{
-				content: ">";
-				font-size: 24px;
-				line-height: 60px;
-				font-weight: bold;
-				margin-left: 2px;
-				vertical-align: middle;
+			i.fa-arrow-left{
+				display: none;
 			}
 		}
 		.left-slide {
 			display: none;
+			//visibility:hidden;
+			//margin-left: ~"calc(-50% - 1px)";
+			//transition: margin-left 1s linear 0s, visibility 0s linear 1s;
 		}
 		.result-panel-content{
 			width: ~"calc(100% - 10px)";
+			//transition: width 1s linear 20ms
 		}
 	}
 
@@ -368,8 +374,13 @@ body {
 		z-index: 3;
 		opacity: 0.3;
 		border-radius: 0 40px 40px 0;
+		font-size: 1.5em;
 		&:hover{
 			opacity: 1;
+		}
+		i.fa{
+			margin-left: 6px;
+			margin-top: 20px;
 		}
 	}
 
