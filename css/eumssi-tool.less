@@ -215,17 +215,26 @@ body {
 			opacity: 1;
 		}
 		background-color: @rgb_orange;
+		font-size: 1.5em;
+		text-align: center;
+		i.fa{
+			margin-top: 4px;
+		}
 	}
 
 	&.filter-open {
 		.filter-toggler{
-
+			i.fa-arrow-down{
+				display: none;
+			}
 		}
 	}
 
 	&.filter-closed {
 		.filter-toggler {
-
+			i.fa-arrow-up{
+				display: none;
+			}
 		}
 		.panel-content {
 			display: none;

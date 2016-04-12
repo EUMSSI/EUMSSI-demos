@@ -272,7 +272,7 @@ window.EUMSSI = {
 
 		// TOGGLER filter
 		$(".filter-toggler").on("click", function(event){
-			var $parent = $(event.target).parent();
+			var $parent = $(event.currentTarget).parent();
 			if($parent.hasClass("filter-open")){
 				$parent.removeClass("filter-open");
 				$parent.addClass("filter-closed");
