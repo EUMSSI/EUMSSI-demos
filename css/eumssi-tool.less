@@ -678,15 +678,6 @@ body{
 		border-radius: 0 5px 5px 0;
 	}
 
-	@keyframes show-nav {
-		from {right: -155px;}
-		to {right: 0;}
-	}
-	@keyframes hide-nav {
-		from {right: 0;}
-		to {right: -155px;}
-	}
-
 	//NAVIGATION TABS
 	.ui-tabs .ui-tabs-nav {
 		width: 160px;
@@ -699,14 +690,11 @@ body{
 		margin: 0;
 		padding: 0;
 		opacity: 0.5;
-		animation-name: hide-nav;
-		animation-duration: 0.5s;
-
+		transition: right 0.5s 0.5s, opacity 1s;
 		&:hover {
 			right: 0;
 			opacity: 1;
-			animation-name: show-nav;
-			animation-duration: 0.5s;
+			transition: right 0.5s;
 		}
 
 		li{
