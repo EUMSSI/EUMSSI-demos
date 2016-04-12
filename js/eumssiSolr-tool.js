@@ -317,10 +317,24 @@ window.EUMSSI = {
 		//</editor-fold>
 
 		//<editor-fold desc="HELP">
+
+		$(document).on("change", "#disableGuide", function(event){
+			if($("#disableGuide").is(":checked")){
+				localStorage.setItem('eumssi.disable.startguide', true);
+			} else {
+				localStorage.removeItem('eumssi.disable.startguide');
+			}
+		});
+
 		/**
 		 * Interactive help guide
 		 */
 		function startIntro() {
+			var $disabledCheckbox = $('<input id="disableGuide" type="checkbox" class="disable-guide"><label for="disableGuide">Don\'t show guide on stratup.</label></input>');
+			if(localStorage.getItem('eumssi.disable.startguide')){
+				$disabledCheckbox.attr("checked","checked");
+			}
+
 			var intro = introJs();
 			intro.setOptions({
 //				nextLabel: "Siguiente",
@@ -331,7 +345,7 @@ window.EUMSSI = {
 				showProgress: true,
 				steps: [
 					{
-						intro: UTIL.formatIntroJsIntro("Welcome to EUMSSI Web Page","Now we will take a quick visit to the website.")
+						intro: UTIL.formatIntroJsIntro("Welcome to EUMSSI Web Page","Now we will take a quick visit to the website.",$("<div>").html($disabledCheckbox).html())
 					},
 					{
 						element: document.querySelector('#generated-GENERAL_SEARCH'),
@@ -380,7 +394,10 @@ window.EUMSSI = {
 				$(".left-slide-toggler").click();
 			}
 		}
-		setTimeout(startIntro, 1500);
+		if(!localStorage.getItem('eumssi.disable.startguide')){
+			setTimeout(startIntro, 1500);
+		}
+
 		//</editor-fold>
 
 	});
