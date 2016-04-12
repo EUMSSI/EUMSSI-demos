@@ -159,7 +159,12 @@ UTIL.openPeopleActionsMenu = function(facetName){
  * @param {String} url - the link
  */
 UTIL.openNewPage = function(url){
-	window.open(url,"_blank");
+//	window.open(url,"_blank");
+
+	$(".externalFrame-container").empty();
+	$(".externalFrame-container").append($("<iframe src="+url+">"));
+	$(".tabs-container").tabs( "option", "active", 8);
+
 };
 
 /**

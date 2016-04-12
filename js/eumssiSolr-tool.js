@@ -311,7 +311,7 @@ window.EUMSSI = {
 		$headerMenu.find(".menu-searchHelp").on("click",UTIL.showSearchHelp);
 		$headerMenu.find(".menu-sendFeedback").on("click",openFeedbackDialog);
 		$headerMenu.find(".menu-about").on("click",function(){
-			UTIL.openNewPage("http://www.eumssi.eu/");
+			window.open("http://www.eumssi.eu/","_blank");
 		});
 
 		//</editor-fold>

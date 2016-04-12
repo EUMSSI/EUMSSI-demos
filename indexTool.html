@@ -159,10 +159,11 @@
 				    <li><a href="#resulttab"><i class="fa fa-bars fa-3x"></i>Result</a></li>
 				    <li><a href="#maptab"><i class="fa fa-map fa-3x"></i>Map</a></li>
 				    <li><a href="#peopletab"><i class="fa fa-group fa-3x"></i>People</a></li>
+				    <li><a href="#twitterpolarity"><i class="fa fa-twitter fa-3x"></i>Polarity</a></li>
 				    <li><a href="#timelinetab"><i class="fa fa-calendar fa-3x"></i>Timeline</a></li>
 				    <li><a href="#genericwordcloudtab"><i class="fa fa-key fa-3x"></i>Word Cloud</a></li>
 				    <li><a href="#genericgraphtab"><i class="fa fa-chain fa-3x"></i>Word Graph</a></li>
-				    <li><a href="#twitterpolarity"><i class="fa fa-twitter fa-3x"></i>Polarity</a></li>
+				    <li><a href="#externalframe"><i class="fa fa-at fa-3x"></i>External</a></li>
 			    </ul>
 
 			    <div id="dashboardtab" data-tabpos="0">
@@ -232,14 +233,20 @@
 				    </div>
 			    </div>
 
-			    <div id="timelinetab" data-tabpos="4">
+			    <div id="twitterpolarity" data-tabpos="4">
+				    <div class="polarity widget-placeholder tab-content expanded" data-widget="polarity">
+					    <div class="polarity-placeholder"></div>
+				    </div>
+			    </div>
+
+			    <div id="timelinetab" data-tabpos="5">
 				    <div class="timeline widget-placeholder tab-content" data-widget="timeline">
 					    <div id="my-timeline" style="width: 100%; height: 600px"> </div>
 					    <div class="event-placeholder"> </div>
 				    </div>
 			    </div>
 
-			    <div id="genericwordcloudtab" data-tabpos="5">
+			    <div id="genericwordcloudtab" data-tabpos="6">
 				    <div class="wordCloud genericwordcloud-placeholder widget-placeholder tab-content expanded" data-widget="word-cloud">
 					    <div class='genericwordcloud-toolbar content-toolbar ui-widget-header ui-corner-all'>
 						    <label>Cloud Key</label>
@@ -262,7 +269,7 @@
 				    </div>
 			    </div>
 
-			    <div id="genericgraphtab" data-tabpos="6">
+			    <div id="genericgraphtab" data-tabpos="7">
 				    <div class="wordGraph widget-placeholder tab-content" data-widget="word-graph">
 					    <div class='genericgraph-toolbar content-toolbar ui-widget-header ui-corner-all'>
 						    <label>From Field:</label>
@@ -301,9 +308,14 @@
 				    </div>
 			    </div>
 
-			    <div id="twitterpolarity" data-tabpos="7">
-				    <div class="polarity widget-placeholder tab-content expanded" data-widget="polarity">
-					    <div class="polarity-placeholder"></div>
+			    <div id="externalframe" data-tabpos="8">
+				    <div class="externalFrame widget-placeholder tab-content expanded" data-widget="external-frame">
+					    <!--<input type="text" class="externalFrame-url">-->
+					    <div class="externalFrame-container">
+						    <div class="empty-advise">
+						        <h3><i>(Links to external pages from other widgets may be opened here)</i></h3>
+						    </div>
+					    </div>
 				    </div>
 			    </div>
 

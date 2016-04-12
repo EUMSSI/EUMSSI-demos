@@ -212,7 +212,7 @@
 				$menu.on("click",".filter",this._addContryFilter.bind(this,regionCode));
 				$menu.on("click",".filter-clear",this._cleanCountryFilter.bind(this,true));
 				$menu.on("click",".open-wikipedia",function(){
-					window.open("http://wikipedia.org/wiki/"+regionName,"_blank");
+					EUMSSI.UTIL.openNewPage("http://wikipedia.org/wiki/"+regionName);
 				});
 
 				EUMSSI.UTIL.showContextMenu($menu);
