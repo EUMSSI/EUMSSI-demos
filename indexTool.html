@@ -347,8 +347,8 @@
 	    </script>
 
         <script type="text/template" id="filter-related-content-row-tpl">
-		    <div class="item-row <%=type%>-type" data-value="<%=item%>">
-			    <label class="items"><%=item%></label>
+		    <div class="item-row <%=type%>-type" data-value="<%=item.value%>" data-field="<%=item.field%>">
+			    <label class="items"><%=item.text%></label>
 			    <input type="checkbox" class="mustInclude"/>
 			    <input type="checkbox" disabled="disabled" class="shallInclude"/>
 		    </div>

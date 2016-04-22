@@ -110,10 +110,28 @@
 //				toolbar: 'document,0',
 				icon: '../../images/favicon-2.png'
 			});
+
 		},
 
+		/**
+		 * Use the Service to retrieve the related fields to build a custom filter options
+		 * @param selectedText
+		 * @private
+		 */
 		_getSuggestedQuery : function(selectedText){
-			EUMSSI.EventManager.trigger("getRelatedFilters",selectedText);
+			if(!this._query_in_progress){
+				this._query_in_progress = true;
+				var $loading = $('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw margin-bottom"></i>');
+				$("#cke_richeditor-placeholder").find(".cke_button__btneumssisearch").parent().append($loading);
+
+				EUMSSI.Manager.getTextFilterAnalyze(selectedText)
+			      .done(function(response) {
+				      EUMSSI.EventManager.trigger("onGetRelatedFilters", response);
+			      }).always(function() {
+				      $loading.remove();
+				      this._query_in_progress = false;
+			      }.bind(this));
+			}
 		},
 
 		_resizeEditor : function(editor){

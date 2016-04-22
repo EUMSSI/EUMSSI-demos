@@ -21,7 +21,7 @@
 			this.$queries = this.$target.find(".queries");
 
 			//EVENTS
-			EUMSSI.EventManager.on("getRelatedFilters", this._retrieveRelatedFilters.bind(this));
+			EUMSSI.EventManager.on("onGetRelatedFilters", this._onGetRelatedFilters.bind(this));
 			this.$target.find(".search").button().on("click", this._onSearchClick.bind(this));
 		},
 
@@ -38,38 +38,89 @@
 		 * @param response {data, meta}
 		 * @private
 		 */
-		_onGetRelatedFilters : function(response){
-			EUMSSI.EventManager.trigger("OpenFilter");
+		_onGetRelatedFilters : function(event, response){
 			this.$entities.empty();
 			this.$keywords.empty();
 			this.$queries.empty();
-
-			//TODO when WS ready
-//			var entities = response.data.dbpedia;
-
-			_.each(response.entities, function(entity){
-				this.$entities.append(this._renderElementRow(entity, "entity"));
-			}.bind(this));
-
-			_.each(response.keywords, function(keyword){
-				this.$keywords.append(this._renderElementRow(keyword, "keyword"));
-			}.bind(this));
-
-			//Build a Editable select
-			_.each(response.queries, function(query){
-				var item = $("<a>").html(query);
-				item.click(this._addQueryToFilter);
-				this.$queries.append(item);
-			}.bind(this));
-
+			if(response.data.dbpedia){
+				this._extractDbpediaItems(response.data.dbpedia);
+			}
+			if(response.data.kea){
+				this._extractKeaItems(response.data.kea);
+			}
+			EUMSSI.EventManager.trigger("OpenFilter");
 		},
 
+		/**
+		 * Obtain the dbpedia custom filters
+		 * @param dbpediaData
+		 * @private
+		 */
+		_extractDbpediaItems: function(dbpediaData){
+			var type, queries = [], entities = [];
+			_.each(dbpediaData, function(element, key) {
+				type = key;
+				if(type !== "all") {
+					_.each(element, function(element) {
+						if(type == "other") {
+							if(queries.indexOf(element.text) < 0) {
+								queries.push(element.text);
+								this._renderQueryRow(element.text);
+							}
+						} else {
+							if(entities.indexOf(element.uri) < 0){
+								entities.push(element.uri);
+								this.$entities.append(this._renderElementRow({
+									text : element.text,
+									value: element.uri,
+									field: "meta.extracted.text_nerl.dbpedia." + type
+								}, "entity"));
+							}
+						}
+					}.bind(this));
+				}
+			}.bind(this));
+		},
+
+		/**
+		 * Get the keywords and generate the custem filters
+		 * JAVA keyframe : {text, keyphrase, stemmed, rank, probability, begin, end}
+		 * @param keaData
+		 * @private
+		 */
+		_extractKeaItems: function(keaData){
+			var usedKeywords = [];
+			_.each(keaData, function(element) {
+				//Avoid duplicates
+				if(usedKeywords.indexOf(element.text) < 0) {
+					usedKeywords.push(element.text);
+					this.$keywords.append(this._renderElementRow({
+						text : element.text,
+						value: element.text,
+						field: "meta.source.keywords"
+					}, "keyword"));
+				}
+			}.bind(this));
+		},
+
+		/**
+		 *
+		 * @param {Object} item - {text, value, field}
+		 * @param type
+		 * @private
+		 */
 		_renderElementRow : function(item, type){
 			var entityTpl = _.template($("#filter-related-content-row-tpl").html());
 			return entityTpl({
 				item : item,
 				type : type
 			});
+		},
+
+		_renderQueryRow : function(query){
+			var item = $("<a>").html(query);
+			item.click(this._addQueryToFilter);
+			this.$queries.append(item);
 		},
 
 		_onSearchClick : function(){
@@ -80,7 +131,8 @@
 			var checkedItems = this.$target.find("input[type='checkbox']:checked");
 			checkedItems.each(function(index, el){
 				var value = $(el).closest(".item-row").attr("data-value");
-				this._addItemToFilter(value);
+				var field = $(el).closest(".item-row").attr("data-field");
+				this._addItemToFilter(value, field);
 			}.bind(this));
 
 			//Do request
@@ -88,9 +140,10 @@
 			EUMSSI.EventManager.trigger("CloseFilter");
 		},
 
-		_addItemToFilter : function(value){
-			this.storedValue = "meta.source.keywords" + ":" + value;
-			EUMSSI.FilterManager.addFilter("meta.source.keywords", this.storedValue, this.id, "Keyword: "+value);
+		_addItemToFilter : function(value, field){
+			this.storedValue = field + ":" + value;
+			var label = field.split(".").pop();
+			EUMSSI.FilterManager.addFilter(field, this.storedValue, this.id, label + ": "+value);
 		},
 
 		/**
@@ -100,22 +153,6 @@
 		 */
 		_addQueryToFilter : function(event){
 			$("#generated-GENERAL_SEARCH").find("input").val($(event.target).html()).blur();
-		},
-
-		/**
-		 * Retrieves the relative search entities, keywords and suggested queries from the service
-		 * TODO change to the Webservice when ready
-		 * @param text
-		 * @private
-		 */
-		_retrieveRelatedFilters : function(event, text){
-//			EUMSSI.Manager.getTextFilterAnalyze(text).done(this._onGetRelatedFilters.bind(this));
-			var responseObj = {
-				entities : ["Merkel", "Germany", "USA", "Spain"],
-				keywords : ["fracking", "soccer", "euro", "nuclear", "refugee"],
-				queries : ["Greenpeace against fracking", "Merkel meeting", "refugee crisis", "Messi vs Ronaldo"]
-			};
-			this._onGetRelatedFilters(responseObj);
 		}
 
 	});

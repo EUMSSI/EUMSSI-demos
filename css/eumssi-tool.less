@@ -194,6 +194,14 @@ body {
 		font-weight: bold;
 	}
 
+	.source-placeholder{
+		&:empty:after{
+			content: "search to get sources";
+			color: #888;
+			font-style: italic;
+		}
+	}
+
 	.filter-panel-content{
 		max-height: 500px;
 		width: 100%;
@@ -272,8 +280,27 @@ body {
 			text-align: right;
 			padding: 10px 20px;
 		}
+		.entities{
+			&:empty:after{
+				content: "... not found related entities...";
+				font-style: italic;
+				color: #888;
+			}
+		}
+		.keywords{
+			&:empty:after{
+				content: "... not found related keyframes...";
+				font-style: italic;
+				color: #888;
+			}
+		}
 
 		.queries {
+			&:empty:after{
+				content: "... not found related queries ...";
+				font-style: italic;
+				color: #888;
+			}
 			a {
 				margin-right: 10px;
 			}
@@ -315,6 +342,13 @@ body {
 			.cke_button_label {
 				display: inline;
 			}
+		}
+
+		.cke_toolbar i.fa{
+			font-size: 1.5em;
+			margin: 4px 5px 4px 0px;
+			color: #ff4900;
+			font-family: FontAwesome;
 		}
 
 		#richeditor-placeholder {
