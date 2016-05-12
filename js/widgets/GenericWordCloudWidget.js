@@ -14,17 +14,16 @@
 			this.$target.append(this.$placeholder);
 
 			//Key Selector
-			this.$target.parent().find(".genericwordcloud-key-selector").selectmenu({
-				width: 200,
-				select: function( event, data ) {
-					if(this.field != data.item.value){
-						this._onSelectKey(data.item.value);
-					}
-				}.bind(this)
-			});
+			EUMSSI.EventManager.on("wordselectchange", this._onWordCloudSelectChangeWord.bind(this));
 
 			//Refresh the graphic when expand collapse the editor
 			EUMSSI.EventManager.on("leftside", this._getWordCloud.bind(this));
+		},
+
+		_onWordCloudSelectChangeWord: function(event, data){
+			if(this.field != data.item.value) {
+				this._onSelectKey(data.item.value);
+			}
 		},
 
 		afterRequest: function () {
@@ -59,8 +58,8 @@
 				maxCount = 0,
 				objectedItems = [];
 			if(this.manager.response.facet_counts){
-				for ( facet in this.manager.response.facet_counts.facet_fields[this.field]) {
-					count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
+				for ( facet in this.manager.response.facet_counts.facet_fields[EUMSSI.CONF.CLOUD_FIELD_NAME]) {
+					count = parseInt(this.manager.response.facet_counts.facet_fields[EUMSSI.CONF.CLOUD_FIELD_NAME][facet]);
 					if (count > maxCount) {
 						maxCount = count;
 					}

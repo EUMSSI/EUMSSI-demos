@@ -49,9 +49,23 @@
 			this.$target.empty();
 			for (var i = 0, l = this.manager.response.response.docs.length; i < l; i++) {
 				var doc = this.manager.response.response.docs[i];
-				this.$target.append(this.defaultTemplate(doc));
+				this.$target.append(this.defaultTemplate(this._mergeDocWithHighLight(doc)));
 			}
 			this._initDragables();
+		},
+
+		_mergeDocWithHighLight: function(doc){
+			var docCopy = JSON.parse(JSON.stringify(doc)), responseHighlightingKey, highlightingKey;
+
+			for(responseHighlightingKey in this.manager.response.highlighting){
+				var hightlighting = this.manager.response.highlighting[responseHighlightingKey];
+				if(responseHighlightingKey == docCopy._id){
+					for(highlightingKey in hightlighting){
+						docCopy[highlightingKey] = hightlighting[highlightingKey].toString();
+					}
+				}
+			}
+			return docCopy;
 		},
 
 		/**
@@ -227,12 +241,12 @@
 			var $header =  $("<span class='links'>"),
 				$title = $("<h2>"),
 				text = "";
-			$header.text(doc['meta.source.headline']);
+			$header.html(doc['meta.source.headline']);
 
 			//Twitter - special behaviour
 			if(!doc['meta.source.headline'] && doc['source'] && doc['source'].startsWith("Twitter") ) {
 				text = doc['meta.source.text'] || "";
-				$header.text(text.substring(0, 50));
+				$header.html(text.substring(0, 50));
 				if(text.length > 50){
 					$header.append("...");
 				}
@@ -251,7 +265,7 @@
 			//Wikipedia Event - special behaviour
 			if(!doc['meta.source.headline'] && doc['source'] && doc['source'].startsWith("Wikipedia") ) {
 				text = doc['meta.source.text'] || "";
-				$header.text(text.substring(0, 50));
+				$header.html(text.substring(0, 50));
 				if(text.length > 50){
 					$header.append("...");
 				}
@@ -266,6 +280,7 @@
 			return $title;
 		},
 
+		//popup with the whole information
 		_showInfo: function(doc){
 
 			var keysArray = Object.keys(doc);
@@ -275,6 +290,7 @@
 			$content.dialog({
 				title: "Result Information",
 				width: 800,
+				dialogClass: "resultInformation",
 				maxHeight: $(window).height() - 120,
 				modal: true,
 				close: function() {

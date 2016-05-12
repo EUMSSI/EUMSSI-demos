@@ -12,36 +12,25 @@
 			this.tf = [];
 			this.pivots = "";
 			this.maxCount =0;
-			this.$target.parent().find(".genericgraph-key-selector").selectmenu({
-				width: 200,
-				select: function( event, data ) {
-					console.log("Selected: " + data.item.value);
-					if(this.field != data.item.value){
-						this._onSelectKeyFrom(data.item.value);
-					}
-					$("#selectedD3Node1").hide();
-				}.bind(this)
-			});
 
-			this.$target.parent().find(".genericgraph-key-selector-2").selectmenu({
-				width: 200,
-				select: function( event, data ) {
-					console.log("Selected: " + data.item.value);
-					if(this.fieldTo != data.item.value){
-						this._onSelectKeyTo(data.item.value);
-					}
-					$("#selectedD3Node1").hide();
-				}.bind(this)
-			});
+			EUMSSI.EventManager.on("graphselectchange", this._onWordCloudSelectChangeGraph.bind(this));
 
 			//Refresh the graphic when expand collapse the editor
 			EUMSSI.EventManager.on("leftside", this._reloadGraph.bind(this));
 		},
 
+		_onWordCloudSelectChangeGraph: function(event, data){
+			console.log("Selected: " + data.item.value);
+			if(this.field != data.item.value) {
+				this._onSelectKey(data.item.value);
+			}
+			$("#selectedD3Node1").hide();
+		},
+
 		afterRequest: function () {
 			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
 
-			if(this.$tabs.tabs( "option", "active") === tabPosition) {
+			if(this.$tabs.tabs( "option", "active") === tabPosition && $(this.target).is(":visible")) {
 				this._getGraph();
 			} else {
 				this.$tabs.off("tabsactivate.genericgraphwidget");
@@ -500,17 +489,8 @@
 
 		},
 		
-		
-		_onSelectKeyFrom: function(keyValue){
+		_onSelectKey: function(keyValue){
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME = keyValue;
-			//this.field = keyValue;
-			EUMSSI.CONF.updateFacetingFields();
-			//this.clearFilter();
-			EUMSSI.Manager.doRequest(0);
-		},
-
-		_onSelectKeyTo: function(keyValue){
-			this.fieldTo = keyValue;
 			EUMSSI.CONF.updateFacetingFields();
 			EUMSSI.Manager.doRequest(0);
 		},
