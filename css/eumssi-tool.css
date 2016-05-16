@@ -570,7 +570,7 @@ button.btn-remove-filter:hover {
   color: #ff0000;
 }
 /*************************** Text Slice more/less ***************************/
-span.more {
+span.more, span.showOriginal {
   display: inline-block;
   vertical-align: sub;
   cursor: pointer;

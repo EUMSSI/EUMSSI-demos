@@ -37,7 +37,9 @@ window.EUMSSI = {
 		var params = {
 			'facet'  : true,
 			//'facet.mincount': 1,	// Min count to appear
-			'json.nl': 'map'
+			'json.nl': 'map',
+			'hl'  : true,
+			'hl.fl': '*'
 		};
 		for (var name in params) {
 			EUMSSI.Manager.store.addByValue(name, params[name]);
@@ -398,6 +400,40 @@ window.EUMSSI = {
 			setTimeout(startIntro, 1500);
 		}
 
+		//</editor-fold>
+
+
+
+		//<editor-fold desc="toogleWordGraph">
+		var selectedData;
+		$("#showRelations").click(function(event) {
+			var target = $(event.currentTarget);
+			if(!target.is(":checked")) {
+				$(".wordCloud").show();
+				$(".wordGraph").hide();
+				if(selectedData){
+					EUMSSI.EventManager.trigger("wordselectchange", selectedData);
+				}
+			}else{
+				$(".wordCloud").hide();
+				$(".wordGraph").show();
+				if(selectedData){
+					EUMSSI.EventManager.trigger("graphselectchange", selectedData);
+				}
+			}
+		});
+
+		$(".genericwordcloud-key-selector").selectmenu({
+			width: 200,
+			select: function( event, data ) {
+				selectedData = data;
+				if(!$("#showRelations").is(":checked")) {
+					EUMSSI.EventManager.trigger("wordselectchange", selectedData);
+				}else{
+					EUMSSI.EventManager.trigger("graphselectchange", selectedData);
+				}
+			}.bind(this)
+		});
 		//</editor-fold>
 
 	});

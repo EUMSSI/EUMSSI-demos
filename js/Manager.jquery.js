@@ -150,7 +150,9 @@
 					sort : "beginOffset asc",
 					wt : "json",
 					indent : "true",
-					rows : "15"
+					rows : "15",
+					'hl'  : true,
+					'hl.fl': '*'
 				};
 				return $.ajax({
 					url: url + $.param(params),

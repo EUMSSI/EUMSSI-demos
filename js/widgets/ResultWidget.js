@@ -6,6 +6,7 @@
 
 		// Attributes that will be rendered in addition to the default info.
 		dynamicAttributes: [],
+		excludedFields: [],
 
 		addDynamicAttribute : function(attrName,attrLabel,render) {
 			var dynamicAttr = {
@@ -49,18 +50,21 @@
 			this.$target.empty();
 			for (var i = 0, l = this.manager.response.response.docs.length; i < l; i++) {
 				var doc = this.manager.response.response.docs[i];
-				this.$target.append(this.defaultTemplate(this._mergeDocWithHighLight(doc)));
+				this.$target.append(this.defaultTemplate(doc));
 			}
 			this._initDragables();
 		},
 
-		_mergeDocWithHighLight: function(doc){
+		_mergeDocWithHighLight: function(doc, highlighting){
 			var docCopy = JSON.parse(JSON.stringify(doc)), responseHighlightingKey, highlightingKey;
 
-			for(responseHighlightingKey in this.manager.response.highlighting){
-				var hightlighting = this.manager.response.highlighting[responseHighlightingKey];
+			docCopy.originalFields = {};
+
+			for(responseHighlightingKey in highlighting){
+				var hightlighting = highlighting[responseHighlightingKey];
 				if(responseHighlightingKey == docCopy._id){
 					for(highlightingKey in hightlighting){
+						//docCopy.originalFields[highlightingKey] = docCopy[highlightingKey];
 						docCopy[highlightingKey] = hightlighting[highlightingKey].toString();
 					}
 				}
@@ -83,14 +87,23 @@
 		 * @returns {*|jQuerySelector} the jQuery selector with the generated html code.
 		 */
 		defaultTemplate: function (doc) {
-			var text = doc['meta.source.text'] || "...",
+			var text = this.getValueByKey(doc, 'meta.source.text') || "...",
 				date = doc['meta.source.datePublished'],
 				youtubeID = doc['meta.source.youtubeVideoID'],
 				videoLink = doc['meta.source.mediaurl'] || doc['meta.source.httpHigh'] || doc['meta.source.httpMedium'],
-				urlLink = doc['meta.source.url'],
-				audio_transcript = doc['meta.extracted.audio_transcript'];
+				urlLink = doc['meta.source.url'];
 
-			text = this._sliceTextMore(text,300);
+			if(this.hasHighlighting(doc, 'meta.source.text')){
+				var reg = /(<[^>]*em>)/ig;
+				if (this.manager.response.highlighting[doc._id]['meta.source.text'].toString().replace(reg, "") != doc['meta.source.text']) {
+					text = this._bindOriginalText(doc['meta.source.text'], text);
+				}else{
+					text = doc['meta.source.text'];
+				}
+			}else{
+				text = this._sliceTextMore(text,300);
+			}
+
 
 			// Render HTML Code
 			var $output = $('<div class="result-element">');
@@ -198,12 +211,13 @@
 			if(segmentsResponse.response.docs.length > 0){
 				for (var i = 0, l = segmentsResponse.response.docs.length; i < l; i++) {
 					var segmentDoc = segmentsResponse.response.docs[i];
+					var highlighting = segmentsResponse.highlighting[segmentDoc._id];
 					var $li = $("<li>");
 					var $playSegment = $('<span class="icon-play-segment">').attr("title","Play Segment");
 					$li.append($playSegment);
 					$li.append(new Date(segmentDoc.beginOffset).toLocaleTimeString(undefined,{timeZone:"UTC"})
 						+ " - " + new Date(segmentDoc.endOffset).toLocaleTimeString(undefined,{timeZone:"UTC"}));
-					$li.append(" <i>..."+segmentDoc["meta.extracted.audio_transcript"]+"...<i>");
+					$li.append(" <i>..."+ this._bindOriginalText(segmentDoc["meta.extracted.audio_transcript"], highlighting["meta.extracted.audio_transcript"])+"...<i>");
 					html.append($li);
 
 					$playSegment.click(this._onClickPlaySegment.bind(this,segmentDoc));
@@ -241,11 +255,11 @@
 			var $header =  $("<span class='links'>"),
 				$title = $("<h2>"),
 				text = "";
-			$header.html(doc['meta.source.headline']);
+			$header.html(this.getValueByKey(doc, 'meta.source.headline'));
 
 			//Twitter - special behaviour
 			if(!doc['meta.source.headline'] && doc['source'] && doc['source'].startsWith("Twitter") ) {
-				text = doc['meta.source.text'] || "";
+				text = this.getValueByKey(doc, 'meta.source.text') || "";
 				$header.html(text.substring(0, 50));
 				if(text.length > 50){
 					$header.append("...");
@@ -264,7 +278,7 @@
 
 			//Wikipedia Event - special behaviour
 			if(!doc['meta.source.headline'] && doc['source'] && doc['source'].startsWith("Wikipedia") ) {
-				text = doc['meta.source.text'] || "";
+				text = this.getValueByKey(doc, 'meta.source.text') || "";
 				$header.html(text.substring(0, 50));
 				if(text.length > 50){
 					$header.append("...");
@@ -278,6 +292,26 @@
 			$title.append( $header );
 
 			return $title;
+		},
+
+		/**
+		 * Return highlighting if exists or the doc value in other case.
+		 * @param doc
+		 * @param key
+		 * @returns {*}
+		 */
+		getValueByKey : function(doc, key){
+			var value;
+			if(this.hasHighlighting(doc, key)){
+				value = this.manager.response.highlighting[doc._id][key].toString();
+			}else{
+				value = doc[key] ? doc[key].toString() : "";
+			}
+			return value;
+		},
+
+		hasHighlighting : function(doc, key){
+			return this.manager.response.highlighting[doc._id] && this.manager.response.highlighting[doc._id][key];
 		},
 
 		//popup with the whole information
@@ -298,14 +332,13 @@
 				}
 			});
 			$content.dialog("option", "position", {my:"center", at:"center", of:window});
-
 		},
 
 		_renderKeyArray : function(keysArray, doc, moreSize) {
 			var $content = $("<div>");
 			moreSize = moreSize || 1000;
 			for(var i = 0 ; i < keysArray.length ; i++){
-				var keyLabel, key = keysArray[i];
+				var key = keysArray[i];
 				//Check if the doc data has the Key
 				if(doc[key]) {
 					var text = doc[key].toString();
@@ -338,14 +371,46 @@
 						break;
 					}
 
-					keyLabel = this._getSimpleKey(key);
-					$key.html(keyLabel);
-					$value.html(value);
-
-					$content.append($('<p>').append($key).append($value));
+					this._renderKey($key, key, this.manager.response.highlighting[doc._id], doc, $value, $content);
 				}
 			}
+
+			//show all the fields returned by the highlighting
+			var docCopy = JSON.parse(JSON.stringify(doc)), responseHighlightingKey, highlightingKey;
+
+			for(responseHighlightingKey in this.manager.response.highlighting){
+				var highlighting = this.manager.response.highlighting[responseHighlightingKey];
+				if(responseHighlightingKey == docCopy._id){
+					for(highlightingKey in highlighting) {
+
+						var isRendered = _.find(keysArray, function (key) {return key === highlightingKey});
+						if (!isRendered && !_.contains(this.excludedFields, highlightingKey)) {
+
+							var $value = $('<span>').addClass("info-value"),
+								$key = $('<span>').addClass("info-label");
+
+							this._renderKey($key, highlightingKey, highlighting, doc, $value, $content);
+						}
+					}
+				}
+			}
+
 			return $content;
+		},
+
+		_renderKey: function ($key, highlightingKey, highlighting, doc, $value, $content) {
+			$key.html(this._getSimpleKey(highlightingKey));
+
+			//check if it has highlighting
+			var highText = highlighting[highlightingKey] ? highlighting[highlightingKey].toString() : "";
+			var reg = /(<[^>]*em>)/ig;
+			if (highText && highText.replace(reg, "") != doc[highlightingKey].toString()) {
+				$value.html(this._bindOriginalText(doc[highlightingKey].toString(), highlighting[highlightingKey].toString()));
+			} else {
+				$value.html(doc[highlightingKey].toString());
+			}
+
+			$content.append($('<p>').append($key).append($value));
 		},
 
 		/**
@@ -409,6 +474,32 @@
 				}
 			}
 			return text;
+		},
+
+		/**
+		 * If the text has highlighting the original text is linked to show it
+		 * if the user click the plus button.
+		 *
+		 * @param {String} text
+		 * @returns {HTML} the original text
+		 * @private
+		 */
+		_bindOriginalText: function(originalText, highlighting){
+			var reg = /(<[^>]*em>)/ig;
+			var highlighting = highlighting.toString();
+			var text = '<span class="ui-slicetext-showpart ui-after-points" >' +
+				this._replaceOriginalForHighlighting(highlighting.replace(reg, "").replace(/</g, "&lt;").replace(/>/g, "&gt;")) +
+				'</span> <span class="ui-slicetext-hidepart" style="display:none;">' +
+				this._replaceOriginalForHighlighting(originalText.replace(/</g, "&lt;").replace(/>/g, "&gt;"))+
+				'</span> <span class="showOriginal ui-icon ui-icon-plusthick">';
+			return text;
+		},
+
+		_replaceOriginalForHighlighting : function(originalText){
+			var re = new RegExp(EUMSSI.FilterManager.getFilters("GENERAL_SEARCH")[0].query.split(":")[1],"ig");
+			return originalText.replace(re, function(match){
+				return "<em>" + match + "</em>";
+			});
 		},
 
 		_getNextWhitePosition: function(text, size){
@@ -511,6 +602,35 @@
 
 				return false;
 			});
+			$(document).on('click', 'span.showOriginal', function () {
+				var $this = $(this),
+					$hiddenText = $this.parent().find('.ui-slicetext-hidepart'),
+					$visibleText = $this.parent().find('.ui-slicetext-showpart');
+
+				if ($hiddenText.is(':visible')) {
+					$hiddenText.hide();
+					$visibleText.show();
+					$visibleText.addClass("ui-after-points");
+					$this.removeClass('ui-icon-minusthick');
+					$this.addClass('ui-icon-plusthick');
+				} else {
+					$hiddenText.show();
+					$visibleText.hide();
+					$visibleText.removeClass("ui-after-points");
+					$this.removeClass('ui-icon-plusthick');
+					$this.addClass('ui-icon-minusthick');
+				}
+
+				//Realocate dialog
+				var $dialog = $this.parents(".ui-dialog-content");
+				if($dialog.length > 0){
+					$dialog.dialog("option", "position", {my:"center", at:"center", of:window});
+				}
+
+				return false;
+			});
+
+			this.excludedFields = ["meta.source.headline", "meta.source.text", "meta.source.teaser"];
 		},
 
 		_initDragables: function(){
