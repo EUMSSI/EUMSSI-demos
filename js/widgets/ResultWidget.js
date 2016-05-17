@@ -349,13 +349,31 @@
 						case "meta.extracted.text_nerl.dbpedia.PERSON" :
 							value = this._personCustomRender(text, $content);
 							$value.addClass("person-data");
+
+							$key.html(this._getSimpleKey(key));
+							$value.html(value);
+
+							$content.append($('<p>').append($key).append($value));
+
 						break;
 						case "meta.extracted.text_nerl.dbpedia.LOCATION" :
 							value = this._locationCustomRender(text, $content);
+
+							$key.html(this._getSimpleKey(key));
+							$value.html(value);
+
+							$content.append($('<p>').append($key).append($value));
+
 							break;
 						case "meta.extracted.video_persons.thumbnails" :
 							// Persons Thumbnails
 							value = this._personThumbnailsCustomRender(doc[key]);
+
+							$key.html(this._getSimpleKey(key));
+							$value.html(value);
+
+							$content.append($('<p>').append($key).append($value));
+
 							break;
 						default :
 							//FIX - comma problem
@@ -368,10 +386,10 @@
 							if(key == "meta.extracted.text_nerl.dbpedia"){
 								value = this._generateHTMLLinks(value);
 							}
+
+							this._renderKey($key, key, this.manager.response.highlighting[doc._id], doc, $value, $content);
 						break;
 					}
-
-					this._renderKey($key, key, this.manager.response.highlighting[doc._id], doc, $value, $content);
 				}
 			}
 
@@ -630,7 +648,7 @@
 				return false;
 			});
 
-			this.excludedFields = ["meta.source.headline", "meta.source.text", "meta.source.teaser"];
+			this.excludedFields = ["meta.source.headline", "meta.source.text", "meta.source.teaser", "contentSearch"];
 		},
 
 		_initDragables: function(){
