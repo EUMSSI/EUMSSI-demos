@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>EUMSSI</title>
+    <link rel="icon" type="image/png" href="images/favicon-2.png" />
+
+    <!--POLYFILLS-->
+    <script type="text/javascript" src="lib/webcomponentsjs-0.7.15/HTMLImports.min.js"></script>
+
+    <link rel="stylesheet" href="css/eumssi-demo.css">
+    <!--ONLINE APIs-->
+    <!--<script type='text/javascript' src='http://www.google.com/jsapi'></script>-->
+    <!-- BEGIN TimelineJS -->
+    <!--<script type="text/javascript" src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>-->
+
+    <link title="timeline-styles" rel="stylesheet" href="//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+    <script src="//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+    <!---->
+    <!-- d3js -->
+    <!--<script src="lib/d3/d3.js"></script>-->
+    <!--<script src="lib/d3/d3.layout.js"></script>-->
+
+    <!--<script src="lib/d3/d3.geom.js"></script>-->
+    <!--<script src="lib/stopwords/stopwordsEnglish.js"></script>-->
+
+    <!--<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>-->
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
+    <script src="lib/d3/d3.layout.cloud.js"></script>
+    <script src="lib/d3/nv/nv.d3.min.js"></script>
+    <link href="lib/d3/nv/nv.d3.min.css" rel="stylesheet">
+
+    <script src="lib/underscore/underscore-min.js"></script>
+    <script src="lib/jquery/jquery-1.11.2.min.js"></script>
+    <script src="lib/jquery/jquery-ui.min.js"></script>
+    <script src="lib/jquery/ui/i18n/datepicker-all.js"></script>
+    <script src="lib/jquery/jquery.layout-1.4.4.js"></script>
+    <script src="lib/jquery/jquery.freetile.js"></script>
+    <!--<script src="lib/jquery/jquery.flex.js"></script>-->
+    <!--<script src="lib/jquery/jquery.layout.pseudoClose.min-1.1.js"></script>-->
+    <!--<script src="lib/jquery/jquery.layout.slideOffscreen.min-1.1.js"></script>-->
+    <link rel="stylesheet" href="lib/jquery/jquery-ui.min.css">
+
+
+    <!-- amalia.js -->
+    <script src="lib/amalia.js-1.3.1/components/raphael/raphael.js"></script>
+    <script src="lib/amalia.js-1.3.1/js/amalia.js.min.js"></script>
+    <link rel="stylesheet" href="lib/amalia.js-1.3.1/css/amalia.js.min.css">
+    <script type="text/javascript" src="lib/amalia.js-1.3.1/js/i18n/amalia.js-message-en.js"></script>
+    <script type="text/javascript" src="lib/amalia.js-1.3.1/js/amalia.js-plugin-text-sync.min.js"></script>
+
+    <script src="js/Utils.js"></script>
+    <script src="js/EventManager.js"></script>
+    <script src="js/FilterManager.js"></script>
+    <script src="js/eumssiSolr.js"></script>
+
+    <script src="lib/ajax-solr/Core.js"></script>
+    <script src="lib/ajax-solr/AbstractManager.js"></script>
+    <script src="lib/ajax-solr/Parameter.js"></script>
+    <script src="lib/ajax-solr/ParameterStore.js"></script>
+    <script src="lib/ajax-solr/AbstractWidget.js"></script>
+    <script src="lib/ajax-solr/AbstractFacetWidget.js"></script>
+    <script src="lib/ajax-solr/AbstractTextWidget.js"></script>
+
+    <script src="js/Manager.jquery.js"></script>
+
+    <script src="js/widgets/ResultWidget.js"></script>
+    <script src="js/widgets/PagerWidget.js"></script>
+    <script src="js/widgets/TextWidget.js"></script>
+
+    <script src="js/widgets/TimelineWidget.js"></script>
+
+    <script src="js/widgets/GenericGraphWidget.js"></script>
+
+    <script src="js/widgets/GenericWordCloudWidget.js"></script>
+    <script src="js/widgets/TwitterPolarityWidget.js"></script>
+
+    <script src="js/widgets/SelectLocaleWidget.js"></script>
+    <script src="js/widgets/CheckboxWidget.js"></script>
+    <script src="js/widgets/DateFilterWidget.js"></script>
+    <script src="js/widgets/SelectVideoQualityWidget.js"></script>
+    <script src="js/widgets/DynamicSearchWidget.js"></script>
+    <script src="js/widgets/TagFacetWidget.js"></script>
+    <script src="js/widgets/MapChartWidget.js"></script>
+    <script src="js/widgets/TagCloudWidget.js"></script>
+    <script src="js/widgets/VideoPlayerWidget.js"></script>
+    <script src="js/widgets/FilterViewerWidget.js"></script>
+
+    <script src="js/components/TweetTimelineChart.js"></script>
+
+    <!-- TEMPLATES -->
+    <script>
+        function onImport() {
+            $('#templates-container').append($(document.querySelector('link[rel="import"]').import).find("script"));
+        }
+    </script>
+    <link rel="import" href="templates/templates.html" onload="onImport(event)" >
+
+</head>
+<body class="eumssi-demo">
+
+    <div class="ui-section-initpage">
+        <a href="http://www.eumssi.eu/" target="_blank" title="Open Eumssi home page"><img class="logo" src="images/eumssi-logo.png" alt="Logo"></a>
+        <br/>
+        <h1>What? Who? When? Where? Why? </h1>
+        <br/>
+        <div>
+            <div class="mainSearch-placeholder"></div>
+            <button class="btn-do-search-initpage ui-button-main" title="Search">
+                <div class="icon-search"></div>
+            </button>
+            <br/><br/>
+            <h3>Write your query or keywords</h3>
+        </div>
+    </div>
+
+    <div class="ui-section-mainlayout" style="display:none">
+        <div class="header-panel ui-layout-north">
+            <!--## HEADER PANEL ##-->
+            <h1>EUMSSI Project - Demonstration</h1>
+            <a href="http://www.eumssi.eu/" target="_blank" title="Open Eumssi home page"><img class="logo" src="images/eumssi-logo.png" alt="Logo"></a>
+            <button class="btn-do-feedback" title="Send Feedback Message">Feedback</button>
+            <!--####-->
+        </div>
+
+        <div class="search-panel ui-layout-west">
+            <div class="search-panel-content panel-content">
+                <!--## SEARCH PANEL ##-->
+
+                <button class="btn-do-search ui-button-main">Search</button>
+
+                <div class="filterViewer-placeholder"></div>
+
+                <!--<h2>Search Options</h2>-->
+                <div class="videoDocuments-placeholder"></div>
+                <div class="videoWithPersonIdent-placeholder"></div>
+                <div class="videoWithAudioTrans-placeholder"></div>
+
+                <div class="dateFilterWidget-placeholder"></div>
+
+                <h2>Language</h2>
+                <div class="localeWidget-placeholder"></div>
+
+                <div class="source-placeholder tagfacet" ></div>
+
+                <div class="clear"></div>
+                <!--####-->
+            </div>
+        </div>
+
+        <div class="content-panel ui-layout-center">
+
+            <div class="advancedSearch-panel ui-layout-west">
+                <div class="advancedSearch-panel-content panel-content">
+                    <!--## ADVANCED SEARCH PANEL ##-->
+
+                    <!--<h3>Advanced Filter</h3>-->
+                    <button class="btn-do-add-filter ui-button-main">Add Filter</button></br>
+                    <div class="generatedFilters-placeholder"></div>
+
+                    <!--####-->
+                </div>
+                <button class="button-pin button-pin-west"></button>
+            </div>
+
+            <div class="result-panel ui-layout-center">
+                <div class="result-panel-content panel-content ui-layout-content">
+                    <div class="tabs-container">
+                        <ul>
+                            <li><a href="#fragment-1">Result</a></li>
+                            <li><a href="#fragment-2">Map</a></li>
+                            <li><a href="#fragment-3">People</a></li>
+                            <li><a href="#timelinetab">Timeline</a></li>
+                            <li><a href="#genericwordcloudtab">Word Cloud</a></li>
+                            <li><a href="#genericgraphtab">Word Graph</a></li>
+                            <li><a href="#twitterpolarity">Polarity</a></li>
+                        </ul>
+                        <div id="fragment-1" data-tabpos="0">
+                            <div class="tab-content">
+                                <!--## RESULT TAB ##-->
+
+                                <div class="navigation">
+                                    <ul class="pager"></ul>
+                                    <div class="pager-header"></div>
+                                </div>
+                                <div class="resultWidget-placeholder"></div>
+                                <br>
+                                <div class="navigation">
+                                    <ul class="pager"></ul>
+                                </div>
+
+                                <!--####-->
+                            </div>
+                        </div>
+                        <div id="fragment-2" data-tabpos="1">
+                            <div class="tab-content expanded mapChart">
+                                <!--## TAB 2 MAP CHART CONTENT ##-->
+                                <div class='mapChart-placeholder'>
+                                    <div class='mapChart-toolbar content-toolbar ui-widget-header ui-corner-all'>
+                                        <div id="mapChart-displayMode-btn">
+                                            <input type="radio" id="mapChart-displayMode-regions" value="regions" name="displayMode-radio" checked="checked"><label for="mapChart-displayMode-regions">Countries</label>
+                                            <input type="radio" id="mapChart-displayMode-markers" value="markers" name="displayMode-radio"><label for="mapChart-displayMode-markers">Cities</label>
+                                        </div>
+                                        <select style="width: 160px;" title="Select Region" class="mapChart-region-selector">
+                                            <option value="world">World</option>
+                                            <option value="002">Africa</option>
+                                            <option value="019">Americas</option>
+                                            <option value="013">America (Central)</option>
+                                            <option value="021">America (Northern)</option>
+                                            <option value="005">America (South)</option>
+                                            <option value="142">Asia</option>
+                                            <option value="150">Europe</option>
+                                            <option value="009">Oceania</option>
+                                        </select>
+                                        <a class="mapChart-export-btn" download="chart.png" title="Download map as image">Export</a>
+                                        <img class="mapChart-loading" style="display:none;" src="images/circular-loader.gif" title="Loading Map...">
+                                    </div>
+                                    <!--<div class="mapChart-chart"></div>-->
+                                </div>
+                                <!--####-->
+                            </div>
+                        </div>
+                        <div id="fragment-3" data-tabpos="2">
+                            <div class="tab-content">
+                                <!--## TAB 3 CONTENT ##-->
+                                <!--<h1>PERSONS TAG CLOUD</h1>-->
+                                <div class="tagCloud-placeholder"></div>
+                                <!--####-->
+                            </div>
+                        </div>
+
+                        <div id="timelinetab" data-tabpos="3">
+                            <div class="tab-content">
+                                <div id="my-timeline" style="width: 100%; height: 600px"> </div>
+                                <div class="event-placeholder"> </div>
+                            </div>
+                        </div>
+
+                        <div id="genericwordcloudtab" data-tabpos="4">
+                            <div class="genericwordcloud-placeholder tab-content">
+                                <div class='genericwordcloud-toolbar content-toolbar ui-widget-header ui-corner-all'>
+                                    <label>Cloud Key</label>
+                                    <select style="width: 180px;" title="Select Keyword" class="genericwordcloud-key-selector">
+                                        <option value="meta.source.keywords">Keywords</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.PERSON">DBpedia Persons</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.ORGANIZATION">DBpedia Organizations</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>
+                                        <option value="meta.extracted.text_nerl.ner.all">Ner All</option>
+                                        <option value="meta.extracted.text_nerl.ner.PERSON">Ner Persons</option>
+                                        <option value="meta.extracted.text_nerl.ner.ORGANIZATION">Ner Organizations</option>
+                                        <option value="meta.extracted.text_nerl.ner.LOCATION">Ner Locations</option>
+                                        <option value="meta.source.hashtags">Twitter: Hashtags</option>
+                                        <option value="meta.source.userMentions">Twitter: User Mentions</option>
+                                        <option value="meta.source.author">Authors</option>
+                                    </select>
+                                </div>
+                                <!--<div id="my-genericwordcloud" class="genericwordcloud wordcloud-placeholder"></div>-->
+                            </div>
+                        </div>
+
+                        <div id="genericgraphtab" data-tabpos="5">
+                            <div class="tab-content">
+                                <div class='genericgraph-toolbar content-toolbar ui-widget-header ui-corner-all'>
+                                    <label>From Field:</label>
+                                    <select style="width: 180px;" title="Select Field" class="genericgraph-key-selector">
+                                        <option value="meta.source.keywords">Keywords</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.PERSON">DBpedia Persons</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.ORGANIZATION">DBpedia Organizations</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>
+                                        <option value="meta.extracted.text_nerl.ner.all">Ner All</option>
+                                        <option value="meta.extracted.text_nerl.ner.PERSON">Ner Persons</option>
+                                        <option value="meta.extracted.text_nerl.ner.ORGANIZATION">Ner Organizations</option>
+					<option value="meta.extracted.text_nerl.ner.LOCATION">Ner Locations</option>
+					<option value="meta.source.hashtags">Twitter: Hashtags</option>
+					<option value="meta.source.userMentions">Twitter: User Mentions</option>
+					<option value="meta.source.author">Authors</option>
+                                    </select>   
+                                    <label>To:</label>
+                                    <select style="width: 180px;" title="To Field" class="genericgraph-key-selector-2">
+                                        <option value="meta.source.keywords">Keywords</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.all">DBpedia All</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.PERSON">DBpedia Persons</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.ORGANIZATION">DBpedia Organizations</option>
+                                        <option value="meta.extracted.text_nerl.dbpedia.LOCATION">DBpedia Locations</option>
+                                        <option value="meta.extracted.text_nerl.ner.all">Ner All</option>
+                                        <option value="meta.extracted.text_nerl.ner.PERSON">Ner Persons</option>
+                                        <option value="meta.extracted.text_nerl.ner.ORGANIZATION">Ner Organizations</option>
+					<option value="meta.extracted.text_nerl.ner.LOCATION">Ner Locations</option>
+					<option value="meta.source.hashtags">Twitter: Hashtags</option>
+					<option value="meta.source.userMentions">Twitter: User Mentions</option>
+					<option value="meta.source.author">Authors</option>
+                                    </select>
+                                    <label style="display:none; position: absolute; color: green; right: 300px" id="selectedD3Node1">Selected From: </label>
+                                </div>
+                                <div id="my-genericgraph" class="genericgraph"></div>
+
+                            </div>
+                        </div>
+
+                        <div id="twitterpolarity" data-tabpos="6">
+                            <div class="tab-content expanded polarity">
+                                <div class="polarity-placeholder"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!--<div class="widget-panel ui-layout-east">-->
+                <!--<div class="widget-panel-content panel-content ui-layout-content">-->
+
+                    <!--&lt;!&ndash;<h2>AuxWidgets</h2>&ndash;&gt;-->
+
+                <!--</div>-->
+                <!--<button class="button-pin button-pin-east"></button>-->
+            <!--</div>-->
+
+        </div>
+
+        <div class="footer-panel ui-layout-south"></div>
+    </div>
+
+    <div id="templates-container" style="display:none;"></div>
+
+</body>
+</html>
