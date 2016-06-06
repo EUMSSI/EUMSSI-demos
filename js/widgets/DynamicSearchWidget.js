@@ -97,7 +97,8 @@
 				target: "#"+genKey,
 				attributeName: key,
 				label: label,
-				showInResultCheck: showInResultCheck
+				showInResultCheck: showInResultCheck,
+				buttonEnabled: this.buttonEnabled
 			}));
 
 			// If the Filter is added manually, add a btn to remove it.

@@ -50,8 +50,9 @@
 
 			// Render <button>
 			if(this.buttonEnabled){
-				$button = $("<button>").text("Search");
+				$button = $("<button>").text("Go");
 				// Event - Click Button Search
+				$button.button();
 				$button.click(function(e){
 					self.doRequest();
 				});

@@ -4,6 +4,10 @@
 	AjaxSolr.ResultWidget = AjaxSolr.AbstractWidget.extend({
 		start: 0,
 
+		init: function(){
+			console.log("INIT DEL RESULT");
+		},
+
 		// Attributes that will be rendered in addition to the default info.
 		dynamicAttributes: [],
 		excludedFields: [],
@@ -53,23 +57,6 @@
 				this.$target.append(this.defaultTemplate(doc));
 			}
 			this._initDragables();
-		},
-
-		_mergeDocWithHighLight: function(doc, highlighting){
-			var docCopy = JSON.parse(JSON.stringify(doc)), responseHighlightingKey, highlightingKey;
-
-			docCopy.originalFields = {};
-
-			for(responseHighlightingKey in highlighting){
-				var hightlighting = highlighting[responseHighlightingKey];
-				if(responseHighlightingKey == docCopy._id){
-					for(highlightingKey in hightlighting){
-						//docCopy.originalFields[highlightingKey] = docCopy[highlightingKey];
-						docCopy[highlightingKey] = hightlighting[highlightingKey].toString();
-					}
-				}
-			}
-			return docCopy;
 		},
 
 		/**
@@ -504,20 +491,25 @@
 		 */
 		_bindOriginalText: function(originalText, highlighting){
 			var reg = /(<[^>]*em>)/ig;
-			var highlighting = highlighting.toString();
-			var text = '<span class="ui-slicetext-showpart ui-after-points" >' +
-				this._replaceOriginalForHighlighting(highlighting.replace(reg, "").replace(/</g, "&lt;").replace(/>/g, "&gt;")) +
-				'</span> <span class="ui-slicetext-hidepart" style="display:none;">' +
-				this._replaceOriginalForHighlighting(originalText.replace(/</g, "&lt;").replace(/>/g, "&gt;"))+
-				'</span> <span class="showOriginal ui-icon ui-icon-plusthick">';
+			var text = originalText;
+			if(highlighting) {
+				var highlighting = highlighting.toString();
+				var text = '<span class="ui-slicetext-showpart ui-after-points" >' +
+					this._replaceOriginalForHighlighting(highlighting.replace(reg, "").replace(/</g, "&lt;").replace(/>/g, "&gt;")) +
+					'</span> <span class="ui-slicetext-hidepart" style="display:none;">' +
+					this._replaceOriginalForHighlighting(originalText.replace(/</g, "&lt;").replace(/>/g, "&gt;")) +
+					'</span> <span class="showOriginal ui-icon ui-icon-plusthick">';
+			}
 			return text;
 		},
 
-		_replaceOriginalForHighlighting : function(originalText){
-			var re = new RegExp(EUMSSI.FilterManager.getFilters("GENERAL_SEARCH")[0].query.split(":")[1],"ig");
-			return originalText.replace(re, function(match){
-				return "<em>" + match + "</em>";
-			});
+		_replaceOriginalForHighlighting : function(originalText) {
+			if (EUMSSI.FilterManager.getFilters("GENERAL_SEARCH")[0].query.split(":")[1] != "*") {
+				var re = new RegExp(EUMSSI.FilterManager.getFilters("GENERAL_SEARCH")[0].query.split(":")[1], "ig");
+				return originalText.replace(re, function (match) {
+					return "<em>" + match + "</em>";
+				});
+			}
 		},
 
 		_getNextWhitePosition: function(text, size){

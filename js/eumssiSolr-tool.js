@@ -65,7 +65,8 @@ window.EUMSSI = {
 			target: '.mainSearch-placeholder',
 			preload: [
 				{key:"GENERAL_SEARCH",label:"Content Search", showInResultCheck: false}
-			]
+			],
+			buttonEnabled: true
 		}));
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.DynamicSearchWidget({
@@ -431,6 +432,30 @@ window.EUMSSI = {
 					EUMSSI.EventManager.trigger("wordselectchange", selectedData);
 				}else{
 					EUMSSI.EventManager.trigger("graphselectchange", selectedData);
+				}
+			}.bind(this)
+		});
+
+		var orderBy = "score";
+		var orderType = "desc";
+		$(".orderBy").selectmenu({
+			width: 150,
+			select: function( event, data ) {
+				if(orderBy != data.item.value) {
+					orderBy = data.item.value;
+					EUMSSI.Manager.store.addByValue('sort', orderBy + " " + orderType);
+					EUMSSI.Manager.widgets["result"].doRequest();
+				}
+			}.bind(this)
+		});
+
+		$(".orderType").selectmenu({
+			width: 150,
+			select: function( event, data ) {
+				if(orderType != data.item.value) {
+					orderType = data.item.value;
+					EUMSSI.Manager.store.addByValue('sort', orderBy + " " + orderType);
+					EUMSSI.Manager.widgets["result"].doRequest();
 				}
 			}.bind(this)
 		});

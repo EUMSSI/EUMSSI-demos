@@ -570,7 +570,8 @@ button.btn-remove-filter:hover {
   color: #ff0000;
 }
 /*************************** Text Slice more/less ***************************/
-span.more, span.showOriginal {
+span.more,
+span.showOriginal {
   display: inline-block;
   vertical-align: sub;
   cursor: pointer;
@@ -1114,10 +1115,15 @@ body .ui-draggable-handle.ui-draggable-dragging {
   border-radius: 3px;
   border: solid 1px #dcdcdc;
   transition: box-shadow 0.3s, border 0.3s;
+  vertical-align: top;
 }
 .header .filter-container input:focus {
   border: solid 1px #707070;
   box-shadow: 0 0 5px 1px #969696;
+}
+.header .filter-container button {
+  vertical-align: sub;
+  margin-left: 5px;
 }
 .header .filter-container h2 {
   display: none;
