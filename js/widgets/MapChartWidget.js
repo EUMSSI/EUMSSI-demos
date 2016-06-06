@@ -256,7 +256,7 @@
 				$menu.on("click",".filter",this._addCityFilter.bind(this,city));
 				$menu.on("click",".filter-clear",this._cleanCityFilter.bind(this,true));
 				$menu.on("click",".open-wikipedia",function(){
-					window.open("http://wikipedia.org/wiki/"+city,"_blank");
+					EUMSSI.UTIL.openNewPage("http://wikipedia.org/wiki/"+city);
 				});
 
 				EUMSSI.UTIL.showContextMenu($menu);

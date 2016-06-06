@@ -163,7 +163,7 @@ UTIL.openNewPage = function(url){
 
 	$(".externalFrame-container").empty();
 	$(".externalFrame-container").append($("<iframe src="+url+">"));
-	$(".tabs-container").tabs( "option", "active", 8);
+	$(".tabs-container").tabs( "option", "active", 7);
 
 };
 
