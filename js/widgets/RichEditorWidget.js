@@ -30,7 +30,7 @@
 			// unless user specified own height.
 			CKEDITOR.config.width = 'auto';
 
-//			CKEDITOR.config.extraPlugins = 'pluginEumssiSearch';
+			CKEDITOR.config.extraPlugins = 'embed,autoembed';
 
 			//Toolbar configuration
 			CKEDITOR.config.removeButtons = 'Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CreateDiv,Language,Scayt,SelectAll,Anchor,Flash,Smiley,Iframe,Maximize,About';

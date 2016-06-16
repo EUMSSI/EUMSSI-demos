@@ -461,6 +461,17 @@ window.EUMSSI = {
 		});
 		//</editor-fold>
 
+		setTimeout(function() {
+			$(".cke_button__embed").hide();
+			$(".cke_button__embed").click();
+			$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
+			setTimeout(function () {
+				$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
+				$(".cke_dialog_ui_hbox_last a span").click();
+				$(".cke_dialog_background_cover").remove();
+			}, 100);
+		}, 2000);
+
 	});
 
 })(jQuery);

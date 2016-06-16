@@ -384,6 +384,7 @@ img.logo {
   list-style-type: none;
 }
 .resultWidget-placeholder div.result-element {
+  position: relative;
   margin-top: 15px;
   padding: 10px;
   min-height: 70px;
@@ -1656,4 +1657,8 @@ body .ui-tabs .ui-tabs-nav li .ui-tabs-anchor {
 .resultInformation em {
   font-style: normal;
   background-color: rgba(128, 128, 128, 0.3);
+}
+.cke_dialog.cke_browser_gecko.cke_ltr.cke_single_page,
+.cke_dialog_background_cover {
+  display: none;
 }

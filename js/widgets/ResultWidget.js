@@ -4,10 +4,6 @@
 	AjaxSolr.ResultWidget = AjaxSolr.AbstractWidget.extend({
 		start: 0,
 
-		init: function(){
-			console.log("INIT DEL RESULT");
-		},
-
 		// Attributes that will be rendered in addition to the default info.
 		dynamicAttributes: [],
 		excludedFields: [],
@@ -116,6 +112,8 @@
 				$play.click(function(){
 					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [youtubeID, doc]);
 				});
+
+				this._renderSendToEditorBtn($output, doc['meta.source.mediaurl']);
 			}
 
 			//Link Video
@@ -125,6 +123,8 @@
 				$play.click(function(){
 					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, doc]);
 				});
+
+				this._renderSendToEditorBtn($output, doc['meta.source.mediaurl']);
 			}
 
 			//Segments
@@ -656,8 +656,44 @@
 					containment: "body"
 				});
 			}
-		}
+		},
 
+		_renderSendToEditorBtn : function($element, videoId){
+			setTimeout(function($element, videoId){
+				if(!EUMSSI.demoMode && CKEDITOR){
+					var $sendToEditor = $('<div class="tweet-to-editor" title="Embed video on text editor">')
+						.html('<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor');
+					$element.append($sendToEditor);
+					$sendToEditor.on("click", this._sendToEditor.bind(this, videoId));
+				}
+			}.bind(this, $element, videoId),300);
+		},
+
+		_sendToEditor: function(videoId){
+			//var url = encodeURIComponent(videoId);
+			//var finishLoading = function(){
+			//	console.log("ASD FINISH");
+			//};
+			//$.ajax({
+			//	//url    : 'http://ckeditor.iframe.ly/api/oembed?url=' + url + '&callback=CKEDITOR',
+			//	url    : 'http://ckeditor.iframe.ly/api/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fv%2FOODF4Xm2LUw%3Fautoplay%3D1&callback=CKEDITOR',
+			//	callback: finishLoading,
+			//	success: function(response){
+			//		console.log("ASD");
+			//		var oEditor = CKEDITOR.instances["richeditor-placeholder"];
+			//		oEditor.insertHtml( response.html + "<p>&nbsp;</p>" );
+			//	}.bind(this)
+			//});
+
+			$(".cke_button__embed").click();
+			$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
+			setTimeout(function(){
+				$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
+				$("input.cke_dialog_ui_input_text").val(videoId);
+				$(".cke_dialog_ui_hbox_first a span").click();
+				$(".cke_dialog_background_cover").remove();
+			}, 100);
+		}
 	});
 
 })(jQuery);
