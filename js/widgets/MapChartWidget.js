@@ -72,7 +72,32 @@
 				    }
 			    });
 
+			this.$target.find(".map-to-editor-container").on("click", this._mapToEditor.bind(this));
+
 			EUMSSI.EventManager.on("leftside", this._render.bind(this));
+			this.$tabs.on("tabsactivate.mapchartwidget", this._tabChange.bind(this));
+		},
+
+		_mapToEditor: function(){
+			var oEditor = CKEDITOR.instances["richeditor-placeholder"];
+			var img = this.$target.find(".mapChart-export-btn").attr("href");
+			var blobUrl = URL.createObjectURL(this.dataURItoBlob(img));
+			oEditor.insertHtml("<img src='" + blobUrl + "'>" );
+		},
+
+		dataURItoBlob: function(dataURI) {
+			var byteString = atob(dataURI.split(',')[1]);
+
+			// write the bytes of the string to an ArrayBuffer
+			var ab = new ArrayBuffer(byteString.length);
+			var ia = new Uint8Array(ab);
+			for (var i = 0; i < byteString.length; i++) {
+				ia[i] = byteString.charCodeAt(i);
+			}
+
+			// write the ArrayBuffer to a blob, and you're done
+			var bb = new Blob([ab]);
+			return bb;
 		},
 
 		beforeRequest: function() {
@@ -97,9 +122,6 @@
 			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
 				this._refreshChartData();
-			} else {
-				this.$tabs.off("tabsactivate.mapchartwidget");
-				this.$tabs.on("tabsactivate.mapchartwidget", this._tabChange.bind(this));
 			}
 		},
 
@@ -127,7 +149,7 @@
 				.addClass("ui-state-disabled");
 			this.$target.find(".mapChart-loading").show();
 
-			if( this._chartOptions.displayMode == "regions" ){
+			if( this._chartOptions.displayMode == "regions" && !_.isEmpty(this.manager.response)){
 				facetCount = this.manager.response.facet_counts.facet_fields[EUMSSI.CONF.MAP_LOCATION_FIELD_NAME];
 				dataArray.push(['Country', 'Text', 'Count']);
 				for( facet in facetCount ){
@@ -136,7 +158,7 @@
 						dataArray.push([ countryCode, EUMSSI.UTIL.countryCode_SWAP[countryCode], facetCount[facet]]);
 					}
 				}
-			} else if( this._chartOptions.displayMode == "markers" ){
+			} else if( this._chartOptions.displayMode == "markers" && !_.isEmpty(this.manager.response)){
 				facetCount = this.manager.response.facet_counts.facet_fields[EUMSSI.CONF.MAP_CITIES_FIELD_NAME];
 				dataArray.push(['City', 'Count']);
 				for( facet in facetCount ){

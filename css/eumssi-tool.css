@@ -353,6 +353,19 @@ img.logo {
 .result-panel-content .icon-play-segment:hover {
   background-image: url(../images/icon-play-32-hover.png);
 }
+.result-panel-content .icon-play-ocr {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  margin-top: -2px;
+  cursor: pointer;
+  background-image: url(../images/ocr.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
 .result-panel-content .icon-link {
   width: 22px;
   height: 22px;
@@ -1397,6 +1410,82 @@ body .ui-draggable-handle.ui-draggable-dragging {
   display: inline-block !important;
   vertical-align: middle;
 }
+.result-to-editor-container {
+  position: relative;
+  height: 35px;
+  margin-top: 5px;
+}
+.result-to-editor-container .result-to-editor {
+  position: absolute;
+  width: 100px;
+  right: 20px;
+  height: 31px;
+  line-height: 30px;
+  z-index: 1;
+  background: none;
+  cursor: pointer;
+  border: 1px solid grey;
+  border-radius: 3px;
+  font-weight: bold;
+}
+.result-to-editor-container .result-to-editor:hover {
+  color: whitesmoke;
+  background-color: grey;
+}
+.result-to-editor-container .result-to-editor > * {
+  display: inline-block !important;
+  vertical-align: middle;
+}
+.graph-to-editor-container {
+  float: right;
+}
+.graph-to-editor-container .graph-to-editor {
+  width: 100px;
+  height: 31px;
+  line-height: 30px;
+  z-index: 1;
+  background: none;
+  cursor: pointer;
+  border: 1px solid grey;
+  border-radius: 3px;
+  font-weight: bold;
+}
+.graph-to-editor-container .graph-to-editor:hover {
+  color: whitesmoke;
+  background-color: grey;
+}
+.graph-to-editor-container .graph-to-editor > * {
+  display: inline-block !important;
+  vertical-align: middle;
+}
+.graph-to-editor-container .graph-to-editor .ui-icon {
+  background-image: url("../lib/jquery/images/ui-icons_FF4900_256x240.png") !important;
+}
+.map-to-editor-container {
+  float: right;
+}
+.map-to-editor-container .map-to-editor {
+  width: 100px;
+  height: 31px;
+  line-height: 30px;
+  z-index: 1;
+  background: none;
+  cursor: pointer;
+  border: 1px solid grey;
+  border-radius: 3px;
+  font-weight: bold;
+}
+.map-to-editor-container .map-to-editor:hover {
+  color: whitesmoke;
+  background-color: grey;
+}
+.map-to-editor-container .map-to-editor > * {
+  display: inline-block !important;
+  vertical-align: middle;
+}
+.map-to-editor-container .map-to-editor .ui-icon {
+  background-image: url("../lib/jquery/images/ui-icons_FF4900_256x240.png") !important;
+}
 /* ************************ DASHBOARD LAYOUT ************************ */
 .content.slide-open .dashboard .left-widgets {
   width: calc(100% - 6px);
@@ -1658,7 +1747,11 @@ body .ui-tabs .ui-tabs-nav li .ui-tabs-anchor {
   font-style: normal;
   background-color: rgba(128, 128, 128, 0.3);
 }
+.cke_dialog.cke_ltr.cke_single_page,
 .cke_dialog.cke_browser_gecko.cke_ltr.cke_single_page,
 .cke_dialog_background_cover {
+  display: none;
+}
+canvas {
   display: none;
 }

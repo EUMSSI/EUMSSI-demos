@@ -15,15 +15,22 @@
 
 			//Key Selector
 			EUMSSI.EventManager.on("wordselectchange", this._onWordCloudSelectChangeWord.bind(this));
+			EUMSSI.EventManager.on("showRelations", this.onShowRelations.bind(this));
 
 			//Refresh the graphic when expand collapse the editor
 			EUMSSI.EventManager.on("leftside", this._getWordCloud.bind(this));
+
+			this.$tabs.on("tabsactivate.genericwordcloudwidget", this._tabChange.bind(this) );
 		},
 
-		_onWordCloudSelectChangeWord: function(event, data){
-			if(this.field != data.item.value) {
-				this._onSelectKey(data.item.value);
+		_onWordCloudSelectChangeWord: function(event, value){
+			if(this.field != value) {
+				this._onSelectKey(value);
 			}
+		},
+
+		onShowRelations: function(event, value){
+			this._onSelectKey(value);
 		},
 
 		afterRequest: function () {
@@ -31,9 +38,6 @@
 
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
 				this._getWordCloud();
-			} else {
-				this.$tabs.off("tabsactivate.genericwordcloudwidget");
-				this.$tabs.on("tabsactivate.genericwordcloudwidget", this._tabChange.bind(this) );
 			}
 		},
 
@@ -44,7 +48,6 @@
 		_tabChange: function(){
 			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this.$tabs.off("tabsactivate.genericwordcloudwidget");
 				this._getWordCloud();
 			}
 		},

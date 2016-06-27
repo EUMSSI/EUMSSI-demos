@@ -174,17 +174,20 @@
 				}).then(this._renderSendToEditorBtn.bind(this, $el, tweetId));
 			}
 		},
-
-
+		
 		_renderSendToEditorBtn : function($element, tweetId){
 			setTimeout(function($element, tweetId){
-				var iframeContentSize = $element.find("iframe").contents().find("body").html().length;
-				if(!EUMSSI.demoMode && CKEDITOR && iframeContentSize >= 1 ){
-					var $sendToEditor = $('<div class="tweet-to-editor" title="Write tweet on text editor">')
-						.html('<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor');
-					$element.append($sendToEditor);
-					$sendToEditor.on("click", this._sendToEditor.bind(this, tweetId));
-				}
+				// if($element.find("iframe").length === 0) {
+				// 	this._renderSendToEditorBtn($element, tweetId);
+				// }else{
+					var iframeContentSize = $element.find("iframe").contents().find("body").html().length;
+					if (!EUMSSI.demoMode && CKEDITOR && iframeContentSize >= 1) {
+						var $sendToEditor = $('<div class="tweet-to-editor" title="Write tweet on text editor">')
+							.html('<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor');
+						$element.append($sendToEditor);
+						$sendToEditor.on("click", this._sendToEditor.bind(this, tweetId));
+					}
+				// }
 			}.bind(this, $element, tweetId),300);
 		},
 

@@ -353,6 +353,19 @@ img.logo {
 .result-panel-content .icon-play-segment:hover {
   background-image: url(../images/icon-play-32-hover.png);
 }
+.result-panel-content .icon-play-ocr {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  margin-top: -2px;
+  cursor: pointer;
+  background-image: url(../images/ocr.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
 .result-panel-content .icon-link {
   width: 22px;
   height: 22px;

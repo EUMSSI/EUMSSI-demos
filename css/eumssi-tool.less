@@ -491,7 +491,83 @@ body {
 		vertical-align: middle;
 	}
 }
+.result-to-editor-container{
+	position: relative;
+	height: 35px;
+	margin-top: 5px;
+	.result-to-editor {
+		position: absolute;
+		width: 100px;
+		right: 20px;
+		height: 31px;
+		line-height: 30px;
+		z-index: 1;
+		background: none;
+		cursor: pointer;
+		border: 1px solid grey;
+		border-radius: 3px;
+		font-weight: bold;
+		&:hover {
+			color: whitesmoke;
+			background-color: grey;
+		}
+		& > * {
+			display: inline-block !important;
+			vertical-align: middle;
+		}
+	}
+}
+.graph-to-editor-container{
+	float: right;
+	.graph-to-editor {
+		width: 100px;
+		height: 31px;
+		line-height: 30px;
+		z-index: 1;
+		background: none;
+		cursor: pointer;
+		border: 1px solid grey;
+		border-radius: 3px;
+		font-weight: bold;
+		&:hover {
+			color: whitesmoke;
+			background-color: grey;
+		}
+		& > * {
+			display: inline-block !important;
+			vertical-align: middle;
+		}
+		.ui-icon {
+			background-image:url("../lib/jquery/images/ui-icons_FF4900_256x240.png") !important;
+		}
+	}
+}
 
+.map-to-editor-container{
+	float: right;
+	.map-to-editor {
+		width: 100px;
+		height: 31px;
+		line-height: 30px;
+		z-index: 1;
+		background: none;
+		cursor: pointer;
+		border: 1px solid grey;
+		border-radius: 3px;
+		font-weight: bold;
+		&:hover {
+			color: whitesmoke;
+			background-color: grey;
+		}
+		& > * {
+			display: inline-block !important;
+			vertical-align: middle;
+		}
+		.ui-icon {
+			background-image:url("../lib/jquery/images/ui-icons_FF4900_256x240.png") !important;
+		}
+	}
+}
 // **************************************************************** //
 /* ************************ DASHBOARD LAYOUT ************************ */
 
@@ -821,7 +897,10 @@ body{
   }
 }
 
+.cke_dialog.cke_ltr.cke_single_page,.cke_dialog.cke_browser_gecko.cke_ltr.cke_single_page, .cke_dialog_background_cover{
+	display: none;
+}
 
-.cke_dialog.cke_browser_gecko.cke_ltr.cke_single_page, .cke_dialog_background_cover{
+canvas{
 	display: none;
 }

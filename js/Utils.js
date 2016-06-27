@@ -124,7 +124,7 @@ UTIL.getWikipediaImages = function(facetes){
  * @param {String} facetName - name of the item
  * @private
  */
-UTIL.openPeopleActionsMenu = function(facetName){
+UTIL.openPeopleActionsMenu = function(facetName, ev){
 	var $menu = $('<ul>');
 	$menu.append('<div class="ui-widget-header">'+facetName.replace(/_/g,"&nbsp;")+'</div>');
 	if(EUMSSI.FilterManager.checkFilterByName(EUMSSI.CONF.PERSON_FIELD_NAME)){
@@ -135,6 +135,7 @@ UTIL.openPeopleActionsMenu = function(facetName){
 	}
 	$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
 	$menu.append('<li class="open-dbpedia"><span class="ui-icon ui-icon-newwin"></span>Open DBpedia page</li>');
+	$menu.append('<li class="people-to-editor"><span class="ui-icon ui-icon-copy"></span>To editor</li>');
 
 	function addPersonFilter(facetName){
 		var fq = EUMSSI.CONF.PERSON_FIELD_NAME + ':("' + facetName + '")';
@@ -146,10 +147,16 @@ UTIL.openPeopleActionsMenu = function(facetName){
 		this.doRequest();
 	}
 
+	function peopleToEditor(img){
+		var oEditor = CKEDITOR.instances["richeditor-placeholder"];
+		oEditor.insertHtml(img.html());
+	}
+
 	$menu.on("click", ".open-wikipedia", UTIL.openNewPage.bind(this, "http://wikipedia.org/wiki/"+facetName));
 	$menu.on("click", ".open-dbpedia", UTIL.openNewPage.bind(this, "http://dbpedia.org/resource/"+facetName));
 	$menu.on("click", ".filter", addPersonFilter.bind(this,facetName));
 	$menu.on("click", ".filter-clear", cleanPersonFilter.bind(this));
+	$menu.on("click", ".people-to-editor", peopleToEditor.bind(this, $(ev.currentTarget)));
 
 	EUMSSI.UTIL.showContextMenu($menu);
 };

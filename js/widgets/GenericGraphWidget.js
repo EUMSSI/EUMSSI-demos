@@ -8,29 +8,34 @@
 			this.graphSize = 200;
 			this.storyTelling = 10;
 			this.field = EUMSSI.CONF.CLOUD_FIELD_NAME;
-                        this.fieldTo = EUMSSI.CONF.CLOUD_FIELD_NAME;
+            this.fieldTo = EUMSSI.CONF.CLOUD_FIELD_NAME;
 			this.tf = [];
 			this.pivots = "";
 			this.maxCount =0;
 
 			EUMSSI.EventManager.on("graphselectchange", this._onWordCloudSelectChangeGraph.bind(this));
+			EUMSSI.EventManager.on("hideRelations", this._onHideRelations.bind(this));
 
 			//Refresh the graphic when expand collapse the editor
 			EUMSSI.EventManager.on("leftside", this._reloadGraph.bind(this));
 		},
 
-		_onWordCloudSelectChangeGraph: function(event, data){
-			console.log("Selected: " + data.item.value);
-			if(this.field != data.item.value) {
-				this._onSelectKey(data.item.value);
+		_onWordCloudSelectChangeGraph: function(event, value){
+			if(this.field != value) {
+				this._onSelectKey(value);
 			}
+			$("#selectedD3Node1").hide();
+		},
+		
+		_onHideRelations: function(event, value){
+			this._onSelectKey(value);
 			$("#selectedD3Node1").hide();
 		},
 
 		afterRequest: function () {
 			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
 
-			if(this.$tabs.tabs( "option", "active") === tabPosition && $(this.target).is(":visible")) {
+			if(this.$tabs.tabs( "option", "active") === tabPosition ) {
 				this._getGraph();
 			} else {
 				this.$tabs.off("tabsactivate.genericgraphwidget");

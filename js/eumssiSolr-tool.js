@@ -404,22 +404,23 @@ window.EUMSSI = {
 		//</editor-fold>
 
 
-
 		//<editor-fold desc="toogleWordGraph">
-		var selectedData;
+		var selectedValue = "meta.source.keywords";
 		$("#showRelations").click(function(event) {
 			var target = $(event.currentTarget);
 			if(!target.is(":checked")) {
 				$(".wordCloud").show();
 				$(".wordGraph").hide();
-				if(selectedData){
-					EUMSSI.EventManager.trigger("wordselectchange", selectedData);
+				if(selectedValue){
+					EUMSSI.EventManager.trigger("wordselectchange", selectedValue);
+					// EUMSSI.EventManager.trigger("hideRelations", selectedValue);
 				}
 			}else{
 				$(".wordCloud").hide();
 				$(".wordGraph").show();
-				if(selectedData){
-					EUMSSI.EventManager.trigger("graphselectchange", selectedData);
+				if(selectedValue) {
+					EUMSSI.EventManager.trigger("graphselectchange", selectedValue);
+					// EUMSSI.EventManager.trigger("showRelations", selectedValue);
 				}
 			}
 		});
@@ -427,11 +428,11 @@ window.EUMSSI = {
 		$(".genericwordcloud-key-selector").selectmenu({
 			width: 200,
 			select: function( event, data ) {
-				selectedData = data;
+				selectedValue = data.item.value;
 				if(!$("#showRelations").is(":checked")) {
-					EUMSSI.EventManager.trigger("wordselectchange", selectedData);
+					EUMSSI.EventManager.trigger("wordselectchange", selectedValue);
 				}else{
-					EUMSSI.EventManager.trigger("graphselectchange", selectedData);
+					EUMSSI.EventManager.trigger("graphselectchange", selectedValue);
 				}
 			}.bind(this)
 		});
@@ -480,6 +481,36 @@ window.EUMSSI = {
 			loadEmbed();
 		}, 2000);
 
-	});
+		$(".graph-to-editor").click(function(ev){
+			var svg;
+			if($(".wordCloud").is(":visible")){
+				svg = $(".wordCloud .genericwordcloud");
+			}else{
+				svg = $(".wordGraph");
+			}
+			canvg(document.getElementById('canvas'),  svg.html());
+			_mapToEditor();
+		});
 
+		function _mapToEditor(){
+			var oEditor = CKEDITOR.instances["richeditor-placeholder"];
+			var blobUrl = URL.createObjectURL(dataURItoBlob($("canvas")[0].toDataURL()));
+			oEditor.insertHtml("<img src='" + blobUrl + "'>" );
+		}
+
+		function dataURItoBlob(dataURI) {
+			var byteString = atob(dataURI.split(',')[1]);
+
+			// write the bytes of the string to an ArrayBuffer
+			var ab = new ArrayBuffer(byteString.length);
+			var ia = new Uint8Array(ab);
+			for (var i = 0; i < byteString.length; i++) {
+				ia[i] = byteString.charCodeAt(i);
+			}
+
+			// write the ArrayBuffer to a blob, and you're done
+			var bb = new Blob([ab]);
+			return bb;
+		}
+	});
 })(jQuery);

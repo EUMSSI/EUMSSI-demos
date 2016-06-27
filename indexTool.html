@@ -95,6 +95,11 @@
 			$('#templates-container').append($(document.querySelector('link[rel="import"]').import).find("script"));
 		}
 	</script>
+
+	<script type="text/javascript" src="http://gabelerner.github.io/canvg/rgbcolor.js"></script>
+	<script type="text/javascript" src="http://gabelerner.github.io/canvg/StackBlur.js"></script>
+	<script type="text/javascript" src="http://gabelerner.github.io/canvg/canvg.js"></script>
+
 	<link rel="import" href="templates/templates.html" onload="onImport(event)" >
 
 </head>
@@ -234,6 +239,11 @@
 								    <option value="009">Oceania</option>
 							    </select>
 							    <a class="mapChart-export-btn" download="chart.png" title="Download map as image">Export</a>
+								<div class="map-to-editor-container">
+									<div class="map-to-editor" title="Embed m on text editor">
+										<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor
+									</div>
+								</div>
 							    <img class="mapChart-loading" style="display:none;" src="images/circular-loader.gif" title="Loading Map...">
 						    </div>
 						    <!--<div class="mapChart-chart"></div>-->
@@ -282,6 +292,12 @@
 
 						<input id="showRelations" type="checkbox"/>
 						<label for="showRelations">Show relations</label>
+
+						<div class="graph-to-editor-container">
+							<div class="graph-to-editor" title="Embed graph on text editor">
+								<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor
+							</div>
+						</div>
 					</div>
 
 					<!--Word view-->
@@ -289,7 +305,9 @@
 
 					<!--Graph view-->
 					<div id="my-genericgraph" class="wordGraph widget-placeholder tab-content" data-widget="word-graph" style="display:none"></div>
-			    </div>
+
+					<canvas id="canvas"></canvas>
+				</div>
 
 			    <div id="externalframe" data-tabpos="8">
 				    <div class="externalFrame widget-placeholder tab-content expanded" data-widget="external-frame">

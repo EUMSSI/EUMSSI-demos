@@ -201,10 +201,16 @@
 					var highlighting = segmentsResponse.highlighting[segmentDoc._id];
 					var $li = $("<li>");
 					var $playSegment = $('<span class="icon-play-segment">').attr("title","Play Segment");
+					var textField = "meta.extracted.audio_transcript";
 					$li.append($playSegment);
+					if(segmentDoc.segmentType === "OcrSegment"){
+						$li.append($('<span class="icon-play-ocr">'));
+						textField = "meta.extracted.video_ocr.best";
+					}
+
 					$li.append(new Date(segmentDoc.beginOffset).toLocaleTimeString(undefined,{timeZone:"UTC"})
 						+ " - " + new Date(segmentDoc.endOffset).toLocaleTimeString(undefined,{timeZone:"UTC"}));
-					$li.append(" <i>..."+ this._bindOriginalText(segmentDoc["meta.extracted.audio_transcript"], highlighting["meta.extracted.audio_transcript"])+"...<i>");
+					$li.append(" <i>..."+ this._bindOriginalText(segmentDoc[textField], highlighting[textField])+"...<i>");
 					html.append($li);
 
 					$playSegment.click(this._onClickPlaySegment.bind(this,segmentDoc));
@@ -298,7 +304,11 @@
 		},
 
 		hasHighlighting : function(doc, key){
-			return this.manager.response.highlighting[doc._id] && this.manager.response.highlighting[doc._id][key];
+			if(this.manager.response.highlighting){
+				return this.manager.response.highlighting[doc._id] && this.manager.response.highlighting[doc._id][key];
+			}else{
+				return false;
+			}
 		},
 
 		//popup with the whole information
@@ -374,8 +384,8 @@
 								value = this._generateHTMLLinks(value);
 							}
 
-							this._renderKey($key, key, this.manager.response.highlighting[doc._id], doc, $value, $content);
-						break;
+							this._renderKey($key, key, this.manager.response.highlighting ? this.manager.response.highlighting[doc._id] : "", doc, $value, $content);
+							break;
 					}
 				}
 			}
@@ -661,8 +671,10 @@
 		_renderSendToEditorBtn : function($element, videoId){
 			setTimeout(function($element, videoId){
 				if(!EUMSSI.demoMode && CKEDITOR){
-					var $sendToEditor = $('<div class="tweet-to-editor" title="Embed video on text editor">')
-						.html('<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor');
+					var $sendToEditor = $('<div class="result-to-editor-container">')
+						.append($('<div class="result-to-editor" title="Embed video on text editor">')
+						.html('<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor'))
+						 ;
 					$element.append($sendToEditor);
 					$sendToEditor.on("click", this._sendToEditor.bind(this, videoId));
 				}
