@@ -682,29 +682,23 @@
 		},
 
 		_sendToEditor: function(videoId){
-			//var url = encodeURIComponent(videoId);
-			//var finishLoading = function(){
-			//	console.log("ASD FINISH");
-			//};
-			//$.ajax({
-			//	//url    : 'http://ckeditor.iframe.ly/api/oembed?url=' + url + '&callback=CKEDITOR',
-			//	url    : 'http://ckeditor.iframe.ly/api/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fv%2FOODF4Xm2LUw%3Fautoplay%3D1&callback=CKEDITOR',
-			//	callback: finishLoading,
-			//	success: function(response){
-			//		console.log("ASD");
-			//		var oEditor = CKEDITOR.instances["richeditor-placeholder"];
-			//		oEditor.insertHtml( response.html + "<p>&nbsp;</p>" );
-			//	}.bind(this)
-			//});
-
-			$(".cke_button__embed").click();
-			$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
-			setTimeout(function(){
-				$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
-				$("input.cke_dialog_ui_input_text").val(videoId);
-				$(".cke_dialog_ui_hbox_first a span").click();
-				$(".cke_dialog_background_cover").remove();
-			}, 100);
+			$.ajax({
+				type: 'HEAD',
+				url: videoId,
+				success: function() {
+					$(".cke_button__embed").click();
+					$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
+					setTimeout(function(){
+						$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
+						$("input.cke_dialog_ui_input_text").val(videoId);
+						$(".cke_dialog_ui_hbox_first a span").click();
+						$(".cke_dialog_background_cover").remove();
+					}, 100);
+				},
+				error: function() {
+					alert("The video does not exist");
+				}
+			});
 		}
 	});
 
