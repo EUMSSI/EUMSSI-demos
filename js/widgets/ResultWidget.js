@@ -113,7 +113,7 @@
 					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [youtubeID, doc]);
 				});
 
-				this._renderSendToEditorBtn($output, doc['meta.source.mediaurl']);
+				this._renderSendToEditorBtn($output, doc['meta.source.mediaurl'], true);
 			}
 
 			//Link Video
@@ -124,7 +124,7 @@
 					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, doc]);
 				});
 
-				this._renderSendToEditorBtn($output, doc['meta.source.mediaurl']);
+				this._renderSendToEditorBtn($output, doc['meta.source.mediaurl'], false);
 			}
 
 			//Segments
@@ -668,7 +668,7 @@
 			}
 		},
 
-		_renderSendToEditorBtn : function($element, videoId){
+		_renderSendToEditorBtn : function($element, videoId, isYoutube){
 			setTimeout(function($element, videoId){
 				if(!EUMSSI.demoMode && CKEDITOR){
 					var $sendToEditor = $('<div class="result-to-editor-container">')
@@ -676,29 +676,38 @@
 						.html('<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor'))
 						 ;
 					$element.append($sendToEditor);
-					$sendToEditor.on("click", this._sendToEditor.bind(this, videoId));
+					$sendToEditor.on("click", this._sendToEditor.bind(this, videoId,isYoutube));
 				}
 			}.bind(this, $element, videoId),300);
 		},
 
-		_sendToEditor: function(videoId){
-			$.ajax({
-				type: 'HEAD',
-				url: videoId,
-				success: function() {
-					$(".cke_button__embed").click();
-					$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
-					setTimeout(function(){
-						$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
-						$("input.cke_dialog_ui_input_text").val(videoId);
-						$(".cke_dialog_ui_hbox_first a span").click();
-						$(".cke_dialog_background_cover").remove();
-					}, 100);
-				},
-				error: function() {
-					alert("The video does not exist");
-				}
-			});
+		_sendToEditor: function(videoId, isYoutube){
+			var self = this;
+			if(isYoutube){
+				this._embedVideo(videoId);
+			}else {
+				$.ajax({
+					type: 'HEAD',
+					url: videoId,
+					success: function() {
+						self._embedVideo(videoId);
+					},
+					error: function() {
+						alert("The video does not exist");
+					}
+				});
+			}
+		},
+
+		_embedVideo: function(videoId){
+			$(".cke_button__embed").click();
+			$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
+			setTimeout(function(){
+				$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
+				$("input.cke_dialog_ui_input_text").val(videoId);
+				$(".cke_dialog_ui_hbox_first a span").click();
+				$(".cke_dialog_background_cover").remove();
+			}, 100);
 		}
 	});
 
