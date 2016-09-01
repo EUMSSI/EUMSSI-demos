@@ -43,7 +43,6 @@
 				errorHandler = errorHandler || function(jqXHR, textStatus, errorThrown){
 					self.handleError(textStatus + ', ' + errorThrown);
 				};
-
 				if (this.proxyUrl) {
 					options.url = this.proxyUrl;
 					options.data = {query: string};
@@ -58,6 +57,38 @@
 
 				this._showLoader();
 				jQuery.ajax(options).done(handler).fail(errorHandler).always(this._hideLoader.bind(this));
+			},
+
+			_generatePostOptions: function(queryString, servlet) {
+				var options = {dataType: 'json'};
+				var mapping = queryString.split("&").map(function(item) {
+					var chunk = item.split("=");
+					var result = {};
+					result[chunk[0]] = chunk[1];
+					return result;
+				});
+				var obj = mapping.reduce(function(a, b) {
+					var key = Object.keys(b)[0];
+					if (a[key]) {
+						if (!Array.isArray(a[key])) {
+							var aux = a[key];
+							a[key] = [];
+							a[key].push(aux, b[key]);
+						} else {
+							a[key].push(b[key]);
+						}
+//						a[key] = a[key] + "," + b[key];
+					} else {
+						a[key] = b[key];
+					}
+					return a;
+				});
+				obj.wt = "json";
+				obj.q = decodeURIComponent(obj.q);
+				options.data = obj;
+				options.url = this.solrUrl + servlet;
+				options.method = 'POST';
+				return options;
 			},
 
 			/**
@@ -216,16 +247,12 @@
 			 * @returns {Deferred}
 			 */
 			getTextFilterAnalyze : function(text){
-				var url = this.uimaServiceUrl + 'analyze' +'?';
+				var url = this.uimaServiceUrl + 'analyze';
 				var params = {
 					text: text || ""
 				};
-				return $.ajax({ url: url + $.param(params) });
+				return $.ajax({ url: url, method: "POST", data: params});
 			}
-
-
-			//</editor-fold>
-
 		});
 
 

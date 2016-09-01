@@ -1,4 +1,4 @@
-/*global jQuery, $, _, AjaxSolr, EUMSSI*/
+/*global jQuery, JSON, AjaxSolr, EUMSSI, _*/
 (function ($) {
 
 	AjaxSolr.ResultWidget = AjaxSolr.AbstractWidget.extend({
@@ -9,13 +9,19 @@
 		excludedFields: [],
 
 		addDynamicAttribute : function(attrName,attrLabel,render) {
-			var dynamicAttr = {
-				key : attrName,
-				label : attrLabel,
-				render : render ? true : false
+			this.dynamicAttributes[attrName] = {
+				key: attrName,
+				label: attrLabel,
+				render: typeof render === "boolean" ? render : false
 			};
-			this.dynamicAttributes[attrName] = dynamicAttr;
 		},
+
+		addDynamicAttributes : function(arrayAttr) {
+			arrayAttr.forEach(function(attr) {
+				this.addDynamicAttribute(attr.key, attr.label, attr.render);
+			}.bind(this));
+		},
+
 		enableDynamicAttributeRender: function(attrName){
 			this.dynamicAttributes[attrName].render = true;
 		},
@@ -63,6 +69,25 @@
 			this.$target.html($("<div>").addClass("ui-error-text").text(message));
 		},
 
+		_generateShowDetailSection: function(doc) {
+			var $showDetailContainer = this._createElement("div", {
+				"class": "info-block collapsed"
+			});
+			var $infoLabel = this._createInfoLabel();
+			var $spanValue = this._createInfoValue();
+			var $triangle = this._createElement("span", {
+				"class": "ui-icon ui-icon-triangle-1-e"
+			});
+			$infoLabel.text("Show detail");
+			$infoLabel.append($triangle);
+			$spanValue.hide();
+			$showDetailContainer.append($infoLabel);
+			$showDetailContainer.append($spanValue);
+			$showDetailContainer.find(".info-label").click(this._expandShowDetail.bind(this, doc));
+			return $showDetailContainer;
+
+		},
+
 		/**
 		 * Generate a HTML for the given document DATA
 		 * @param {Object} doc - data of the document
@@ -86,8 +111,6 @@
 			}else{
 				text = this._sliceTextMore(text,300);
 			}
-
-
 			// Render HTML Code
 			var $output = $('<div class="result-element">');
 
@@ -98,6 +121,7 @@
 			if (date){
 				$output.append($("<p>").addClass("date").html(new Date(date).toLocaleDateString()));
 			}
+
 
 			//Content
 			$output.append($("<p>").html(text));
@@ -154,7 +178,75 @@
 				$output.addClass("result-element-video");
 			}
 
+			var $showDetailContainer = this._generateShowDetailSection(doc);
+			$output.append($showDetailContainer);
 			return $output;
+		},
+
+		_getNotAllowedKeys: function() {
+			return [
+				"_id",
+				"_ts",
+				"_version_",
+				"contentSearch",
+				"meta.extracted.audio_transcript",
+				"meta.extracted.video_persons.amalia",
+				"meta.extracted.video_persons.thumbnails",
+				"meta.source.datePublished",
+				"meta.source.headline",
+				"meta.source.duration",
+				"meta.source.mediaurl",
+				"meta.source.teaser",
+				"meta.source.text",
+				"meta.source.type",
+				"meta.extracted.video_ocr.best",
+				"ns",
+				"source",
+			    "meta.extracted.text_polarity.discrete",
+			    "meta.extracted.text_nerl.dbpedia.Country",
+			    "meta.extracted.text_nerl.ner.PERSON",
+				"meta.extracted.text_nerl.dbpedia.LOCATION",
+				"meta.extracted.video_persons.thumbnails"
+			];
+		},
+		deleteKeys: function(keysArray) {
+			var keys = this._getNotAllowedKeys();
+			keys.forEach(function(key) {
+				var index = keysArray.indexOf(key);
+				if (index >= 0) {
+					keysArray.splice(index, 1);
+				}
+			});
+			return keysArray;
+		},
+
+		_expandShowDetail: function(doc, event) {
+			var $span = $(event.currentTarget);
+			var $ico = $span.find(".ui-icon");
+			var $nextContainer = $span.next(".info-value");
+			var closeClassName = "ui-icon ui-icon-triangle-1-e";
+			var openClassName = "ui-icon ui-icon-triangle-1-s";
+			if (!$span.data("load")) {
+				var keysArray = Object.keys(doc);
+				keysArray.sort();
+				keysArray = this.deleteKeys(keysArray);
+				var $content = this._renderShowDetail(keysArray, doc);
+				$nextContainer.append($content);
+				$span.data("load", true);
+			}
+
+			if ($ico.hasClass(closeClassName)) {
+				$ico.removeClass(closeClassName).addClass(openClassName);
+				$nextContainer.show();
+			} else {
+				$nextContainer.hide();
+				$ico.removeClass(openClassName).addClass(closeClassName);
+			}
+		},
+
+		_createElement: function(tag, options) {
+			options = options || {};
+			return $('<' + tag + '>', options);
 		},
 
 		_expandSegments: function(parentId, $el, event){
@@ -245,7 +337,7 @@
 		},
 
 		_renderTitle: function(doc){
-			var $header =  $("<span class='links'>"),
+			var $header =  $("<span class=''>"),
 				$title = $("<h2>"),
 				text = "";
 			$header.html(this.getValueByKey(doc, 'meta.source.headline'));
@@ -280,7 +372,7 @@
 
 			$header.attr("id","links_"+doc._id);
 			$header.click(function(){
-				this._showInfo(doc);
+//				this._showInfo(doc);
 			}.bind(this));
 			$title.append( $header );
 
@@ -331,6 +423,27 @@
 			$content.dialog("option", "position", {my:"center", at:"center", of:window});
 		},
 
+		_isSourceKey: function(doc, text, key) {
+			var $key = this._createInfoLabel();
+			var $value = this._createInfoValue();
+			var url = doc["meta.source.websiteUrl"];
+			var insert = text;
+			if (url) {
+				insert = $("<a>", {
+					href: url,
+					target: "_blank"
+				}).text(text);
+			}
+			$key.html(this._getSimpleKey(key));
+			$value.html(insert);
+			var $p = $("<p>");
+			$p.append([
+				$key,
+				$value
+			]);
+			return $p;
+		},
+
 		_renderKeyArray : function(keysArray, doc, moreSize) {
 			var $content = $("<div>");
 			moreSize = moreSize || 1000;
@@ -343,6 +456,10 @@
 					var $key = $('<span>').addClass("info-label");
 
 					switch(key){
+						case "source" :
+							var $html = this._isSourceKey(doc, text, key);
+							$content.append($html);
+						break;
 						case "meta.extracted.text_nerl.dbpedia.PERSON" :
 							value = this._personCustomRender(text, $content);
 							$value.addClass("person-data");
@@ -411,6 +528,80 @@
 			}
 
 			return $content;
+		},
+
+
+		_parseContent: function(doc, key, $content) {
+			var docValue = doc[key];
+			var text = docValue.toString();
+			var $value = this._createInfoValue();
+			var $key = this._createInfoLabel();
+			var value;
+			switch (key) {
+				case "meta.extracted.text_nerl.dbpedia.PERSON":
+					value = this._personCustomRender(text, $content);
+					$value.addClass("person-data");
+					$value.html(value);
+					break;
+				case "meta.extracted.text_nerl.dbpedia.LOCATION" :
+					value = this._locationCustomRender(text, $content);
+					$value.html(value);
+					break;
+				case "meta.extracted.video_persons.thumbnails" :
+					value = this._personThumbnailsCustomRender(docValue);
+					$value.html(value);
+					break;
+				default :
+					var highlighting = this.manager.response.highlighting
+						? this.manager.response.highlighting[doc._id]
+						: "";
+					$value = this._createValueSimpleKey(key, highlighting, doc);
+					break;
+			}
+
+			$key.html(this._getSimpleKey(key));
+			var $p = $('<p>');
+			$p.append($key).append($value);
+			$content.append($p);
+			return $content;
+		},
+
+
+		_renderShowDetail : function(keysArray, doc) {
+			var $content = this._createElement("div");
+			for(var i = 0 ; i < keysArray.length ; i++){
+				var key = keysArray[i];
+				if(doc[key]) {
+					var $html = this._parseContent(doc, key, $content);
+					$content.append($html);
+				}
+			}
+			return $content;
+		},
+
+		_createValueSimpleKey: function (highlightingKey, highlighting, doc) {
+			var $value = this._createInfoValue();
+			//check if it has highlighting
+			var highText = highlighting[highlightingKey] ? highlighting[highlightingKey].toString() : "";
+			var reg = /(<[^>]*em>)/ig;
+			if (highText && highText.replace(reg, "") != doc[highlightingKey].toString()) {
+				$value.html(this._bindOriginalText(doc[highlightingKey].toString(), highlighting[highlightingKey].toString()));
+			} else {
+				$value.html(doc[highlightingKey].toString());
+			}
+			return $value;
+		},
+
+		_createInfoLabel: function() {
+			return this._createElement("span", {
+				"class": "info-label"
+			});
+		},
+
+		_createInfoValue: function() {
+			return this._createElement("span", {
+				"class": "info-value"
+			});
 		},
 
 		_renderKey: function ($key, highlightingKey, highlighting, doc, $value, $content) {
@@ -514,8 +705,9 @@
 		},
 
 		_replaceOriginalForHighlighting : function(originalText) {
-			if (EUMSSI.FilterManager.getFilters("GENERAL_SEARCH")[0].query.split(":")[1] != "*") {
-				var re = new RegExp(EUMSSI.FilterManager.getFilters("GENERAL_SEARCH")[0].query.split(":")[1], "ig");
+			var filters = EUMSSI.FilterManager.getFilters("GENERAL_SEARCH");
+			if (filters.length > 0 && filters[0].query.split(":")[1] != "*") {
+				var re = new RegExp(filters[0].query.split(":")[1], "ig");
 				return originalText.replace(re, function (match) {
 					return "<em>" + match + "</em>";
 				});
@@ -594,9 +786,10 @@
 			$content.find(".info-value.person-data").html($value);
 		},
 
+
+
 		init: function () {
 			this.$target = $(this.target);
-
 			$(document).on('click', 'span.more', function () {
 				var $this = $(this),
 					$hiddenText = $this.parent().find('.ui-slicetext-hidepart'),
@@ -649,8 +842,53 @@
 
 				return false;
 			});
-
+			this.addDynamicAttributes(this._getDynamicAttrs());
 			this.excludedFields = ["meta.source.headline", "meta.source.text", "meta.source.teaser", "contentSearch"];
+		},
+
+		_getDynamicAttrs: function() {
+			return [
+				{
+					key: "meta.extracted.audio_transcript",
+					label: "Audio Transcript",
+					showInResultCheck: true
+				},
+				{
+					key: "meta.extracted.video_ocr.best",
+					label: "Caption in video",
+					showInResultCheck: true
+				},
+				{
+					key: "meta.extracted.text_nerl.dbpedia.PERSON",
+					label: "Person",
+					showInResultCheck: true
+				},
+				{
+					key: "meta.extracted.text_nerl.dbpedia.LOCATION",
+					label: "Location",
+					showInResultCheck: true
+				},
+				{
+					key: "meta.extracted.video_persons.thumbnails",
+					label: "Persons in video",
+					showInResultCheck: true
+				},
+				{
+					key: "meta.extracted.text_nerl.ner.PERSON",
+					label: "Person",
+					showInResultCheck: false
+				},
+				{
+					key: "meta.extracted.text_nerl.ner.LOCATION",
+					label: "Location",
+					showInResultCheck: false
+				},
+				{
+					key: "meta.extracted.text_nerl.ner.LOCATION",
+					label: "Location",
+					showInResultCheck: false
+				}
+			];
 		},
 
 		_initDragables: function(){

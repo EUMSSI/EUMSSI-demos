@@ -46,12 +46,8 @@
 		},
 
 		_getGraph: function(filter){
-			var language = $(".localeSelector").val();
 			$("#selectedD3Node").hide();
-
-			if (!language)
-				language = "all";
-			console.log("Filter123: " + language);
+			var language = "all";
 			var filterValue = filter;
 			if (!filter) {
 				filterValue="*";
@@ -69,24 +65,6 @@
 				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/" + language + "/" + this.field  + "/" + filterValue)
 			).done(this._onGetWordGraph.bind(this));
 		},
-		
-//		_getGraph: function(filter){
-//			var filterValue = filter;
-//			if (!filter) {
-//				filterValue="*";
-//			}
-//			
-//			var q = EUMSSI.Manager.getLastQuery() || "*";
-//			
-//			//Loading
-//			$(this.target).addClass("ui-loading-modal");
-//			$(this.target).empty();
-//			$.when(
-//				$.ajax( this.apiURL + "getSemanticCloud/json/"+this.wordNumber+"/" + q + "/all/" + this.field  + "/" + filterValue),
-//				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/all/" + this.field  + "/" + filterValue)
-//			).done(this._onGetWordGraph.bind(this));
-//		},
-//		
 		
 		_getStoryTelling: function(a1, a2){
 			
@@ -370,13 +348,6 @@
 		clearFilter: function (silent) {
 			EUMSSI.FilterManager.removeFilterByWidget(this.id, silent);
 		}
-
-		//_onWordClick: function(d){
-		//	var fq = "GENERAL_SEARCH:" + d.text;
-		//	EUMSSI.FilterManager.removeFilterByName("GENERAL_SEARCH");
-		//	EUMSSI.FilterManager.addFilter("GENERAL_SEARCH", fq, this.id);
-		//	EUMSSI.Manager.doRequest(0);
-		//}
 
 	});
 

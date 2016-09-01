@@ -48,7 +48,6 @@
 			if(response.data.kea){
 				this._extractKeaItems(response.data.kea);
 			}
-			EUMSSI.EventManager.trigger("OpenFilter");
 		},
 
 		/**

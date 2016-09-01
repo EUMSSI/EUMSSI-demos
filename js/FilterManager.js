@@ -12,6 +12,13 @@ function FilterManager(){
 	this._filters = [];
 }
 
+FilterManager.NAMES = {};
+FilterManager.NAMES.SIMILARITY = "SIMILARITY";
+FilterManager.NAMES.LANGUAGE = "meta.source.inLanguage";
+FilterManager.NAMES.GENERAL_SEARCH = "GENERAL_SEARCH";
+FilterManager.NAMES.GENERAL_SEARCH_LABEL = "GENERAL SEARCH";
+FilterManager.NAMES.CONTENT_SEARCH = "contentSearch";
+
 _.extend(FilterManager.prototype, {
 
 	//<editor-fold desc="FILTERS API">
@@ -152,17 +159,31 @@ _.extend(FilterManager.prototype, {
 		return this.checkFilter(null,widgetId,null);
 	},
 
+	isSimilarityFilter: function(filterObj) {
+		"use strict";
+		return filterObj.filterName === FilterManager.NAMES.SIMILARITY;
+	},
+
+	replaceFilterHeader: function(filterObj, needle) {
+		"use strict";
+		return filterObj.query.replace(needle + ":", "");
+	},
+
 	/**
 	 * Generate a query String with the current filters
 	 * @private
 	 */
 	getQueryString: function(){
+		"use strict";
 		var q = "*:*"; // Default query
-		_.each(this._filters,function(filterObj){
-			if(filterObj.filterName == "GENERAL_SEARCH"){
-				q = this._parseGeneralFilter(filterObj.query.replace("GENERAL_SEARCH"+":",""));
+		_.each(this._filters, function(filterObj) {
+			if (filterObj.filterName === FilterManager.NAMES.GENERAL_SEARCH) {
+				q = this._parseGeneralFilter(this.replaceFilterHeader(filterObj, FilterManager.NAMES.GENERAL_SEARCH));
 			}
-		},this);
+			if (this.isSimilarityFilter(filterObj)) {
+				q = this._parseSimilarityFilter(this.replaceFilterHeader(filterObj, FilterManager.NAMES.SIMILARITY));
+			}
+		}, this);
 		return q;
 	},
 
@@ -177,7 +198,8 @@ _.extend(FilterManager.prototype, {
 		_.each(this._filters,function(filterObj){
 			if(filterNames === undefined || (filterNames instanceof Array && filterNames.indexOf(filterObj.filterName) >= 0) ){
 				switch(filterObj.filterName){
-					case "GENERAL_SEARCH" :
+					case FilterManager.NAMES.GENERAL_SEARCH:
+					case FilterManager.NAMES.SIMILARITY:
 						//General search is now a main Query
 						break;
 					default:
@@ -218,7 +240,36 @@ _.extend(FilterManager.prototype, {
 		return searchQueries.join(" OR ");
 	},
 
+	_parseSimilarityFilter: function(value) {
+		"use strict";
+		return this._buildQuerySimilaritySearch(value);
+	},
 
+	_buildQuerySimilaritySearch: function(valorBusqueda) {
+		"use strict";
+		var result = this._escapeSpecialChars(valorBusqueda);
+		return  this._buildTextSearchSimilarity(result);
+	},
+
+	_buildTextSearchSimilarity: function(valorBusqueda) {
+		"use strict";
+		var strResult = "";
+		valorBusqueda = valorBusqueda.replace(/\s+/g, " ");
+		var words = valorBusqueda.trim().split(" ");
+		if (words.length > 250) {
+			words.length = 250;
+		}
+		for (var i = 0; i < words.length; i++) {
+			var word = words[i].trim();
+			strResult += FilterManager.NAMES.CONTENT_SEARCH + ":" + word + " ";
+		}
+
+		if (words.length === 0) {
+			strResult = "*";
+		}
+
+		return strResult;
+	},
 
 	_buildQuerySimpleSearchAssets: function(valorBusqueda) {
 		var fqval = "";
@@ -260,10 +311,11 @@ _.extend(FilterManager.prototype, {
 
 	/**
 	 * Extracheck
-	 * Cuando se utiliza el operador de cercanía, los términos de búsqueda deben ir entre ", pq si no solr interpreta el operador ~
-	 * como si fuera un FuzzyQuery, y si el valor de cercanía es mayor que 1 (que seguramente lo sea, porque de lo contrario no tiene
-	 * mucho sentido), el query a Solr da ERROR de parseo y dice: Minimum similarity for a FuzzyQuery has to be between 0.0f and 1.0f !
-	 * Si el user utiliza el operador ~, comprobar que los términos los ha colocado entre ", si no, añadirlas!!
+	 * Cuando se utiliza el operador de cercanía, los términos de búsqueda deben ir entre ", pq si no solr interpreta
+	 * el operador ~ como si fuera un FuzzyQuery, y si el valor de cercanía es mayor que 1 (que seguramente lo sea,
+	 * porque de lo contrario no tiene mucho sentido), el query a Solr da ERROR de parseo y dice: Minimum similarity
+	 * for a FuzzyQuery has to be between 0.0f and 1.0f ! Si el user utiliza el operador ~, comprobar que los términos
+	 * los ha colocado entre ", si no, añadirlas!!
 	 * @param valorBusqueda
 	 * @returns {*}
 	 * @private

@@ -1,4 +1,4 @@
-/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL */
+/*global jQuery, AjaxSolr, EUMSSI, FilterManager */
 (function ($) {
 
 	/**
@@ -87,16 +87,25 @@
 		setFilter: function (attributeName, value) {
 			//Remove previous Value
 			this.clearFilter(true);
+			EUMSSI.FilterManager.removeFilterByName(FilterManager.NAMES.GENERAL_SEARCH);
 			//Set the current Filter
 			//this.storedValue = attributeName + ":" + AjaxSolr.Parameter.escapeValue(value);
 			this.storedValue = attributeName + ":" + value;
-			EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id);
+			var filterTxt;
+			if (attributeName === FilterManager.NAMES.GENERAL_SEARCH) {
+				filterTxt = FilterManager.NAMES.GENERAL_SEARCH_LABEL + ":" + value;
+			}
+			EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id, filterTxt);
 		},
 
 		/**
 		 * Sets the main Solr query to the empty string.
 		 * @param {Boolean} [silent] true, if don't want to trigger the change event
 		 */
+		clearFilter: function (silent) {
+			EUMSSI.FilterManager.removeFilterByWidget(this.id, silent);
+		},
+
 		clearFilter: function (silent) {
 			EUMSSI.FilterManager.removeFilterByWidget(this.id, silent);
 		},

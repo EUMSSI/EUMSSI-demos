@@ -56,22 +56,14 @@
 		},
 
 		_getGraph: function(filter){
-			var language = $(".localeSelector").val();
 			$("#selectedD3Node1").hide();
 
-			if (!language)
-				language = "all";
-			console.log("Filter123: " + language);
 			var filterValue = filter;
 			if (!filter) {
 				filterValue="*";
 			}			
 			
 			var q = EUMSSI.Manager.getLastQuery() || "*";
-			//var cont = EUMSSI.Manager.getLastQuery();
-			//var lastquery = cont.split(":");
-			//q = lastquery[1]| "*"
-			//Loading
 			$(this.target).addClass("ui-loading-modal");
 			$(this.target).empty();
 
@@ -90,7 +82,7 @@
 				return a.facet < b.facet ? -1 : 1;
 			});
 
-			var q = EUMSSI.Manager.getLastQuery() || "*:*";
+			q = EUMSSI.Manager.getLastQuery() || "*:*";
 			this.pivots = this.field + "," + this.fieldTo;
 			var p_url = "select?q=" + encodeURIComponent(q) + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
 			var filters = EUMSSI.FilterManager.getFilterQueryString([
@@ -114,26 +106,6 @@
 
 
 		},
-
-
-
-//		_getGraph: function(filter){
-//			var filterValue = filter;
-//			if (!filter) {
-//				filterValue="*";
-//			}
-//			
-//			var q = EUMSSI.Manager.getLastQuery() || "*";
-//			
-//			//Loading
-//			$(this.target).addClass("ui-loading-modal");
-//			$(this.target).empty();
-//			$.when(
-//				$.ajax( this.apiURL + "getSemanticCloud/json/"+this.wordNumber+"/" + q + "/all/" + this.field  + "/" + filterValue),
-//				$.ajax( this.apiURL + "getSemanticGraph/json/"+this.graphSize+"/" + q + "/all/" + this.field  + "/" + filterValue)
-//			).done(this._onGetWordGraph.bind(this));
-//		},
-//		
 		
 		_getStoryTelling: function(a1, a2){
 			

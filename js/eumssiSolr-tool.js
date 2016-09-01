@@ -197,7 +197,6 @@ window.EUMSSI = {
 
 		//</editor-fold>
 
-
 		//<editor-fold desc="GLOBAL CONFIGS">
 
 		// Datepicker default Locale
@@ -218,7 +217,6 @@ window.EUMSSI = {
 		});
 
 		//</editor-fold>
-
 
 		//<editor-fold desc="FEEDBACK">
 		function sendFeedback(event){
@@ -402,7 +400,6 @@ window.EUMSSI = {
 		}
 
 		//</editor-fold>
-
 
 		//<editor-fold desc="toogleWordGraph">
 		var selectedValue = "meta.source.keywords";

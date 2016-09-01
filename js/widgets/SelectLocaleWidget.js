@@ -6,34 +6,72 @@
 		start:0,	//Reset the pagination with doRequest on this Widget
 
 		init: function () {
-			var $select,self = this;
 			this.storedValue = "";
-
-			$select = $("<select>").addClass("localeSelector");
-			$select.append($('<option value="" selected="selected">All</option>'));
-			$select.append($('<option value="en">English</option>'));
-			$select.append($('<option value="de">German</option>'));
-			$select.append($('<option value="fr">French</option>'));
-			$select.append($('<option value="es">Spanish</option>'));
-			//$select.append($('<option value="others">Others</option>'));
-
-			$(this.target).append($select);
-
-			// Event - Click Button Search
-			$select.change(function(event){
-				var value = $(event.target).val();
-				if(value){
-					self.setFilter(value);
-				} else {
-					self.clearFilter();
-				}
-				self.doRequest();
-			});
-
-			// BIND event filterChange
+			var $english = this._createCheckbox("English", "en");
+			var $german = this._createCheckbox("German", "de");
+			var $french = this._createCheckbox("French", "fr");
+			var $spanish = this._createCheckbox("Spanish", "es");
+			$(this.target).append([$english, $german, $french, $spanish]);
+			$(".localeSelector").change(function(){
+				var $inputs = $(".localeSelector");
+				var selecteds = [];
+				$.each($inputs, function(index, value) {
+					var $input = $(value);
+					if ($input.is(":checked")) {
+						selecteds.push($input.val());
+					}
+				});
+				this.setFilters(selecteds);
+				this.doRequest();
+			}.bind(this));
 			EUMSSI.EventManager.on("filterChange:"+this.attributeName, this._manageFilterChange.bind(this));
 		},
 
+		_createCheckbox: function(txt, value) {
+			var uuid = this.createGuid();
+			var $label = $("<label>", {"for": uuid, "class": "label-locale-selector"}).text(txt);
+			var $input = $("<input>", {
+				"type": "checkbox",
+				"class": "localeSelector",
+				"value": value,
+				"id": uuid
+			});
+			return $("<p>").append([$input, $label]);
+		},
+
+		createGuid: function() {
+			return 'Label-xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+				var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+				return v.toString(16);
+			});
+		},
+
+		setFilters: function(values) {
+			var prefix = "";
+			EUMSSI.FilterManager.removeFilterByName(this.attributeName, this.id, false);
+			values.forEach(function(value) {
+				var filterText = "Locale: ";
+				filterText += this._getFilterText(value);
+				this.storedValue = prefix + this.attributeName + ":" + AjaxSolr.Parameter.escapeValue(value);
+				EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id, filterText);
+			}.bind(this));
+		},
+
+		_getFilterText: function(value) {
+			switch (value) {
+				case "en":
+					return "English";
+				case "de":
+					return "German";
+				case "fr":
+					return "French";
+				case "es":
+					return "Spanish";
+				default :
+					return value;
+			}
+		}, 
+		
 		/**
 		 * Sets the main Solr query to the given string.
 		 * @param {String} value the value for the filter.
@@ -41,31 +79,8 @@
 		setFilter: function (value) {
 			var prefix = "",
 				filterText = "Locale: ";
-
-			//Manage others response
-			//if(value == "others"){
-			//	value = "(en,de,es,fr)";
-			//	prefix = "-"; // Filter for remove
-			//	filterText += "Not (en,de,es,fr)";
-			//} else {
-			//	filterText += value;
-			//}
-
-			switch(value){
-				case "en":	filterText += "English";
-					break;
-				case "de":	filterText += "German";
-					break;
-				case "fr":	filterText += "French";
-					break;
-				case "es":	filterText += "Spanish";
-					break;
-				default : filterText += value;
-			}
-
-			//Remove previous Value
+			filterText += this._getFilterText(value);
 			this.clearFilter(true);
-			//Set the current Filter
 			this.storedValue = prefix + this.attributeName + ":" + AjaxSolr.Parameter.escapeValue(value);
 			EUMSSI.FilterManager.addFilter(this.attributeName, this.storedValue, this.id, filterText);
 		},

@@ -54,10 +54,6 @@
 
 		getImportantEvents: function(entity){
 			$(this.target).addClass("ui-loading-modal");
-			var language = $(".localeSelector").val();
-			if (!language)
-				language = "all";
-
 			var q = EUMSSI.Manager.getLastQuery() || "*";
 			var filters = EUMSSI.FilterManager.getFilterQueryString([
 				"meta.source.datePublished",

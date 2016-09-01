@@ -5,6 +5,8 @@ window.UTIL = {};
 CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.Country";
 CONF.MAP_CITIES_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.City";
 CONF.PERSON_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.PERSON";
+CONF.LOCATION_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.LOCATION";
+CONF.SUGGESTED_QUERIES_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.other";
 CONF.CLOUD_FIELD_NAME = "meta.source.keywords";
 CONF.SOURCE_FIELD_NAME = "source";
 
@@ -46,7 +48,8 @@ CONF.updateFacetingFields = function(){
  * !!! CORS PROBLEM
  * Check if an url exist, used to check if video links are online or not
  * @param {String} url - link
- * @param {Function} callback - this function will be called with (true:exist/false:broken link) as param when the request is DONE
+ * @param {Function} callback - this function will be called with (true:exist/false:broken link) as param when the
+ *     request is DONE
  */
 UTIL.checkUrlExists = function(url, callback){
 	var http = new XMLHttpRequest();
@@ -71,7 +74,7 @@ UTIL.showContextMenu = function($menu){
 		$menu.addClass("click-menu");
 		$("body").append($menu);
 		$menu.menu({
-			position: { my: "left top", at: "left+"+window.mouse_x + " top+" + window.mouse_y, of:"window"}
+			position: { my: "left top", at: "left+"+window.mouse_x + " top+" + window.mouse_y, of:"window" }
 		});
 		$menu.css("left",window.mouse_x - 10);
 		$menu.css("top",window.mouse_y - 10);
@@ -90,9 +93,40 @@ UTIL.showContextMenu = function($menu){
 	return $menu;
 };
 
+UTIL.showMarkMenu = function($menu, $target, offset) {
+	"use strict";
+	var timeoutFunction;
+	offset = offset || {left: 0,  top: 0};
+
+	function removeMenu() {
+		$menu.remove();
+	}
+
+	if ($menu) {
+		$menu.addClass("click-menu")
+		     .appendTo("body")
+		     .menu();
+
+		$menu.position({
+			my: "left top",
+			at: "left+" + offset.left +  " bottom+" +  offset.top,
+			of: $target
+		});
+		$menu.on("click", removeMenu);
+		$menu.on("mouseleave", function() {
+			timeoutFunction = setTimeout(removeMenu, 500);
+		});
+		$menu.on("mouseenter", function() {
+			clearTimeout(timeoutFunction);
+		});
+	}
+	return $menu;
+};
+
 /**
  * Get images from the wikipedia
- * example: "http://en.wikipedia.org/w/api.php?action=query&titles=Barack_Obama|Muhammad|John_Kerry&prop=pageimages&format=json&pithumbsize=150&pilimit=50"
+ * example:
+ * "http://en.wikipedia.org/w/api.php?action=query&titles=Barack_Obama|Muhammad|John_Kerry&prop=pageimages&format=json&pithumbsize=150&pilimit=50"
  * apache.conf proxy: ProxyPass /wikiBridge http://en.wikipedia.org/
  * @param {Array<String>} facetes - Array with the Facet Names to look for on th wikipedia
  * @private
@@ -166,13 +200,434 @@ UTIL.openPeopleActionsMenu = function(facetName, ev){
  * @param {String} url - the link
  */
 UTIL.openNewPage = function(url){
-//	window.open(url,"_blank");
-
-	$(".externalFrame-container").empty();
-	$(".externalFrame-container").append($("<iframe src="+url+">"));
+	"use strict";
+	var $externalFrame = $(".externalFrame-container");
+	$externalFrame.empty();
+	$externalFrame.append($("<iframe src="+url+">"));
 	$(".tabs-container").tabs( "option", "active", 7);
+};
+
+UTIL.createMenuPerson = function($menu, entity) {
+	"use strict";
+	if (EUMSSI.FilterManager.checkFilterByName(EUMSSI.CONF.PERSON_FIELD_NAME)) {
+		$menu.append(UTIL.createAddPersonLi());
+		$menu.append(UTIL.createClearFilterLi());
+	} else {
+		$menu.append(UTIL.createClearFilterByPersonLi());
+	}
+	$menu.append(UTIL.createWikipediaLi());
+	$menu.append(UTIL.createDBPediaLi());
+	$menu.on("click", ".open-wikipedia", UTIL.openNewPage.bind(this, "http://wikipedia.org/wiki/" + entity.value));
+	$menu.on("click", ".open-dbpedia", UTIL.openNewPage.bind(this, "http://dbpedia.org/resource/" + entity.value));
+};
+
+UTIL.createLocationMenu = function($menu, value, widgetId) {
+	"use strict";
+	if (EUMSSI.FilterManager.checkFilterByWidgetId(widgetId+ "_LOCATION")) {
+		$menu.append(UTIL.createAddLocationFilter());
+		$menu.append(UTIL.createClearFilterLocationLi());
+	} else {
+		$menu.append(UTIL.createFilterByLocation());
+	}
+	$menu.append(UTIL.createWikipediaLi());
+	$menu.on("click", ".open-wikipedia", UTIL.openNewPage.bind(this, "http://wikipedia.org/wiki/" + value));
+};
+
+UTIL.createCountryMenu = function($menu, value, widgetId) {
+	"use strict";
+	if (EUMSSI.FilterManager.checkFilterByWidgetId(widgetId + "_Country")) {
+		$menu.append(UTIL.createAddCountryFilter());
+		$menu.append(UTIL.createClearFilterCountryLi());
+	} else {
+		$menu.append(UTIL.createFilterByCountry());
+	}
+	$menu.append(UTIL.createWikipediaLi());
+	$menu.on("click", ".open-wikipedia", UTIL.openNewPage.bind(this, "http://wikipedia.org/wiki/" + value));
+};
+
+UTIL.createCityMenu = function($menu, city, widgetId) {
+	"use strict";
+
+	if (EUMSSI.FilterManager.checkFilterByWidgetId(widgetId+ "_City")) {
+		$menu.append('<li class="filter-city"><span class="ui-icon ui-icon-plusthick"></span>Add City to filter</li>');
+		$menu.append('<li class="filter-city-clear"><span class="ui-icon ui-icon-minusthick"></span>Clear Cities filters</li>');
+	} else {
+		$menu.append('<li class="filter-city"><span class="ui-icon ui-icon-search"></span>Filter by City</li>');
+	}
+	$menu.append('<li class="open-wikipedia"><span class="ui-icon ui-icon-newwin"></span>Open Wikipedia page</li>');
+	$menu.on("click", ".open-wikipedia", function() {
+		EUMSSI.UTIL.openNewPage("http://wikipedia.org/wiki/" + city);
+	});
+	return $menu;
+};
+
+UTIL.getMarkerMenu = function(entity, widgetId){
+	"use strict";
+	var txt = entity.text.replace(/_/g, "&nbsp;");
+	var $menu = $('<ul>');
+	$menu.append(UTIL.createHeaderMenuItem(txt));
+	switch (entity.type.toLowerCase()) {
+		case "country":
+			UTIL.createCountryMenu($menu, entity.value, widgetId);
+			break;
+		case "city":
+			UTIL.createCityMenu($menu, entity.value, widgetId);
+			break;
+		case "location":
+			UTIL.createLocationMenu($menu, entity.value, widgetId);
+			break;
+		case "person":
+			UTIL.createMenuPerson($menu, entity);
+			break;
+	}
+	return $menu;
+};
+
+UTIL.addCityFilter = function(city){
+	"use strict";
+	var filterName = EUMSSI.CONF.MAP_CITIES_FIELD_NAME;
+	var query = filterName + ':("' + city + '")';
+	var widgetId = this.id + "_City";
+	var filterText = "City: " + city;
+	EUMSSI.FilterManager.addFilter(filterName, query, widgetId, filterText);
+	this.doRequest();
+};
+
+/**
+ * Remove the current filter
+ * @param {Boolean} fetch - true if want to perform a request
+ */
+UTIL.cleanCityFilter = function(fetch){
+	"use strict";
+	EUMSSI.FilterManager.removeFilterByWidget(this.id + "_City");
+	if(fetch){
+		this.doRequest();
+	}
+};
+
+UTIL.addLocationFilter = function(location){
+	"use strict";
+	var filterName = EUMSSI.CONF.LOCATION_FIELD_NAME;
+	var query = filterName + ':("' + location + '")';
+	var widgetId = this.id + "_LOCATION";
+	var filterText = "LOCATION: " + location;
+	EUMSSI.FilterManager.addFilter(filterName, query, widgetId, filterText);
+	this.doRequest();
+};
+
+/**
+ * Remove the current filter
+ * @param {Boolean} fetch - true if want to perform a request
+ */
+UTIL.cleanLocationFilter = function(fetch){
+	"use strict";
+	EUMSSI.FilterManager.removeFilterByWidget(this.id + "_LOCATION");
+	if(fetch){
+		this.doRequest();
+	}
+};
+
+UTIL.addContryFilter = function(regionName) {
+	"use strict";
+	var filterName = EUMSSI.CONF.MAP_LOCATION_FIELD_NAME;
+	var query = filterName + ':("' + regionName.replace(" ", "_") + '")';
+	var widgetId = this.id + "_Country";
+	var filterText = "Location: " + regionName;
+	EUMSSI.FilterManager.addFilter(filterName, query, widgetId, filterText);
+	this.doRequest();
+};
+
+/**
+ * Remove the current filter
+ * @param {Boolean} fetch - true if want to perform a request
+ */
+UTIL.cleanCountryFilter = function(fetch) {
+	"use strict";
+	EUMSSI.FilterManager.removeFilterByWidget(this.id + "_Country");
+	if (fetch) {
+		this.doRequest();
+	}
+};
+
+UTIL.addPersonFilter = function(entityText) {
+	"use strict";
+	var fq = UTIL.getQueryPersonFieldName(entityText);
+	var txt = entityText.replace(/_/g, " ");
+	EUMSSI.FilterManager.addFilter(EUMSSI.CONF.PERSON_FIELD_NAME, fq, this.id, "People: " + txt);
+	this.doRequest();
+};
+
+UTIL.cleanPersonFilter = function() {
+	"use strict";
+	EUMSSI.FilterManager.removeFilterByName(EUMSSI.CONF.PERSON_FIELD_NAME);
+	this.doRequest();
+};
+
+UTIL.getQueryPersonFieldName = function(entityText) {
+	"use strict";
+	return EUMSSI.CONF.PERSON_FIELD_NAME + ':("' + entityText + '")';
+};
+
+UTIL.createWikipediaLi = function() {
+	"use strict";
+	var $wikipedia = UTIL.createLi("open-wikipedia");
+	$wikipedia.append(UTIL.createOpenIco());
+	$wikipedia.text("Open Wikipedia page");
+	return $wikipedia;
+};
+
+UTIL.createDBPediaLi = function() {
+	"use strict";
+	var $dbpedia = UTIL.createLi("open-dbpedia");
+	$dbpedia.append(UTIL.createOpenIco());
+	$dbpedia.text("Open DBpedia page");
+	return $dbpedia;
+};
+
+UTIL.createAddPersonLi = function() {
+	"use strict";
+	var $addPersonLi = UTIL.createLi("filter");
+	$addPersonLi.append(UTIL.createAddIco());
+	$addPersonLi.text("Add person to filter");
+	return $addPersonLi;
+};
+
+UTIL.createClearFilterLi = function() {
+	"use strict";
+	var $clearFilterLi = UTIL.createLi("filter-clear");
+	$clearFilterLi.append(UTIL.createMinusIco());
+	$clearFilterLi.text("Clear filter");
+	return $clearFilterLi;
+};
+
+
+UTIL.createClearFilterByPersonLi = function() {
+	"use strict";
+	var $clearFilterLi = UTIL.createLi("filter");
+	$clearFilterLi.append(UTIL.createSearchIco());
+	$clearFilterLi.text("Filter by person");
+	return $clearFilterLi;
+};
+
+UTIL.createAddCountryFilter = function() {
+	"use strict";
+	var $addContryFilter = UTIL.createLi("filter-country");
+	$addContryFilter.append(UTIL.createAddIco());
+	$addContryFilter.text("Add country to filter");
+	return $addContryFilter;
+};
+
+UTIL.createFilterByCountry = function() {
+	"use strict";
+	var $clearFilterLi = UTIL.createLi("filter-country");
+	$clearFilterLi.append(UTIL.createSearchIco());
+	$clearFilterLi.text("Filter by country");
+	return $clearFilterLi;
+};
+
+
+UTIL.createClearFilterCountryLi = function() {
+	"use strict";
+	var $clearFilterLi = UTIL.createLi("filter-country-clear");
+	$clearFilterLi.append(UTIL.createMinusIco());
+	$clearFilterLi.text("Clear Countries filters");
+	return $clearFilterLi;
+};
+
+UTIL.createAddLocationFilter = function() {
+	"use strict";
+	var $addLocationFilter = UTIL.createLi("filter-location");
+	$addLocationFilter.append(UTIL.createAddIco());
+	$addLocationFilter.text("Add location to filter");
+	return $addLocationFilter;
+};
+
+
+UTIL.createClearFilterLocationLi = function() {
+	"use strict";
+	var $clearFilterLi = UTIL.createLi("filter-location-clear");
+	$clearFilterLi.append(UTIL.createMinusIco());
+	$clearFilterLi.text("Clear location filters");
+	return $clearFilterLi;
+};
+
+
+UTIL.createFilterByLocation = function() {
+	"use strict";
+	var $clearFilterLi = UTIL.createLi("filter-location");
+	$clearFilterLi.append(UTIL.createSearchIco());
+	$clearFilterLi.text("Filter by location");
+	return $clearFilterLi;
+};
+
+UTIL.createLi = function(className) {
+	"use strict";
+	return $("<li>", {
+		"class": className
+	});
+};
+
+UTIL.createHeaderMenuItem = function(txt) {
+	"use strict";
+	return $("<div>", {
+		"class": "ui-widget-header"
+	}).text(txt);
+};
+
+UTIL.createOpenIco = function() {
+	"use strict";
+	return $("<span>", {
+		"class": "ui-icon ui-icon-newwin"
+	});
+};
+
+UTIL.createAddIco = function() {
+	"use strict";
+	return $("<span>", {
+		"class": "ui-icon ui-icon-plusthick"
+	});
+};
+
+UTIL.createMinusIco = function() {
+	"use strict";
+	return $("<span>", {
+		"class": "ui-icon ui-icon-minusthick"
+	});
+};
+
+UTIL.createSearchIco = function() {
+	"use strict";
+	return $("<span>", {
+		"class": "ui-icon ui-icon-search"
+	});
+};
+
+
+
+UTIL.parseAnalizeText = function(response) {
+	"use strict";
+	if (response.data.dbpedia) {
+		this._extractDbpediaItems(response.data.dbpedia);
+	}
+	if (response.data.kea) {
+		this._extractKeaItems(response.data.kea);
+	}
+//	EUMSSI.EventManager.trigger("OpenFilter");
+};
+
+UTIL.DBpedia = {};
+UTIL.DBpedia.isCity = function(type) {
+	"use strict";
+	return type.toLowerCase() === "city";
+};
+
+UTIL.DBpedia.isCountry = function(type) {
+	"use strict";
+	return type.toLowerCase() === "country";
+};
+
+UTIL.DBpedia.isLocation = function(type) {
+	"use strict";
+	return type.toLowerCase() === "location";
+};
+
+UTIL.DBpedia.generateEntity = function(element, type) {
+	"use strict";
+	return {
+		text: element.text,
+		value: element.uri,
+		field: "meta.extracted.text_nerl.dbpedia." + type,
+		type: type
+	};
+};
+
+UTIL.DBpedia.isRepeatedEntity = function(entities, uri) {
+	"use strict";
+	return entities.some(function(entity) {
+		return entity.value === uri;
+	});
+};
+
+UTIL.extractDbpediaItems = function(dbpediaData) {
+	"use strict";
+	var type;
+	var suggestedQueries = [];
+	var locations = [];
+	var cities = [];
+	var countries = [];
+	var persons = [];
+	_.each(dbpediaData, function(element, key) {
+		type = key;
+		_.each(element, function(element) {
+			switch (type.toLowerCase()) {
+				case "country":
+					if (!UTIL.DBpedia.isRepeatedEntity(countries, element.uri)) {
+						countries.push(UTIL.DBpedia.generateEntity(element, type));
+					}
+					break;
+				case "city":
+					if (!UTIL.DBpedia.isRepeatedEntity(cities, element.uri)) {
+						cities.push(UTIL.DBpedia.generateEntity(element, type));
+					}
+					break;
+				case "location":
+					if (!UTIL.DBpedia.isRepeatedEntity(locations, element.uri)) {
+						locations.push(UTIL.DBpedia.generateEntity(element, type));
+					}
+					break;
+				case "person":
+					if (!UTIL.DBpedia.isRepeatedEntity(persons, element.uri)) {
+						persons.push(UTIL.DBpedia.generateEntity(element, type));
+					}
+					break;
+				case "other":
+					if (!UTIL.DBpedia.isRepeatedEntity(suggestedQueries, element.uri)) {
+						suggestedQueries.push(UTIL.DBpedia.generateEntity(element, type));
+					}
+					break;
+			}
+		});
+	});
+	locations = UTIL.DBpedia.clearRepeatedLocations(cities, countries, locations);
+	return {
+		entities: [].concat(locations, countries, cities, persons),
+		queries: suggestedQueries
+	};
 
 };
+
+UTIL.DBpedia.isInCollection = function(entity, collection) {
+	"use strict";
+	return collection.some(function(item) {
+		return entity.value === item.value;
+	});
+};
+
+UTIL.DBpedia.clearRepeatedLocations = function(cities, countries, locations) {
+	"use strict";
+	return locations.filter(function(location) {
+		return !UTIL.DBpedia.isInCollection(location, cities) && !UTIL.DBpedia.isInCollection(location, countries);
+	});
+};
+
+UTIL.extractKeaItems = function(keaData) {
+	"use strict";
+	var keyphrases = [];
+	_.each(keaData, function(element) {
+		var keyphrase = keyphrases.filter(function(entity) {
+			return entity.value === element.keyphrase;
+		})[0];
+		if (!keyphrase) {
+			keyphrases.push({
+				text : element.text,
+				value: element.keyphrase,
+				field: "meta.source.keywords"
+			});
+		}
+	});
+	return keyphrases;
+};
+
 
 /**
  * Splits with espaces the current camelCase string.
