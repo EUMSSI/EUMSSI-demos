@@ -1898,3 +1898,24 @@ canvas {
 .header .kea-tags-container .tags .tag:before {
   top: 8px;
 }
+.advise-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  content: " ";
+  width: 100%;
+  height: 100%;
+  text-align: justify;
+  font-size: 18px;
+  line-height: 41px;
+  box-sizing: border-box;
+  padding: 38px;
+  color: white;
+  min-height: 100%;
+  max-height: 100%;
+}
+#my-timeline.adjust-height {
+  width: 100%;
+  height: 600px;
+}

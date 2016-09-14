@@ -1,3 +1,4 @@
+/* global EUMSSI */
 (function ($) {
 
 	AjaxSolr.TimelineWidget = AjaxSolr.AbstractWidget.extend({
@@ -8,23 +9,31 @@
 			this.apiURL = "http://demo.eumssi.eu/EumssiEventExplorer/webresources/API/";
 			this.rowsNumber = 100;
 			this.field = "meta.extracted.text_nerl.dbpedia.all";
+			this.storeDomElements();
 		},
 
-		/** adding libs for timeline
-		*/
+
 		beforeRequest: function () {
-			//donothing			
+			this.$target.empty();
+			this.$parent.find(".advise-container").remove();
+			this.$parent.prepend(this._createMsgAdvise());
+			this.$eventPlaceholder.empty();
+			this._adjustHeight();
 		},
-
 		afterRequest: function () {
 			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
-
 			if(this.$tabs.tabs( "option", "active") === tabPosition) {
 				this._renderTimeline();
 			} else {
 				this.$tabs.off("tabsactivate.timelinewidget");
 				this.$tabs.on("tabsactivate.timelinewidget", this._tabChange.bind(this) );
 			}
+		},
+
+		storeDomElements: function() {
+			this.$target = $(this.target);
+			this.$eventPlaceholder = $(".event-placeholder");
+			this.$parent = this.$target.closest(".timeline.widget-placeholder");
 		},
 
 		/**
@@ -38,6 +47,7 @@
 				this._renderTimeline();
 			}
 		},
+
 
 		_renderTimeline: function(){
 			$(this.target).addClass("ui-loading-modal");
@@ -65,8 +75,6 @@
 				"meta.extracted.text_nerl.dbpedia.Country",
 				"meta.source.keywords",
 				this.field]);
-			//var cont = EUMSSI.Manager.getLastQuery();
-			//var lastquery = cont.split(":");
 			var queryurl= "";
 			if (!filters || filters.length==0) {
 				queryurl= this.apiURL + "getImportantEvents/json/" + this.rowsNumber + "/(" + q + ")";
@@ -74,26 +82,19 @@
 			else {
 				queryurl = this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/(" + q + ")" + filters;
 			}
-			//if (!entity) {
 			$.ajax({
 				url: queryurl,
 				success: this._renderTimelineAPI.bind(this)
 			});
-			//}
-			
-			//else {
-			//	$.ajax({
-			//		url: this.apiURL + "getImportantEvents/json/"+this.rowsNumber+"/" + this.field + ":" + entity,
-			//		success: this._renderTimelineAPI.bind(this)
-			//	});
-			//}
-			
+
 		},
 
 		_renderTimelineAPI: function(response){
-			$(this.target).empty();
-			$(".event-placeholder").empty();
-			$(this.target).removeClass("ui-loading-modal");
+			this.$target.empty();
+			this.$parent.find(".advise-container").remove();
+			this.$eventPlaceholder.empty();
+			this._adjustHeight(true);
+			this.$target.removeClass("ui-loading-modal");
 			var tlobj = {};
 			tlobj["type"] = "default";
 
@@ -147,7 +148,6 @@
 			var $value = $('<span>').addClass("info-value");
 			var entities = event['entity'];
 			for (i = 0; i<entities.length; i++) {
-				//$value += entities[i].name + " ; ";
 				var $entitylink = $('<a>')
 				.text(entities[i].name + ", ")
 				.click(this._onEnityClick.bind(this, entities[i].name ));
@@ -168,21 +168,30 @@
 			$(".event-placeholder").append($event);
 		},
 
-		
 		_onEnityClick: function(name){
 			this.setFilter(name);
 			this.getImportantEvents(name);
 			EUMSSI.Manager.doRequest(0);
 		},
-		
+
+
+
 		setFilter: function (value) {
-			//Set the current Filter
 			this.storedValue = this.field + ":" + value;
-			//EUMSSI.FilterManager.addFilter("meta.extracted.text_nerl.ner.all:", "meta.extracted.text_nerl.ner.all:" + storedValue, this.id, "meta.extracted.text_nerl.ner.all: "+value);
 			EUMSSI.FilterManager.addFilter(this.field, this.storedValue, this.id, this.field+": "+value);
 			EUMSSI.Manager.doRequest(0);
-		}
+		},
 
+		_createMsgAdvise: function() {
+			return $("<div>", {
+				"class": "advise-container"
+			}).text(CONF.MESSAGE_ADVISE);
+		},
+
+		_adjustHeight: function(add) {
+			add = typeof add === "boolean" ? add : false;
+			this.$target.toggleClass("adjust-height", add);
+		}
 	});
 
 })(jQuery);

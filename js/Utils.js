@@ -9,6 +9,12 @@ CONF.LOCATION_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.LOCATION";
 CONF.SUGGESTED_QUERIES_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.other";
 CONF.CLOUD_FIELD_NAME = "meta.source.keywords";
 CONF.SOURCE_FIELD_NAME = "source";
+CONF.MESSAGE_ADVISE = [
+	"The timeline shows a summary of the most important events related ",
+	"to your query. To select the most relevant articles, ",
+	"we need to find out the most relevant dates. ",
+	"This might take up to 10 seconds."
+].join("");
 
 /**
  * Update the facet.field items with the current value of the Fields Names

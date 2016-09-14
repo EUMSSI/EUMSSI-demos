@@ -55,7 +55,8 @@
 
 		/**
 		 * Get the tweets number by data ranges
-		 * @param {string} [polarity] - the polarity value adds a meta.extracted.text_polarity.discrete filter, "POSITIVE" || "NEGATIVE"
+		 * @param {string} [polarity] - the polarity value adds a meta.extracted.text_polarity.discrete filter,
+		 *     "POSITIVE" || "NEGATIVE"
 		 * @param {string} [timeMode] - the time gap to represent the graph "DAY" || "WEEK" || "MONTH"
 		 * @param {string} [startDate] - the start date in UTC string format
 		 * @param {string} [endDate] - the end date in UTC string format
@@ -232,7 +233,6 @@
 		reloadChart: function(){
 			this._renderTimeTweetsChart();
 		}
-
 
 	};
 
