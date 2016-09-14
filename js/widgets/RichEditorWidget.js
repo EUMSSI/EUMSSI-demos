@@ -168,13 +168,13 @@
 		},
 
 		_setMenuEvents: function(entity) {
-			this.$contentMenu.on("click", ".filter", UTIL.addPersonFilter.bind(this, entity.text));
+			this.$contentMenu.on("click", ".filter", UTIL.addPersonFilter.bind(this, entity.value));
 			this.$contentMenu.on("click", ".filter-clear", UTIL.cleanPersonFilter.bind(this));
-			this.$contentMenu.on("click", ".filter-country", UTIL.addContryFilter.bind(this, entity.text));
+			this.$contentMenu.on("click", ".filter-country", UTIL.addContryFilter.bind(this, entity.value));
 			this.$contentMenu.on("click", ".filter-country-clear", UTIL.cleanCountryFilter.bind(this, true));
-			this.$contentMenu.on("click", ".filter-city", UTIL.addCityFilter.bind(this, entity.text));
+			this.$contentMenu.on("click", ".filter-city", UTIL.addCityFilter.bind(this, entity.value));
 			this.$contentMenu.on("click", ".filter-city-clear", UTIL.cleanCityFilter.bind(this, true));
-			this.$contentMenu.on("click", ".filter-location", UTIL.addLocationFilter.bind(this, entity.text));
+			this.$contentMenu.on("click", ".filter-location", UTIL.addLocationFilter.bind(this, entity.value));
 			this.$contentMenu.on("click", ".filter-location-clear", UTIL.cleanLocationFilter.bind(this, true));
 		},
 
