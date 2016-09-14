@@ -1832,6 +1832,9 @@ canvas {
 .ui-filters-container .filterText {
   font-size: 12px;
 }
+.header {
+  height: 80px;
+}
 .header .mainSearch-placeholder {
   width: 33.3333%;
   box-sizing: border-box;
