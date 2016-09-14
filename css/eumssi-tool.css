@@ -1832,3 +1832,66 @@ canvas {
 .ui-filters-container .filterText {
   font-size: 12px;
 }
+.header .mainSearch-placeholder {
+  width: 33.3333%;
+  box-sizing: border-box;
+}
+.header .mainSearch-placeholder #generated-GENERAL_SEARCH {
+  width: 100%;
+  box-sizing: border-box;
+}
+.header .mainSearch-placeholder #generated-GENERAL_SEARCH .text-widget-input {
+  width: 85%;
+  box-sizing: border-box;
+}
+.header .mainSearch-placeholder #generated-GENERAL_SEARCH button.ui-button-text-only {
+  width: auto;
+  box-sizing: border-box;
+}
+.header .dateFilterWidget-placeholder {
+  width: 33.3333%;
+  box-sizing: border-box;
+}
+.header .dateFilterWidget-placeholder .dateFilter-from {
+  width: 33.3333%;
+  box-sizing: border-box;
+}
+.header .dateFilterWidget-placeholder .dateFilter-from label {
+  display: none;
+}
+.header .dateFilterWidget-placeholder .dateFilter-from input {
+  width: 79%;
+}
+.header .dateFilterWidget-placeholder .dateFilter-to {
+  width: 33.3333%;
+  box-sizing: border-box;
+}
+.header .dateFilterWidget-placeholder .dateFilter-to label {
+  display: none;
+}
+.header .dateFilterWidget-placeholder .dateFilter-to input {
+  width: 79%;
+}
+.header .dateFilterWidget-placeholder .dateFilter-range {
+  width: 30.3333%;
+  box-sizing: border-box;
+  margin-left: 2px;
+}
+.header .dateFilterWidget-placeholder .dateFilter-range .ui-selectmenu-button.ui-widget.ui-state-default.ui-corner-all {
+  width: 120px !important;
+}
+.header .kea-tags-container {
+  width: 30%;
+  box-sizing: border-box;
+}
+.header .kea-tags-container .tags {
+  margin-bottom: 0;
+  margin-left: 0;
+}
+.header .kea-tags-container .tags .tag {
+  height: 20px;
+  line-height: 20px;
+}
+.header .kea-tags-container .tags .tag:before {
+  top: 8px;
+}

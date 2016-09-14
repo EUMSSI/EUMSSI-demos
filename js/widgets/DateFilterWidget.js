@@ -17,9 +17,9 @@
 
 		_render: function(){
 			var $from = $("<div>").addClass("dateFilter-from");
-			$from.html("<label>From </label><input type='text'><class='dateFilter-from'></input>");
+			$from.html("<label>From </label><input type='text' placeholder='From'><class='dateFilter-from'></input>");
 			var $to = $("<div>").addClass("dateFilter-to");
-			$to.html("<label>To </label><input type='text'><class='dateFilter-to'></input>");
+			$to.html("<label>To </label><input type='text' placeholder='To'><class='dateFilter-to'></input>");
 
 			this._fromDatepicker = $from.find("input").datepicker();
 			this._toDatepicker = $to.find("input").datepicker();
