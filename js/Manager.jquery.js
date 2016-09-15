@@ -43,14 +43,9 @@
 				errorHandler = errorHandler || function(jqXHR, textStatus, errorThrown){
 					self.handleError(textStatus + ', ' + errorThrown);
 				};
-				if (this.proxyUrl) {
-					options.url = this.proxyUrl;
-					options.data = {query: string};
-					options.type = 'POST';
+				if (EUMSSI.FilterManager.existSimilarityFilter()) {
+					options = this._generatePostOptions(string, servlet);
 				} else {
-					//ORIGINAL
-					// options.url = this.solrUrl + servlet + '?' + string + '&wt=json&json.wrf=?';
-					//MINE - problems with json.wrf param
 					options.url = this.solrUrl + servlet + '?' + string + '&wt=json';
 					options.headers = {Origin: undefined};
 				}
@@ -77,7 +72,6 @@
 						} else {
 							a[key].push(b[key]);
 						}
-//						a[key] = a[key] + "," + b[key];
 					} else {
 						a[key] = b[key];
 					}
@@ -85,8 +79,18 @@
 				});
 				obj.wt = "json";
 				obj.q = decodeURIComponent(obj.q);
+				if (obj.fq) {
+					obj.fq = decodeURIComponent(obj.fq);
+				}
 				options.data = obj;
 				options.url = this.solrUrl + servlet;
+				if (options.data["facet.field"].length > 0) {
+					var facetString = options.data["facet.field"].map(function(param) {
+						return "facet.field=" + param;
+					}).join("&");
+					options.url = options.url + "?" + facetString;
+					delete options.data["facet.field"];
+				}
 				options.method = 'POST';
 				return options;
 			},

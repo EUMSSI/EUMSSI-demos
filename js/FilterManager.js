@@ -61,7 +61,6 @@ _.extend(FilterManager.prototype, {
 	 * @returns {{filterName: *, query: *, widgetId: *}}
 	 */
 	addFilter: function(filterName, query, widgetId, filterText, filterData){
-		console.log("Manager > addFilter: "+filterName+" | "+query+" | "+widgetId+" | "+filterText);
 		var filter = {
 			filterName: filterName,
 			query: query,
@@ -83,7 +82,6 @@ _.extend(FilterManager.prototype, {
 	 * @param {Boolean} [silent] - true, if don't want to trigger the change event
 	 */
 	removeFilter: function(filterName, widgetId, query, silent){
-		console.log("Manager >  removeFilterByName: "+filterName+" | "+widgetId+" | "+query);
 
 		var f = {},
 			removedFilter;
@@ -175,16 +173,29 @@ _.extend(FilterManager.prototype, {
 	 */
 	getQueryString: function(){
 		"use strict";
-		var q = "*:*"; // Default query
+		var q = "*:*";
 		_.each(this._filters, function(filterObj) {
 			if (filterObj.filterName === FilterManager.NAMES.GENERAL_SEARCH) {
 				q = this._parseGeneralFilter(this.replaceFilterHeader(filterObj, FilterManager.NAMES.GENERAL_SEARCH));
 			}
 			if (this.isSimilarityFilter(filterObj)) {
-				q = this._parseSimilarityFilter(this.replaceFilterHeader(filterObj, FilterManager.NAMES.SIMILARITY));
+				q = this.replaceFilterHeader(filterObj, FilterManager.NAMES.SIMILARITY);
 			}
 		}, this);
 		return q;
+	},
+
+	existSimilarityFilter: function() {
+		"use strict";
+		var exist = false;
+		for (var i = 0; i < this._filters.length; i += 1) {
+			var filterObj = this._filters[i];
+			if (this.isSimilarityFilter(filterObj)) {
+				exist = true;
+				break;
+			}
+		}
+		return exist;
 	},
 
 	/**
@@ -231,7 +242,6 @@ _.extend(FilterManager.prototype, {
 
 		if(value){
 			var fqval = this._buildQuerySimpleSearchAssets(value);
-			console.log("### BUSQUEDA ###\n "+fqval);
 			_.each(searchFields,function(val){
 				searchQueries.push(val + ":" + fqval);
 			});
@@ -247,8 +257,28 @@ _.extend(FilterManager.prototype, {
 
 	_buildQuerySimilaritySearch: function(valorBusqueda) {
 		"use strict";
-		var result = this._escapeSpecialChars(valorBusqueda);
+		var result = this._escapeSimilaritySpecialChars(valorBusqueda);
 		return  this._buildTextSearchSimilarity(result);
+	},
+
+	_escapeSimilaritySpecialChars: function(value) {
+		"use strict";
+		if (value !== "*") {
+			value = value.replace("\\", "\\\\");
+			value = value.replace("+", "\\+");
+			value = value.replace("-", "\\-");
+			value = value.replace("&", "\\&");
+			value = value.replace("|", "\\|");
+			value = value.replace("!", "\\!");
+			value = value.replace("{", "\\{");
+			value = value.replace("}", "\\}");
+			value = value.replace("[", "\\[");
+			value = value.replace("]", "\\]");
+			value = value.replace("^", "\\^");
+			value = value.replace(":", "\\:");
+		}
+
+		return value;
 	},
 
 	_buildTextSearchSimilarity: function(valorBusqueda) {

@@ -94,28 +94,23 @@
 			EUMSSI.FilterManager.removeFilterByName(FilterManager.NAMES.SIMILARITY, this.id, true);
 		},
 
+		clearGeneralFilter: function() {
+			this._getInputGeneralSearch().val("");
+			EUMSSI.FilterManager.removeFilterByName(FilterManager.NAMES.GENERAL_SEARCH, null, true);
+		},
+
 		_addCustomButton : function(){
 			var editor = CKEDITOR.instances["richeditor-placeholder"];
 			editor.addCommand("myEumssiSearch", { // create named command
 				exec: function(edt) {
-					var text;
-					var filterText;
-					var query;
 					var selectedText = edt.getSelection().getSelectedText();
 					if (selectedText === "") {
 						var body = edt.document.getBody();
-						text =  body.getText();
-						this._getSuggestedQuery(text);
-					} else {
-						this._getSuggestedQuery(selectedText);
-						text = selectedText;
+						selectedText =  body.getText();
 					}
-					filterText = FilterManager.NAMES.SIMILARITY;
-					query = filterText + ":" + text;
-					this.clearSimilarityFilter();
-					EUMSSI.FilterManager.addFilter(filterText, query, this.id, filterText);
 					this._unHightlight();
-					this.doRequest();
+					this.clearGeneralFilter();
+					this._getSuggestedQuery(selectedText);
 				}.bind(this)
 			});
 
@@ -168,14 +163,18 @@
 		},
 
 		_setMenuEvents: function(entity) {
-			this.$contentMenu.on("click", ".filter", UTIL.addPersonFilter.bind(this, entity.text));
+			this.$contentMenu.on("click", ".filter", UTIL.addPersonFilter.bind(this, entity.value));
 			this.$contentMenu.on("click", ".filter-clear", UTIL.cleanPersonFilter.bind(this));
-			this.$contentMenu.on("click", ".filter-country", UTIL.addContryFilter.bind(this, entity.text));
+			this.$contentMenu.on("click", ".filter-country", UTIL.addContryFilter.bind(this, entity.value));
 			this.$contentMenu.on("click", ".filter-country-clear", UTIL.cleanCountryFilter.bind(this, true));
-			this.$contentMenu.on("click", ".filter-city", UTIL.addCityFilter.bind(this, entity.text));
+			this.$contentMenu.on("click", ".filter-city", UTIL.addCityFilter.bind(this, entity.value));
 			this.$contentMenu.on("click", ".filter-city-clear", UTIL.cleanCityFilter.bind(this, true));
-			this.$contentMenu.on("click", ".filter-location", UTIL.addLocationFilter.bind(this, entity.text));
+			this.$contentMenu.on("click", ".filter-location", UTIL.addLocationFilter.bind(this, entity.value));
 			this.$contentMenu.on("click", ".filter-location-clear", UTIL.cleanLocationFilter.bind(this, true));
+			this.$contentMenu.on("click", ".filter-organization", UTIL.addOrganizationFilter.bind(this, entity.value));
+			this.$contentMenu.on("click", ".filter-organization-clear", UTIL.cleanOrganizacionFilter.bind(this, true));
+			this.$contentMenu.on("click", ".filter-other", UTIL.addOtherFilter.bind(this, entity.value));
+			this.$contentMenu.on("click", ".filter-other-clear", UTIL.cleanOtherFilter.bind(this, true));
 		},
 
 		_onClickMarkHighlight: function(entity, event) {
@@ -189,6 +188,7 @@
 			offset.top -= $body.scrollTop();
 			offset.left -=  $body.scrollLeft();
 			EUMSSI.UTIL.showMarkMenu(this.$contentMenu, $(event.currentTarget), offset);
+			// TODO REMOVE
 			console.log($(event.currentTarget).html(), entity);
 		},
 
@@ -201,7 +201,8 @@
 		_getDefaultsOptionsHightlight: function() {
 			return {
 				exclude: ["img", "iframe"],
-				className: "highlight"
+				className: "highlight",
+				separateWordSearch: false
 			};
 		},
 
@@ -224,10 +225,21 @@
 			}
 		},
 
+		_addSimilarityFilter: function(response) {
+			var filterText = FilterManager.NAMES.SIMILARITY;
+			var query = filterText + ":" + response.data.solr.similarity;
+			EUMSSI.FilterManager.addFilter(filterText, query, this.id, filterText);
+		},
+
 		_onGetSuggestedQuery: function(response) {
 			EUMSSI.EventManager.trigger("onGetRelatedFilters", response);
 			var dbpediaData = response && response.data && response.data.dbpedia;
 			var keaData = response && response.data && response.data.kea;
+			this.clearSimilarityFilter();
+			this._unHightlight();
+			this._addSimilarityFilter(response);
+			this.doRequest();
+
 			if (dbpediaData) {
 				var dbPediaItems = UTIL.extractDbpediaItems(dbpediaData);
 				this._highlightEntities(dbPediaItems.entities);
@@ -254,6 +266,7 @@
 			}
 		},
 
+
 		onClickTag: function(event) {
 			event.preventDefault();
 			var $tag = $(event.currentTarget);
@@ -265,8 +278,12 @@
 			EUMSSI.FilterManager.removeFilterByName(FilterManager.NAMES.LANGUAGE, null, true);
 			EUMSSI.FilterManager.removeFilterByName(FilterManager.NAMES.SIMILARITY, null, true);
 			EUMSSI.FilterManager.addFilter(filterText, query, this.id, fText);
-			$("#generated-GENERAL_SEARCH").find("input").val(label);
+			this._getInputGeneralSearch().val(label);
 			this.doRequest();
+		},
+
+		_getInputGeneralSearch: function() {
+			return $("#generated-GENERAL_SEARCH").find("input");
 		},
 
 		_generateTags: function(kea) {

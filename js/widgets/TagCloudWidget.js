@@ -79,7 +79,7 @@
 		 */
 		_getThumbnails: function(objectedItems){
 			if (objectedItems.length > 0) {
-				this.manager._showLoader();
+//				this.manager._showLoader();
 				UTIL.getWikipediaImages(_.pluck(objectedItems, "facet"))
 					.done(this._getWikipediaImages_success.bind(this));
 			} else {

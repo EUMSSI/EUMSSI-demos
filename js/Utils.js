@@ -5,8 +5,12 @@ window.UTIL = {};
 CONF.MAP_LOCATION_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.Country";
 CONF.MAP_CITIES_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.City";
 CONF.PERSON_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.PERSON";
+CONF.ORGANIZATION_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.ORGANIZATION";
+CONF.ORGANIZATION_NAME = "ORGANIZATION";
 CONF.LOCATION_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.LOCATION";
 CONF.SUGGESTED_QUERIES_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.other";
+CONF.ALL_FIELD_NAME = "meta.extracted.text_nerl.dbpedia.all";
+CONF.SUGGESTED_QUERIES_NAME = "ENTITY";
 CONF.CLOUD_FIELD_NAME = "meta.source.keywords";
 CONF.SOURCE_FIELD_NAME = "source";
 CONF.MESSAGE_ADVISE = [
@@ -227,6 +231,34 @@ UTIL.createMenuPerson = function($menu, entity) {
 	$menu.on("click", ".open-dbpedia", UTIL.openNewPage.bind(this, "http://dbpedia.org/resource/" + entity.value));
 };
 
+UTIL.createMenuOther = function($menu, entity) {
+	"use strict";
+	if (EUMSSI.FilterManager.checkFilterByName(EUMSSI.CONF.SUGGESTED_QUERIES_FIELD_NAME)) {
+		$menu.append(UTIL.createAddOtherLi());
+		$menu.append(UTIL.createClearOtherFilter());
+	} else {
+		$menu.append(UTIL.createFilterByOtherLi());
+	}
+	$menu.append(UTIL.createWikipediaLi());
+	$menu.append(UTIL.createDBPediaLi());
+	$menu.on("click", ".open-wikipedia", UTIL.openNewPage.bind(this, "http://wikipedia.org/wiki/" + entity.value));
+	$menu.on("click", ".open-dbpedia", UTIL.openNewPage.bind(this, "http://dbpedia.org/resource/" + entity.value));
+};
+
+UTIL.createMenuOrganizacion = function($menu, entity) {
+	"use strict";
+	if (EUMSSI.FilterManager.checkFilterByName(EUMSSI.CONF.ORGANIZATION_FIELD_NAME)) {
+		$menu.append(UTIL.createAddOrganizacionLi());
+		$menu.append(UTIL.createClearOrganizationFilter());
+	} else {
+		$menu.append(UTIL.createFilterByOrganizationLi());
+	}
+	$menu.append(UTIL.createWikipediaLi());
+	$menu.append(UTIL.createDBPediaLi());
+	$menu.on("click", ".open-wikipedia", UTIL.openNewPage.bind(this, "http://wikipedia.org/wiki/" + entity.value));
+	$menu.on("click", ".open-dbpedia", UTIL.openNewPage.bind(this, "http://dbpedia.org/resource/" + entity.value));
+};
+
 UTIL.createLocationMenu = function($menu, value, widgetId) {
 	"use strict";
 	if (EUMSSI.FilterManager.checkFilterByWidgetId(widgetId+ "_LOCATION")) {
@@ -285,6 +317,14 @@ UTIL.getMarkerMenu = function(entity, widgetId){
 		case "person":
 			UTIL.createMenuPerson($menu, entity);
 			break;
+		case "organization":
+			UTIL.createMenuOrganizacion($menu, entity);
+			break;
+		case "other":
+			UTIL.createMenuOther($menu, entity);
+			break;
+
+
 	}
 	return $menu;
 };
@@ -320,6 +360,79 @@ UTIL.addLocationFilter = function(location){
 	EUMSSI.FilterManager.addFilter(filterName, query, widgetId, filterText);
 	this.doRequest();
 };
+
+
+UTIL.addOrganizationFilter = function(organization){
+	"use strict";
+	var filterName = EUMSSI.CONF.ORGANIZATION_FIELD_NAME;
+	var query = filterName + ':("' + organization + '")';
+	var widgetId = this.id + UTIL.organization.getOrganizationNameWithPrefix();
+	var filterText = UTIL.organization.getOrganizationName() + ": " + organization;
+	EUMSSI.FilterManager.addFilter(filterName, query, widgetId, filterText);
+	this.doRequest();
+};
+
+UTIL.cleanOrganizacionFilter = function(fetch){
+	"use strict";
+	var widgetId = this.id + UTIL.organization.getOrganizationNameWithPrefix();
+	EUMSSI.FilterManager.removeFilterByName(UTIL.organization.getOrganizationFilterName(), widgetId );
+	if(fetch){
+		this.doRequest();
+	}
+};
+
+UTIL.organization = {};
+UTIL.organization.getOrganizationName = function() {
+	"use strict";
+	return EUMSSI.CONF.ORGANIZATION_NAME;
+};
+
+UTIL.organization.getOrganizationFilterName = function() {
+	"use strict";
+	return EUMSSI.CONF.ORGANIZATION_FIELD_NAME;
+};
+
+UTIL.organization.getOrganizationNameWithPrefix = function() {
+	"use strict";
+	return "_" + EUMSSI.CONF.ORGANIZATION_NAME;
+};
+
+
+UTIL.addOtherFilter = function(other){
+	"use strict";
+	var filterName = UTIL.other.getOtherFilterName();
+	var query = filterName + ':("' + other + '")';
+	var widgetId = this.id + UTIL.other.getOtherNameWithPrefix();
+	var filterText = UTIL.other.getOtherFilterText() + ": " + other;
+	EUMSSI.FilterManager.addFilter(filterName, query, widgetId, filterText);
+	this.doRequest();
+};
+
+UTIL.cleanOtherFilter = function(fetch){
+	"use strict";
+	var widgetId = this.id + UTIL.other.getOtherNameWithPrefix();
+	EUMSSI.FilterManager.removeFilterByName(UTIL.other.getOtherFilterName(), widgetId );
+	if(fetch){
+		this.doRequest();
+	}
+};
+
+UTIL.other = {};
+UTIL.other.getOtherFilterName = function() {
+	"use strict";
+	return EUMSSI.CONF.ALL_FIELD_NAME;
+};
+
+UTIL.other.getOtherNameWithPrefix = function() {
+	"use strict";
+	return "_" + EUMSSI.CONF.SUGGESTED_QUERIES_NAME;
+};
+
+UTIL.other.getOtherFilterText = function() {
+	"use strict";
+	return EUMSSI.CONF.SUGGESTED_QUERIES_NAME;
+};
+
 
 /**
  * Remove the current filter
@@ -358,8 +471,7 @@ UTIL.cleanCountryFilter = function(fetch) {
 UTIL.addPersonFilter = function(entityText) {
 	"use strict";
 	var fq = UTIL.getQueryPersonFieldName(entityText);
-	var txt = entityText.replace(/_/g, " ");
-	EUMSSI.FilterManager.addFilter(EUMSSI.CONF.PERSON_FIELD_NAME, fq, this.id, "People: " + txt);
+	EUMSSI.FilterManager.addFilter(EUMSSI.CONF.PERSON_FIELD_NAME, fq, this.id, "People: " + entityText);
 	this.doRequest();
 };
 
@@ -414,6 +526,57 @@ UTIL.createClearFilterByPersonLi = function() {
 	$clearFilterLi.text("Filter by person");
 	return $clearFilterLi;
 };
+
+
+UTIL.createAddOtherLi = function() {
+	"use strict";
+	var $otherLi = UTIL.createLi("filter-other");
+	$otherLi.append(UTIL.createAddIco());
+	$otherLi.text("Add entity to filter");
+	return $otherLi;
+};
+
+UTIL.createFilterByOtherLi = function() {
+	"use strict";
+	var $addOther = UTIL.createLi("filter-other");
+	$addOther.append(UTIL.createSearchIco());
+	$addOther.text("Filter by entity");
+	return $addOther;
+};
+
+UTIL.createClearOtherFilter = function() {
+	"use strict";
+	var $clearFilter = UTIL.createLi("filter-other-clear");
+	$clearFilter.append(UTIL.createMinusIco());
+	$clearFilter.text("Clear entity filter");
+	return $clearFilter;
+};
+
+UTIL.createAddOrganizacionLi = function() {
+	"use strict";
+	var $addOrganizacionLi = UTIL.createLi("filter-organization");
+	$addOrganizacionLi.append(UTIL.createAddIco());
+	$addOrganizacionLi.text("Add organizacion to filter");
+	return $addOrganizacionLi;
+};
+
+
+UTIL.createFilterByOrganizationLi = function() {
+	"use strict";
+	var $addOrganization = UTIL.createLi("filter-organization");
+	$addOrganization.append(UTIL.createSearchIco());
+	$addOrganization.text("Filter by organization");
+	return $addOrganization;
+};
+
+UTIL.createClearOrganizationFilter = function() {
+	"use strict";
+	var $clearFilter = UTIL.createLi("filter-organization-clear");
+	$clearFilter.append(UTIL.createMinusIco());
+	$clearFilter.text("Clear organization filter");
+	return $clearFilter;
+};
+
 
 UTIL.createAddCountryFilter = function() {
 	"use strict";
@@ -518,7 +681,6 @@ UTIL.parseAnalizeText = function(response) {
 	if (response.data.kea) {
 		this._extractKeaItems(response.data.kea);
 	}
-//	EUMSSI.EventManager.trigger("OpenFilter");
 };
 
 UTIL.DBpedia = {};
@@ -562,6 +724,7 @@ UTIL.extractDbpediaItems = function(dbpediaData) {
 	var cities = [];
 	var countries = [];
 	var persons = [];
+	var organizations = [];
 	_.each(dbpediaData, function(element, key) {
 		type = key;
 		_.each(element, function(element) {
@@ -591,12 +754,17 @@ UTIL.extractDbpediaItems = function(dbpediaData) {
 						suggestedQueries.push(UTIL.DBpedia.generateEntity(element, type));
 					}
 					break;
+				case "organization":
+					if (!UTIL.DBpedia.isRepeatedEntity(organizations, element.uri)) {
+						organizations.push(UTIL.DBpedia.generateEntity(element, type));
+					}
+					break;
 			}
 		});
 	});
 	locations = UTIL.DBpedia.clearRepeatedLocations(cities, countries, locations);
 	return {
-		entities: [].concat(locations, countries, cities, persons),
+		entities: [].concat(locations, countries, cities, persons,  organizations, suggestedQueries),
 		queries: suggestedQueries
 	};
 
