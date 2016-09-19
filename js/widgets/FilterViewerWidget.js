@@ -30,6 +30,10 @@
 			return true;
 		},
 
+		listoToRemoveFilter: function(callback) {
+			this._onRemoveFilterCallback = callback;
+		},
+
 		_renderFilters: function(){
 			var filters = EUMSSI.FilterManager.getAllFilters();
 			this.$container.empty();
@@ -65,10 +69,12 @@
 		},
 
 		_onRemoveFilter: function(event){
-			//Remove the filter from Filter Manager
 			var filterObj = $(event.currentTarget).parent(".ui-filter").data("filter");
 			EUMSSI.FilterManager.removeFilterObject(filterObj);
 			EUMSSI.Manager.doRequest(0);
+			if (typeof this._onRemoveFilterCallback === "function") {
+				this._onRemoveFilterCallback(filterObj);
+			}
 		}
 
 	});

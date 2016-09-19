@@ -120,6 +120,19 @@ _.extend(FilterManager.prototype, {
 		}));
 	},
 
+	checkFilterByText: function(text){
+		"use strict";
+		var f = {
+			filterText: text
+		};
+
+		return _.isObject(_.find(this._filters, function(filter) {
+			if (_.isMatch(filter, f)) {
+				return true;
+			}
+		}));
+	},
+
 	cleanFilter: function(){
 		delete this._filters;
 		this._filters = [];

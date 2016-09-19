@@ -48,7 +48,8 @@
 	<script src="js/Utils.js"></script>
 	<script src="js/EventManager.js"></script>
 	<script src="js/FilterManager.js"></script>
-	<script src="js/eumssiSolr-tool.js"></script>
+    <script src="js/ResultFilter.js"></script>
+    <script src="js/eumssiSolr-tool.js"></script>
 
 	<script src="lib/ajax-solr/Core.js"></script>
 	<script src="lib/ajax-solr/AbstractManager.js"></script>
@@ -200,20 +201,36 @@
 			    <div id="resulttab" data-tabpos="0">
 				    <!--RESULT widget-->
 				    <div class="result-widget widget-placeholder tab-content" data-widget="result">
+                        <div class="sorContainer">
+                            <select class='orderBy'>
+                                <option value='score' selected>Score</option>
+                                <option value='meta.source.datePublished'>Date</option>
+                            </select>
+                            <select class='orderType'>
+                                <option value='desc' selected>Descending</option>
+                                <option value='asc'>Ascending</option>
+                            </select>
+                        </div>
+                        <div class="social-media-filters">
+                            <div class="btn-group" role="group" aria-label="...">
+                                <button type="button" class="btn btn-default social">
+                                    <i class="fa fa-youtube"></i>
+                                    Social
+                                </button>
+                                <button type="button" class="btn btn-default media">
+                                    <i class="fa fa-video-camera"></i>
+                                    Media
+                                </button>
+                                <button type="button" class="btn btn-default news">
+                                    <i class="fa fa-newspaper-o"></i>
+                                    News
+                                </button>
+                            </div>
+                        </div>
 					    <div class="navigation">
 						    <ul class="pager"></ul>
 						    <div class="pager-header"></div>
-					    </div>
-						<div class="sorContainer">
-							<select class='orderBy'>
-								<option value='score' selected>Score</option>
-								<option value='meta.source.datePublished'>Date</option>
-							</select>
-							<select class='orderType'>
-								<option value='desc' selected>Descending</option>
-								<option value='asc'>Ascending</option>
-							</select>
-						</div>
+                        </div>
 					    <div class="result-panel-content resultWidget-placeholder"></div>
 					    <br>
 					    <div class="navigation">

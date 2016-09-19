@@ -52,6 +52,9 @@
 		 * @private
 		 */
 		_isTwitterEnabled: function(){
+			if (EUMSSI.FilterManager.checkFilterByText("News")) {
+				return false;
+			}
 			var sourceWidget = EUMSSI.Manager.widgets['source'];
 			if(sourceWidget){
 				return sourceWidget.isKeyActive('Twitter');

@@ -1,4 +1,4 @@
-/*global jQuery, $, _, AjaxSolr, EUMSSI, CONF, UTIL, FilterManager, EventManager */
+/*global jQuery, ResultFilter , AjaxSolr, EUMSSI, CONF, UTIL, FilterManager, EventManager */
 
 window.EUMSSI = {
 	Manager       : {},
@@ -12,11 +12,11 @@ window.EUMSSI = {
 	$tabs         : undefined
 };
 
-(function($){
+(function($, ResultFilter){
 
 	$(function(){
-
-		//<editor-fold desc="MAIN CORE MANAGER">
+		var resultFilter = new ResultFilter();
+		resultFilter.init();
 
 		EUMSSI.Manager = new AjaxSolr.Manager({
 			solrUrl        : 'http://demo.eumssi.eu/Solr_EUMSSI/content_items/',
@@ -45,10 +45,6 @@ window.EUMSSI = {
 			EUMSSI.Manager.store.addByValue(name, params[name]);
 		}
 		EUMSSI.CONF.updateFacetingFields();
-
-		//</editor-fold>
-
-		//<editor-fold desc="WIDGETS DEFINITION">
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.RichEditorWidget({
 			id: 'my-richEditor',
@@ -149,11 +145,13 @@ window.EUMSSI = {
 			persistentFilter: true
 		}));
 
-		EUMSSI.Manager.addWidget(new AjaxSolr.FilterViewerWidget({
+		var filterViewerWidget = new AjaxSolr.FilterViewerWidget({
 			id: 'filterViewer',
 			target: '.filterViewer-placeholder',
 			label: "Applied Filters:"
-		}));
+		});
+		filterViewerWidget.listoToRemoveFilter(resultFilter.analizeRemoveFilter.bind(resultFilter));
+		EUMSSI.Manager.addWidget(filterViewerWidget);
 
 		EUMSSI.Manager.addWidget(new AjaxSolr.SelectLocaleWidget({
 			id: 'locale',
@@ -195,15 +193,6 @@ window.EUMSSI = {
 			target: '.dashboard-placeholder'
 		}));
 
-		//</editor-fold>
-
-		//<editor-fold desc="GLOBAL CONFIGS">
-
-		// Datepicker default Locale
-		/*var language = window.navigator.userLanguage || window.navigator.language;
-		 if(language) {
-		 $.datepicker.setDefaults( $.datepicker.regional[language] );
-		 }*/
 		$.datepicker.setDefaults($.datepicker.regional['']);
 
 		EUMSSI.$tabs = $(".tabs-container").tabs({
@@ -338,10 +327,6 @@ window.EUMSSI = {
 
 			var intro = introJs();
 			intro.setOptions({
-//				nextLabel: "Siguiente",
-//				prevLabel: "Anterior",
-//				skipLabel: "Saltar",
-//				doneLabel: "Terminar",
 				showStepNumbers: false,
 				showProgress: true,
 				steps: [
@@ -390,7 +375,6 @@ window.EUMSSI = {
 				]
 			});
 			intro.start();
-			//Open the editor if collapsed
 			if($(".content").hasClass("slide-closed")){
 				$(".left-slide-toggler").click();
 			}
@@ -410,14 +394,12 @@ window.EUMSSI = {
 				$(".wordGraph").hide();
 				if(selectedValue){
 					EUMSSI.EventManager.trigger("wordselectchange", selectedValue);
-					// EUMSSI.EventManager.trigger("hideRelations", selectedValue);
 				}
 			}else{
 				$(".wordCloud").hide();
 				$(".wordGraph").show();
 				if(selectedValue) {
 					EUMSSI.EventManager.trigger("graphselectchange", selectedValue);
-					// EUMSSI.EventManager.trigger("showRelations", selectedValue);
 				}
 			}
 		});
@@ -510,4 +492,4 @@ window.EUMSSI = {
 			return bb;
 		}
 	});
-})(jQuery);
+})(jQuery, ResultFilter);
