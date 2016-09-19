@@ -23,9 +23,9 @@ var ResultFilter = (function(global, $) {
 		},
 
 		analizeRemoveFilter: function(filterObject) {
-			// Subscribe to events of deleted from filters
 			if (filterObject && filterObject.filterName === "source") {
-
+				this._toggleNews(false);
+				this._toggleSocial(false);
 			}
 		},
 
@@ -70,12 +70,20 @@ var ResultFilter = (function(global, $) {
 
 		_onSocialButtonClick: function() {
 			this._toggleSocial(true);
-			this._generateSocialQuery(this._getSocialFilterText());
+			this._removeSourceQuery();
+			this._generateQuery();
 		},
 
 		_onNewsButtonClick: function() {
 			this._toggleNews(true);
-			this._generateNewsQuery(this._getNewsFilterText());
+			this._removeSourceQuery();
+			this._generateQuery();
+		},
+
+		_generateQuery: function() {
+			var query = this._createFilterQuery();
+			this._addFilter(query);
+			this._launchSourceQuery();
 		},
 
 		_generateSocialQuery: function(filterName) {
@@ -94,18 +102,17 @@ var ResultFilter = (function(global, $) {
 			this.social = typeof state === "boolean" ? state : false;
 		},
 
-//		_createFilterQuery: function() {
-//			var values = [];
-//			if (this._isSocialActive()) {
-//				values = values.concat(this._getSourceFilterNames().social);
-//			}
-//			if (this._isNewsActive()) {
-//				values = values.concat(this._getSourceFilterNames().news);
-//			}
-//
-//			return FIELDS.source + ':("' + values.join('" OR "') + '")';
-//		},
+		_createFilterQuery: function() {
+			var values = [];
+			if (this._isSocialActive()) {
+				values = values.concat(this._getSourceFilterNames().social);
+			}
+			if (this._isNewsActive()) {
+				values = values.concat(this._getSourceFilterNames().news);
+			}
 
+			return FIELDS.source + ':("' + values.join('" OR "') + '")';
+		},
 
 		_generateOR: function(values) {
 			return FIELDS.source + ':("' + values.join('" OR "') + '")';
@@ -123,8 +130,8 @@ var ResultFilter = (function(global, $) {
 			return this._generateOR(values);
 		},
 
-		_addFilter: function(query, filterText) {
-			EUMSSI.FilterManager.addFilter(FIELDS.source, query, undefined, filterText);
+		_addFilter: function(query) {
+			EUMSSI.FilterManager.addFilter(FIELDS.source, query, undefined);
 		},
 
 		_launchSourceQuery: function() {

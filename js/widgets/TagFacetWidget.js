@@ -111,7 +111,7 @@
 				var count = items[i].count;
 				var checkboxID = "guid-"+$.guid++;
 
-				var $checkboxContainer = $("<div class='ui-checkbox-container'>");
+				var $checkboxContainer = $("<div class='ui-checkbox-container source-checkbox-container'>");
 				$checkboxContainer.attr("data-facet",facet);
 				$checkboxContainer.append($("<input type='checkbox'>").prop("data-value",facet).prop("id",checkboxID));
 				$checkboxContainer.append($('<label class="tagfacet-item"></label>').html( facet +"<span class='tagfacet-item-count'> ("+count+")</span>").prop("for",checkboxID));

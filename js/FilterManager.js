@@ -14,6 +14,7 @@ function FilterManager(){
 
 FilterManager.NAMES = {};
 FilterManager.NAMES.SIMILARITY = "SIMILARITY";
+FilterManager.NAMES.SOURCE = "source";
 FilterManager.NAMES.LANGUAGE = "meta.source.inLanguage";
 FilterManager.NAMES.GENERAL_SEARCH = "GENERAL_SEARCH";
 FilterManager.NAMES.GENERAL_SEARCH_LABEL = "GENERAL SEARCH";
@@ -133,6 +134,77 @@ _.extend(FilterManager.prototype, {
 		}));
 	},
 
+	_getSourceItems: function(query) {
+		"use strict";
+		return  query.replace(/\s+/g, " ").substring("source:(\"".length, query.length - 2).split("\" OR \"");
+	},
+
+	_getSourceFilter: function() {
+		"use strict";
+		return this._filters.filter(function(filter) {
+			return filter.filterName === "source";
+		})[0];
+	},
+
+
+	checkSocialFilter: function(){
+		"use strict";
+		var filter = this._getSourceFilter();
+		if (filter) {
+			var sourceItems = this._getSourceItems(filter.query);
+			var socialValues = this._getSocialValues();
+			return this._findValuesInItems(sourceItems, socialValues);
+		}
+		return false;
+	},
+
+
+	checkNewsFilter: function(){
+		"use strict";
+		var filter = this._getSourceFilter();
+		if (filter) {
+			var sourceItems = this._getSourceItems(filter.query);
+			var newsValues = this._getNewsValues();
+			return this._findValuesInItems(sourceItems, newsValues);
+		}
+		return false;
+	},
+
+
+	_findValuesInItems: function(items, values) {
+		"use strict";
+		var i, item;
+		for (i = 0; i < items.length; i++) {
+			item = items[i];
+			if (values.indexOf(item) >= 0) {
+				return true;
+			}
+		}
+		return false;
+	},
+
+	_getSocialValues: function() {
+		"use strict";
+		return [
+			"youtube-v",
+			"Youtube",
+			"Twitter"
+		];
+	},
+
+	_getNewsValues: function() {
+		"use strict";
+		return [
+			"DW (Youtube)",
+			"DW article",
+			"DW audio",
+			"DW video",
+			"Guardian (Youtube)",
+			"News",
+			"Wikipedia Events"
+		];
+	},
+
 	cleanFilter: function(){
 		delete this._filters;
 		this._filters = [];
@@ -219,6 +291,7 @@ _.extend(FilterManager.prototype, {
 	 */
 	getFilterQueryString: function(filterNames){
 		var fq = "", q = [];
+		var source = [];
 		_.each(this._filters,function(filterObj){
 			if(filterNames === undefined || (filterNames instanceof Array && filterNames.indexOf(filterObj.filterName) >= 0) ){
 				switch(filterObj.filterName){

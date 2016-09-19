@@ -42,7 +42,9 @@
 				if(this.$tabs.tabs( "option", "active") === tabPosition) {
 					this.$tabs.tabs( "option", "active", 0);
 				}
-				EUMSSI.$tabs.tabs( "disable", tabPosition );
+				if (this._getTwitterTabPosition() === tabPosition) {
+					EUMSSI.$tabs.tabs( "disable", tabPosition );
+				}
 			}
 		},
 
@@ -52,9 +54,12 @@
 		 * @private
 		 */
 		_isTwitterEnabled: function(){
-			if (EUMSSI.FilterManager.checkFilterByText("News")) {
+			if (EUMSSI.FilterManager.checkNewsFilter() && !EUMSSI.FilterManager.checkSocialFilter()) {
 				return false;
+			} else if (EUMSSI.FilterManager.checkSocialFilter()) {
+				return true;
 			}
+
 			var sourceWidget = EUMSSI.Manager.widgets['source'];
 			if(sourceWidget){
 				return sourceWidget.isKeyActive('Twitter');
@@ -277,6 +282,10 @@
 			if(this.tweetTimeline){
 				this.tweetTimeline.reloadChart();
 			}
+		},
+
+		_getTwitterTabPosition: function() {
+			return EUMSSI.$tabs.tabs("widget").find("#twitterpolarity").data("tabpos");
 		}
 
 	});
