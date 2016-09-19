@@ -1,3 +1,4 @@
+/* global EUMSSI */
 (function ($) {
 
 	AjaxSolr.GenericWordCloudWidget = AjaxSolr.AbstractFacetWidget.extend({
@@ -33,21 +34,31 @@
 			this._onSelectKey(value);
 		},
 
-		afterRequest: function () {
-			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
-
-			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this._getWordCloud();
-			}
+		_getTabPosition: function() {
+			return $(this.target).parents(".ui-tabs-panel").data("tabpos");
 		},
 
+
+		afterRequest: function () {
+			this._forzeGetWords();
+		},
 		/**
 		 * Check if the current open tab is this widget tab and then load the widget
 		 * @private
 		 */
 		_tabChange: function(){
-			var tabPosition = $(this.target).parents(".ui-tabs-panel").data("tabpos");
-			if(this.$tabs.tabs( "option", "active") === tabPosition) {
+			this._forzeGetWords();
+		},
+
+		_getDashboardTabPosition: function() {
+			return EUMSSI.$tabs.tabs("widget").find("#dashboardtab").data("tabpos");
+		},
+
+		_forzeGetWords: function() {
+			var tabPosition = this._getTabPosition();
+			var tabDashboardPosition = this._getDashboardTabPosition();
+			var activeTab = this.$tabs.tabs("option", "active");
+			if (activeTab === tabPosition || activeTab === tabDashboardPosition) {
 				this._getWordCloud();
 			}
 		},
