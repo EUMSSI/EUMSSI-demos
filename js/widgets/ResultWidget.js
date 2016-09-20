@@ -40,7 +40,7 @@
 		getEnabledDynamicAttributesKeyArray : function(){
 			var it, keyArray = [];
 			for(it in this.dynamicAttributes){
-				if(this.dynamicAttributes[it].render){
+				if(this.dynamicAttributes[it].render && this.dynamicAttributes[it] !== "meta.extracted.audio_transcript"){
 					keyArray.push(it);
 				}
 			}
@@ -70,7 +70,21 @@
 		},
 
 		_generateShowDetailSection: function(doc) {
-			var $showDetailContainer = this._createElement("div", {
+			var $container = this._generateCollapseContainer("Show detail");
+			$container.find(".info-label").click(this._expandShowDetail.bind(this, doc));
+			return $container;
+
+		},
+
+		_generateAudioTranscriptSection: function(doc) {
+			var $container = this._generateCollapseContainer("Audio transcript ");
+			$container.find(".info-label").click(this._expandAudioTranscriptJson.bind(this, doc));
+			return $container;
+
+		},
+
+		_generateCollapseContainer: function(labelText) {
+			var $container = this._createElement("div", {
 				"class": "info-block collapsed"
 			});
 			var $infoLabel = this._createInfoLabel();
@@ -78,14 +92,12 @@
 			var $triangle = this._createElement("span", {
 				"class": "ui-icon ui-icon-triangle-1-e"
 			});
-			$infoLabel.text("Show detail");
+			$infoLabel.text(labelText);
 			$infoLabel.append($triangle);
 			$spanValue.hide();
-			$showDetailContainer.append($infoLabel);
-			$showDetailContainer.append($spanValue);
-			$showDetailContainer.find(".info-label").click(this._expandShowDetail.bind(this, doc));
-			return $showDetailContainer;
-
+			$container.append($infoLabel);
+			$container.append($spanValue);
+			return $container;
 		},
 
 		/**
@@ -100,6 +112,7 @@
 				youtubeID = doc['meta.source.youtubeVideoID'],
 				videoLink = doc['meta.source.mediaurl'] || doc['meta.source.httpHigh'] || doc['meta.source.httpMedium'],
 				urlLink = doc['meta.source.url'];
+			var audioTranscriptJson = doc['meta.extracted.audio_transcript-json'];
 
 			if(this.hasHighlighting(doc, 'meta.source.text')){
 				var reg = /(<[^>]*em>)/ig;
@@ -180,6 +193,10 @@
 
 			var $showDetailContainer = this._generateShowDetailSection(doc);
 			$output.append($showDetailContainer);
+			if (audioTranscriptJson) {
+				var $showAudioTranscriptJson = this._generateAudioTranscriptSection(doc);
+				$output.append($showAudioTranscriptJson);
+			}
 			return $output;
 		},
 
@@ -221,20 +238,24 @@
 		},
 
 		_expandShowDetail: function(doc, event) {
-			var $span = $(event.currentTarget);
-			var $ico = $span.find(".ui-icon");
-			var $nextContainer = $span.next(".info-value");
-			var closeClassName = "ui-icon ui-icon-triangle-1-e";
-			var openClassName = "ui-icon ui-icon-triangle-1-s";
-			if (!$span.data("load")) {
+			var $target = $(event.currentTarget);
+			var $nextContainer = $target.next(".info-value");
+			if (!$target.data("load")) {
 				var keysArray = Object.keys(doc);
 				keysArray.sort();
 				keysArray = this.deleteKeys(keysArray);
 				var $content = this._renderShowDetail(keysArray, doc);
 				$nextContainer.append($content);
-				$span.data("load", true);
+				$target.data("load", true);
 			}
+			this._toggleCollapseContainer($target);
+		},
 
+		_toggleCollapseContainer: function($target) {
+			var $ico = $target.find(".ui-icon");
+			var $nextContainer = $target.next(".info-value");
+			var closeClassName = "ui-icon ui-icon-triangle-1-e";
+			var openClassName = "ui-icon ui-icon-triangle-1-s";
 			if ($ico.hasClass(closeClassName)) {
 				$ico.removeClass(closeClassName).addClass(openClassName);
 				$nextContainer.show();
@@ -242,6 +263,44 @@
 				$nextContainer.hide();
 				$ico.removeClass(openClassName).addClass(closeClassName);
 			}
+		},
+
+		_generateTranscriptItem: function(actualTranscript) {
+			var beginTime = new Date(actualTranscript.beginTime).toLocaleTimeString(undefined, {timeZone: "UTC"});
+			var $li = this._createElement("li");
+			var $play = this._createElement("span", {
+				"class": "icon-play-segment"
+			}).attr("title", "Play");
+			$li.append($play);
+			$li.append(actualTranscript.speakerId + " ");
+			$li.append(beginTime + ": ");
+			$li.append(actualTranscript.transcript);
+			return $li;
+		},
+
+		_generateTranscriptItems: function(doc) {
+			var items = JSON.parse(doc['meta.extracted.audio_transcript-json']);
+			var $items = [];
+			for (var i = 0; i < items.length; i += 1) {
+				var actualTranscript = items[i];
+				var $li = this._generateTranscriptItem(actualTranscript);
+				$li.find(".icon-play-segment").click(this._onClickPlayAudioTranscript.bind(this, doc, actualTranscript));
+				$items.push($li);
+			}
+			return $items;
+		},
+
+		_expandAudioTranscriptJson: function(doc, event) {
+			var $target = $(event.currentTarget);
+			var $nextContainer = $target.next(".info-value");
+			if (!$target.data("load")) {
+				var $ul = this._createElement("ul");
+				var $items = this._generateTranscriptItems(doc);
+				$ul.append($items);
+				$nextContainer.append($ul);
+				$target.data("load", true);
+			}
+			this._toggleCollapseContainer($target);
 		},
 
 		_createElement: function(tag, options) {
@@ -312,6 +371,20 @@
 			}
 
 			return html;
+		},
+
+		_getVideoLink: function(doc) {
+			return doc['meta.source.httpHigh'] || doc['meta.source.mediaurl'] || doc['meta.source.httpMedium'];
+		},
+
+		_onClickPlayAudioTranscript: function(doc, transcript){
+			var videoLink = this._getVideoLink(doc);
+			var init = parseFloat(transcript.beginTime, 10);
+			EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [
+				videoLink,
+				doc,
+				init
+			]);
 		},
 
 		/**
@@ -460,6 +533,12 @@
 							var $html = this._isSourceKey(doc, text, key);
 							$content.append($html);
 						break;
+						case "meta.extracted.audio_transcript-json":
+							$content.append("");
+							break;
+						case "meta.extracted.audio_transcript":
+							$content.append("");
+							break;
 						case "meta.extracted.text_nerl.dbpedia.PERSON" :
 							value = this._personCustomRender(text, $content);
 							$value.addClass("person-data");
@@ -520,8 +599,9 @@
 
 							var $value = $('<span>').addClass("info-value"),
 								$key = $('<span>').addClass("info-label");
-
-							this._renderKey($key, highlightingKey, highlighting, doc, $value, $content);
+							if (highlightingKey !== "meta.extracted.audio_transcript") {
+								this._renderKey($key, highlightingKey, highlighting, doc, $value, $content);
+							}
 						}
 					}
 				}

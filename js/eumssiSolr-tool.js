@@ -356,7 +356,9 @@ window.EUMSSI = {
 					},
 					{
 						element: document.querySelector('.cke_button__btneumssisearch'),
-						intro: UTIL.formatIntroJsIntro("Get Related Content","This action processes the selected text in the editor and generates related filter options of it.", "Select a section of your article and press the button, the advanced filter will appear with suggested filters."),
+						intro: UTIL.formatIntroJsIntro("Get Related Content",
+							"The action processes the selected text in the editor. This action also generates filter options related to the selected text.",
+							"The editor will highlight important words related to selected text and the widget column will display relevant content associated to the selection."),
 						position: "right"
 					},
 					{

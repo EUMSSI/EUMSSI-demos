@@ -178,19 +178,44 @@
 				twttr.widgets.createTweet(tweetId, $el[0]).then(this._renderSendToEditorBtn.bind(this, $el, tweetId));
 			}
 		},
-		
+
+		_createSendToEditorButton: function(tweetId) {
+			var $div = $("<div>", {
+				"class": "tweet-to-editor",
+				"title": "Write tweet on text editor"
+			});
+			var $span = $("<span>", {
+				"class": "ui-icon ui-icon-comment"
+			});
+			$div.append(" to Editor");
+			$div.prepend($span);
+			$div.on("click", this._onSendToEditorButtonClick.bind(this, tweetId));
+			return $div;
+		},
+
+		_onSendToEditorButtonClick: function(tweetId) {
+			var oEditor = CKEDITOR.instances["richeditor-placeholder"];
+			twttr.widgets.createTweet(tweetId, oEditor.document.getBody().$);
+		},
+
 		_renderSendToEditorBtn : function($element, tweetId){
+			var widget = $element[0];
 			setTimeout(function($element, tweetId){
+				try {
 					var iframeContentSize = $element.find("iframe").contents().find("body").html().length;
 					if (!EUMSSI.demoMode && CKEDITOR && iframeContentSize >= 1) {
-						var $sendToEditor = $('<div class="tweet-to-editor" title="Write tweet on text editor">')
-							.html('<span class="ui-icon ui-icon-comment">&nbsp;</span>&nbsp;to Editor');
-						$element.append($sendToEditor);
-						$sendToEditor.on("click", function() {
-							var oEditor = CKEDITOR.instances["richeditor-placeholder"];
-							twttr.widgets.createTweet(tweetId, oEditor.document.getBody().$);
-						});
+						var $button = this._createSendToEditorButton(tweetId);
+						$element.append($button);
 					}
+				} catch (e) {
+					if ($element.find("twitterwidget").length > 0) {
+						var $sendToEditor = this._createSendToEditorButton(tweetId);
+						var div = widget.querySelector("twitterwidget").shadowRoot.querySelector("div.SandboxRoot");
+						if (div.hasChildNodes()) {
+							$element.append($sendToEditor);
+						}
+					}
+				}
 			}.bind(this, $element, tweetId),300);
 		},
 
