@@ -57,12 +57,19 @@ body {
     .kea-tags-container {
         display: inline-block;
         vertical-align: top;
-        margin-top: 6px;
+        .suggested-queries-help {
+            display: inline-block;
+            color: white;
+            vertical-align: bottom;
+            margin-right: 10px;
+            margin-left: 19px;
+        }
         .tags {
             list-style: none;
             margin: 0;
             overflow: hidden;
             padding: 0;
+            display: inline-block;
         }
 
         .tags li {
@@ -1006,7 +1013,7 @@ canvas{
 }
 
 .header {
-    height: 80px;
+    height: 100px;
     .mainSearch-placeholder {
         width: 33.3333%;
         box-sizing: border-box;
@@ -1062,7 +1069,6 @@ canvas{
     }
 
     .kea-tags-container {
-        width: 30%;
         box-sizing: border-box;
 
         .tags {

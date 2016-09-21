@@ -83,6 +83,13 @@
 
 		},
 
+		_generateNormalAudioTranscriptSection: function(doc) {
+			var $container = this._generateCollapseContainer("Audio transcript ");
+			$container.find(".info-label").click(this._expandAudioTranscript.bind(this, doc));
+			return $container;
+
+		},
+
 		_generateCollapseContainer: function(labelText) {
 			var $container = this._createElement("div", {
 				"class": "info-block collapsed"
@@ -113,6 +120,7 @@
 				videoLink = doc['meta.source.mediaurl'] || doc['meta.source.httpHigh'] || doc['meta.source.httpMedium'],
 				urlLink = doc['meta.source.url'];
 			var audioTranscriptJson = doc['meta.extracted.audio_transcript-json'];
+			var audioTranscript = doc['meta.extracted.audio_transcript'];
 
 			if(this.hasHighlighting(doc, 'meta.source.text')){
 				var reg = /(<[^>]*em>)/ig;
@@ -196,6 +204,11 @@
 			if (audioTranscriptJson) {
 				var $showAudioTranscriptJson = this._generateAudioTranscriptSection(doc);
 				$output.append($showAudioTranscriptJson);
+			}
+
+			if (!audioTranscriptJson && audioTranscript) {
+				var $showAudioTranscriptSection = this._generateNormalAudioTranscriptSection(doc);
+				$output.append($showAudioTranscriptSection);
 			}
 			return $output;
 		},
@@ -298,6 +311,16 @@
 				var $items = this._generateTranscriptItems(doc);
 				$ul.append($items);
 				$nextContainer.append($ul);
+				$target.data("load", true);
+			}
+			this._toggleCollapseContainer($target);
+		},
+
+		_expandAudioTranscript: function(doc, event) {
+			var $target = $(event.currentTarget);
+			var $nextContainer = $target.next(".info-value");
+			if (!$target.data("load")) {
+				$nextContainer.append(doc['meta.extracted.audio_transcript'].toString());
 				$target.data("load", true);
 			}
 			this._toggleCollapseContainer($target);
@@ -518,6 +541,8 @@
 		},
 
 		_renderKeyArray : function(keysArray, doc, moreSize) {
+			var audioTranscript = this._getDynamicAttrs()[0];
+			keysArray.push(audioTranscript.key);
 			var $content = $("<div>");
 			moreSize = moreSize || 1000;
 			for(var i = 0 ; i < keysArray.length ; i++){

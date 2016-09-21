@@ -1065,13 +1065,20 @@ body .ui-draggable-handle.ui-draggable-dragging {
 .header .kea-tags-container {
   display: inline-block;
   vertical-align: top;
-  margin-top: 6px;
+}
+.header .kea-tags-container .suggested-queries-help {
+  display: inline-block;
+  color: white;
+  vertical-align: bottom;
+  margin-right: 10px;
+  margin-left: 19px;
 }
 .header .kea-tags-container .tags {
   list-style: none;
   margin: 0;
   overflow: hidden;
   padding: 0;
+  display: inline-block;
 }
 .header .kea-tags-container .tags li {
   float: left;
@@ -1833,7 +1840,7 @@ canvas {
   font-size: 12px;
 }
 .header {
-  height: 80px;
+  height: 100px;
 }
 .header .mainSearch-placeholder {
   width: 33.3333%;
@@ -1884,7 +1891,6 @@ canvas {
   width: 120px !important;
 }
 .header .kea-tags-container {
-  width: 30%;
   box-sizing: border-box;
 }
 .header .kea-tags-container .tags {

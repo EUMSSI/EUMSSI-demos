@@ -257,9 +257,14 @@
 			}
 			var $tags = keaItems.map(this._generateTags);
 			if ($tags.length > 0) {
+				var $p = $("<p>", {
+					"text": "Suggested queries: ",
+					"class": "suggested-queries-help"
+				});
 				var $ul = $("<ul>", {"class": "tags"});
 				$ul.append($tags);
-				$suggested.html($ul).show();
+				$suggested.html($p);
+				$suggested.append($ul).show();
 				$suggested.off().on("click", ".tag", this.onClickTag.bind(this));
 			} else {
 				$suggested.hide();

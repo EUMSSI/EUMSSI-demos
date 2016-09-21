@@ -181,12 +181,9 @@ var ResultFilter = (function(global, $) {
 		_getSourceFilterNames: function() {
 			return {
 				social: [
-					"youtube-v",
-					"Youtube",
 					"Twitter"
 				],
 				news: [
-					"DW (Youtube)",
 					"DW article",
 					"DW audio",
 					"DW video",

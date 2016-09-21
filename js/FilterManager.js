@@ -186,8 +186,6 @@ _.extend(FilterManager.prototype, {
 	_getSocialValues: function() {
 		"use strict";
 		return [
-			"youtube-v",
-			"Youtube",
 			"Twitter"
 		];
 	},
@@ -195,7 +193,6 @@ _.extend(FilterManager.prototype, {
 	_getNewsValues: function() {
 		"use strict";
 		return [
-			"DW (Youtube)",
 			"DW article",
 			"DW audio",
 			"DW video",
