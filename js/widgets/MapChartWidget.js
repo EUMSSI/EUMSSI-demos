@@ -118,11 +118,24 @@
 			this._renderIfTabActivated();
 		},
 
+		_isActiveTab: function() {
+			var mapTabPosition = this._getMapTabPosition();
+			var dashboardTabPostition = this._getDashboardTabPosition();
+			var activeTab = this.$tabs.tabs("option", "active");
+			return activeTab === mapTabPosition || activeTab === dashboardTabPostition;
+		},
 		_renderIfTabActivated: function(){
-			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
-			if(this.$tabs.tabs( "option", "active") === tabPosition) {
+			if(this._isActiveTab()) {
 				this._refreshChartData();
 			}
+		},
+
+		_getMapTabPosition: function() {
+			return EUMSSI.$tabs.tabs("widget").find("#maptab").data("tabpos");
+		},
+
+		_getDashboardTabPosition: function() {
+			return EUMSSI.$tabs.tabs("widget").find("#dashboardtab").data("tabpos");
 		},
 
 		/**
@@ -131,8 +144,8 @@
 		 */
 		_tabChange: function(){
 			var tabPosition = this.$target.parents(".ui-tabs-panel").data("tabpos");
-			if(this.$tabs.tabs( "option", "active") === tabPosition) {
-				this.$tabs.off("tabsactivate.mapchartwidget");
+			if(this._isActiveTab()) {
+//				this.$tabs.off("tabsactivate.mapchartwidget");
 				this._refreshChartData();
 			}
 		},
