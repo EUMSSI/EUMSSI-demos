@@ -811,6 +811,10 @@
 
 		_replaceOriginalForHighlighting : function(originalText) {
 			var filters = EUMSSI.FilterManager.getFilters("GENERAL_SEARCH");
+			if (filters && filters.length === 0) {
+				return originalText;
+			}
+
 			if (filters.length > 0 && filters[0].query.split(":")[1] != "*") {
 				var re = new RegExp(filters[0].query.split(":")[1], "ig");
 				return originalText.replace(re, function (match) {
