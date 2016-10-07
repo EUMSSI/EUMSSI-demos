@@ -1,4 +1,4 @@
-/*global jQuery, JSON, AjaxSolr, EUMSSI, _*/
+/*global jQuery, JSON, AjaxSolr, EUMSSI, _, CKEDITOR, twttr*/
 (function ($) {
 
 	AjaxSolr.ResultWidget = AjaxSolr.AbstractWidget.extend({
@@ -107,6 +107,42 @@
 			return $container;
 		},
 
+		_getVideoPlayContainer: function(className) {
+			return $("<div>", {
+				"class": className,
+				"title": "Play Video"
+			});
+		},
+
+		_createDomVideoLink: function(params) {
+			var isVideoLink = params.videoLink && !params.youtubeID;
+			var icon = isVideoLink ? "icon-play" : "icon-play-youtube";
+			var $play = this._getVideoPlayContainer(icon);
+			params.$output.find("h2").prepend($play);
+			$play.click(function() {
+				EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [
+					isVideoLink ? params.videoLink : params.youtubeID,
+					params.doc
+				]);
+			});
+			this._renderSendToEditorBtn(params.$output, params.doc['meta.source.mediaurl'], !isVideoLink);
+		},
+
+		_generateTitle: function(doc, text) {
+			if (this.hasHighlighting(doc, 'meta.source.text')) {
+				var reg = /(<[^>]*em>)/ig;
+				if (this.manager.response.highlighting[doc._id]['meta.source.text'].toString()
+				                                                                   .replace(reg, "") != doc['meta.source.text']) {
+					text = this._bindOriginalText(doc['meta.source.text'], text);
+				} else {
+					text = doc['meta.source.text'];
+				}
+			} else {
+				text = this._sliceTextMore(text, 300);
+			}
+			return text;
+		},
+
 		/**
 		 * Generate a HTML for the given document DATA
 		 * @param {Object} doc - data of the document
@@ -114,24 +150,16 @@
 		 * @returns {*|jQuerySelector} the jQuery selector with the generated html code.
 		 */
 		defaultTemplate: function (doc) {
-			var text = this.getValueByKey(doc, 'meta.source.text') || "...",
-				date = doc['meta.source.datePublished'],
-				youtubeID = doc['meta.source.youtubeVideoID'],
-				videoLink = doc['meta.source.mediaurl'] || doc['meta.source.httpHigh'] || doc['meta.source.httpMedium'],
-				urlLink = doc['meta.source.url'];
+			var text = this.getValueByKey(doc, 'meta.source.text') || "...";
+			var date = doc['meta.source.datePublished'];
+			var youtubeID = doc['meta.source.youtubeVideoID'];
+			var videoLink = doc['meta.source.mediaurl'] || doc['meta.source.httpHigh'] || doc['meta.source.httpMedium'];
+			var urlLink = doc['meta.source.url'];
 			var audioTranscriptJson = doc['meta.extracted.audio_transcript-json'];
 			var audioTranscript = doc['meta.extracted.audio_transcript'];
+			var hasTwitter = doc['meta.source.tweetId'];
 
-			if(this.hasHighlighting(doc, 'meta.source.text')){
-				var reg = /(<[^>]*em>)/ig;
-				if (this.manager.response.highlighting[doc._id]['meta.source.text'].toString().replace(reg, "") != doc['meta.source.text']) {
-					text = this._bindOriginalText(doc['meta.source.text'], text);
-				}else{
-					text = doc['meta.source.text'];
-				}
-			}else{
-				text = this._sliceTextMore(text,300);
-			}
+			text = this._generateTitle(doc, text);
 			// Render HTML Code
 			var $output = $('<div class="result-element">');
 
@@ -150,26 +178,13 @@
 			//Dynamic Fields
 			$output.append(this._renderKeyArray(this.getEnabledDynamicAttributesKeyArray(),doc,200));
 
-			//Youtube Link
-			if(youtubeID){
-				var $play = $('<div class="icon-play-youtube" title="Play Video">');
-				$output.find("h2").prepend($play);
-				$play.click(function(){
-					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [youtubeID, doc]);
+			if (youtubeID || videoLink) {
+				this._createDomVideoLink({
+					videoLink: videoLink,
+					youtubeID: youtubeID,
+					$output: $output,
+					doc: doc
 				});
-
-				this._renderSendToEditorBtn($output, doc['meta.source.mediaurl'], true);
-			}
-
-			//Link Video
-			if(videoLink && !youtubeID) {
-				var $play = $('<div class="icon-play" title="Play Video">');
-				$output.find("h2").prepend($play);
-				$play.click(function(){
-					EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, doc]);
-				});
-
-				this._renderSendToEditorBtn($output, doc['meta.source.mediaurl'], false);
 			}
 
 			//Segments
@@ -189,10 +204,11 @@
 			}
 
 			//Background Images
-			if(doc['meta.source.tweetId']){
+			if(hasTwitter){
 				$output.addClass("element-tweet");
 			}
 			if(youtubeID){
+
 				$output.addClass("result-element-youtube");
 			}
 			if(videoLink && !youtubeID){
@@ -210,7 +226,31 @@
 				var $showAudioTranscriptSection = this._generateNormalAudioTranscriptSection(doc);
 				$output.append($showAudioTranscriptSection);
 			}
+
+			if (hasTwitter && !youtubeID && !videoLink) {
+				var $but = this._createSendToEditorButton(hasTwitter);
+				$output.append($but);
+			}
 			return $output;
+		},
+
+		_createSendToEditorButton: function(tweetId) {
+			var $div = $("<div>", {
+				"class": "tweet-to-editor",
+				"title": "Write tweet on text editor"
+			});
+			var $span = $("<span>", {
+				"class": "ui-icon ui-icon-comment"
+			});
+			$div.append(" to Editor");
+			$div.prepend($span);
+			$div.on("click", this._onSendToEditorButtonClick.bind(this, tweetId));
+			return $div;
+		},
+
+		_onSendToEditorButtonClick: function(tweetId) {
+			var oEditor = CKEDITOR.instances["richeditor-placeholder"];
+			twttr.widgets.createTweet(tweetId, oEditor.document.getBody().$);
 		},
 
 		_getNotAllowedKeys: function() {
@@ -229,7 +269,6 @@
 				"meta.source.teaser",
 				"meta.source.text",
 				"meta.source.type",
-				"meta.extracted.video_ocr.best",
 				"ns",
 				"source",
 			    "meta.extracted.text_polarity.discrete",

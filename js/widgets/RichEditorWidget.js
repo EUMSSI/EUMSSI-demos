@@ -133,8 +133,8 @@
 			});
 
 			editor.ui.addButton('btnEumssiDeleteHighlight', { // add new button and bind our command
-				label: "Delete highlight text",
-				title: "Delete highlight text",
+				label: "Remove Righlighting",
+				title: "Remove Highlighting",
 				command: 'deleteHighLigh',
 				icon: '../../images/favicon-2.png'
 			});

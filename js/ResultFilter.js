@@ -70,12 +70,16 @@ var ResultFilter = (function(global, $) {
 
 		_onSocialButtonClick: function() {
 			this._toggleSocial(true);
+			this._toggleNews(false);
+			this._toggleMedia(false);
 			this._removeSourceQuery();
 			this._generateQuery();
 		},
 
 		_onNewsButtonClick: function() {
 			this._toggleNews(true);
+			this._toggleSocial(false);
+			this._toggleMedia(false);
 			this._removeSourceQuery();
 			this._generateQuery();
 		},
@@ -155,6 +159,10 @@ var ResultFilter = (function(global, $) {
 		},
 
 		_onMediaButtonClick: function() {
+			this._toggleNews(false);
+			this._toggleSocial(false);
+			this._toggleMedia(true);
+			this._removeSourceQuery();
 			var filterName = videoDocuments.filterName;
 			var query = videoDocuments.query;
 			var filterText = videoDocuments.filterText;
@@ -162,8 +170,11 @@ var ResultFilter = (function(global, $) {
 			this._launchSourceQuery();
 		},
 
-		_toggleMedia: function() {
-			// todo
+		_toggleMedia: function(state) {
+			this.media = typeof state === "boolean" ? state : false;
+			if (!this._isMediaActive()) {
+				EUMSSI.FilterManager.removeFilterByName(videoDocuments.filterName, undefined, true);
+			}
 		},
 
 		_toggleNews: function(state) {
@@ -176,6 +187,10 @@ var ResultFilter = (function(global, $) {
 
 		_isNewsActive: function() {
 			return this.news;
+		},
+
+		_isMediaActive: function() {
+			return this.media;
 		},
 
 		_getSourceFilterNames: function() {

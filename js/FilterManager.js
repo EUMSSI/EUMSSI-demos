@@ -13,11 +13,11 @@ function FilterManager(){
 }
 
 FilterManager.NAMES = {};
-FilterManager.NAMES.SIMILARITY = "SIMILARITY";
+FilterManager.NAMES.SIMILARITY = "Similarity";
 FilterManager.NAMES.SOURCE = "source";
 FilterManager.NAMES.LANGUAGE = "meta.source.inLanguage";
 FilterManager.NAMES.GENERAL_SEARCH = "GENERAL_SEARCH";
-FilterManager.NAMES.GENERAL_SEARCH_LABEL = "GENERAL SEARCH";
+FilterManager.NAMES.GENERAL_SEARCH_LABEL = "General Search";
 FilterManager.NAMES.CONTENT_SEARCH = "contentSearch";
 
 _.extend(FilterManager.prototype, {
