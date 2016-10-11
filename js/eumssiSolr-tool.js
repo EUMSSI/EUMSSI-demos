@@ -15,6 +15,8 @@ window.EUMSSI = {
 (function($, ResultFilter){
 
 	$(function(){
+		localStorage.setItem('firstTime', "");
+
 		var resultFilter = new ResultFilter();
 		resultFilter.init();
 
@@ -76,6 +78,16 @@ window.EUMSSI = {
 				{key:"meta.extracted.video_ocr.best",label:"Caption in video", showInResultCheck: false},
 				//{key:"meta.extracted.video_persons.amalia",label:"Person Identification", showInResultCheck: false},
 				{key:"meta.extracted.text_nerl.dbpedia.PERSON",label:"Person", showInResultCheck: true},
+				{
+					key: "meta.extracted.text_nerl.dbpedia.all",
+					label: "DBPedia entities",
+					showInResultCheck: true
+				},
+				{
+					key: "meta.extracted.text_nerl.ner.all",
+					label: "NER entities",
+					showInResultCheck: true
+				},
 				{key:"meta.extracted.text_nerl.dbpedia.LOCATION",label:"Location", showInResultCheck: true},
 				{key:"meta.extracted.video_persons.thumbnails",label:"Persons in video", showInResultCheck: true}
 				//...
@@ -355,7 +367,7 @@ window.EUMSSI = {
 						position: "right"
 					},
 					{
-						element: document.querySelector('.cke_button__btneumssisearch'),
+						element: document.querySelector('.cke_button__eumssisearch'),
 						intro: UTIL.formatIntroJsIntro("Get Related Content",
 							"The action processes the selected text in the editor. This action also generates filter options related to the selected text.",
 							"The editor will highlight important words related to selected text and the widget column will display relevant content associated to the selection."),

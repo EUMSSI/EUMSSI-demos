@@ -82,6 +82,9 @@
 				if (obj.fq) {
 					obj.fq = decodeURIComponent(obj.fq);
 				}
+				if (obj.sort) {
+					obj.sort = decodeURIComponent(obj.sort);
+				}
 				options.data = obj;
 				options.url = this.solrUrl + servlet;
 				if (options.data["facet.field"].length > 0) {

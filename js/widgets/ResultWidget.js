@@ -1,4 +1,4 @@
-/*global jQuery, JSON, AjaxSolr, EUMSSI, _, CKEDITOR, twttr*/
+/* global jQuery, JSON, AjaxSolr, EUMSSI, _, CKEDITOR, twttr, swal*/
 (function ($) {
 
 	AjaxSolr.ResultWidget = AjaxSolr.AbstractWidget.extend({
@@ -119,11 +119,27 @@
 			var icon = isVideoLink ? "icon-play" : "icon-play-youtube";
 			var $play = this._getVideoPlayContainer(icon);
 			params.$output.find("h2").prepend($play);
-			$play.click(function() {
+			var openVideo = function() {
 				EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [
 					isVideoLink ? params.videoLink : params.youtubeID,
 					params.doc
 				]);
+			};
+			$play.click(function() {
+				if (isVideoLink) {
+					$.ajax({
+						type: 'HEAD',
+						url: params.videoLink,
+						success: function() {
+							openVideo();
+						},
+						error: function() {
+							swal("This video is no longer available on file DW");
+						}
+					});
+				} else {
+					openVideo();
+				}
 			});
 			this._renderSendToEditorBtn(params.$output, params.doc['meta.source.mediaurl'], !isVideoLink);
 		},
@@ -142,6 +158,67 @@
 			}
 			return text;
 		},
+
+		_getCurrentEmphasisObject: function(id) {
+			var emphasisObject;
+			var emphasisResponseObject = this.manager.response.highlighting;
+			var i;
+			var key;
+			var keys = Object.keys(emphasisResponseObject);
+			for (i = 0; i < keys.length; i++) {
+				key = keys[i];
+				if (key === id) {
+					emphasisObject = emphasisResponseObject[key];
+				}
+			}
+			return emphasisObject;
+		},
+
+		_setHighligthing: function(text, id) {
+			var currentEmphasis = this._getCurrentEmphasisObject(id);
+			if (currentEmphasis) {
+				text = this.emphasize(text, this._getEmphasis(currentEmphasis));
+			}
+			return text;
+		},
+
+		_getEmphasis: function(currentEmphasis) {
+			var emphasisTerms;
+			var i;
+			var key;
+			var keys = Object.keys(currentEmphasis);
+			var terms = [];
+			var filterInArray = function(term) {
+				return terms.indexOf(term) < 0;
+			};
+
+			for (i = 0; i < keys.length; i++) {
+				key = keys[i];
+				emphasisTerms = this.getEmphasis(currentEmphasis[key][0]);
+				terms = terms.concat(emphasisTerms.filter(filterInArray));
+			}
+
+			return terms;
+		},
+
+
+		/*
+		 * "<em>Lorem Ipsum</em>" -> ["Lorem Ipsum"]
+		 * */
+		getEmphasis: function(str) {
+			return str.match(/[^>]+(?=<\s*\/\s*em\s*>)/igm);
+		},
+
+		emphasize: function(str, ems) {
+			var i;
+			var ret = str;
+			for (i = 0; i < ems.length; i++) {
+				ret = ret.replace(new RegExp("\\b" + ems[i] + "\\b", "g"), "<em>" + ems[i] + "</em>");
+			}
+
+			return ret;
+		},
+		
 
 		/**
 		 * Generate a HTML for the given document DATA
@@ -231,6 +308,7 @@
 				var $but = this._createSendToEditorButton(hasTwitter);
 				$output.append($but);
 			}
+			
 			return $output;
 		},
 
@@ -260,6 +338,8 @@
 				"_version_",
 				"contentSearch",
 				"meta.extracted.audio_transcript",
+				"meta.extracted.audio_transcript-json",
+				"meta.extracted.audio_transcript-dbpedia",
 				"meta.extracted.video_persons.amalia",
 				"meta.extracted.video_persons.thumbnails",
 				"meta.source.datePublished",
@@ -317,7 +397,7 @@
 			}
 		},
 
-		_generateTranscriptItem: function(actualTranscript) {
+		_generateTranscriptItem: function(actualTranscript, _id) {
 			var beginTime = new Date(actualTranscript.beginTime).toLocaleTimeString(undefined, {timeZone: "UTC"});
 			var $li = this._createElement("li");
 			var $play = this._createElement("span", {
@@ -326,7 +406,8 @@
 			$li.append($play);
 			$li.append(actualTranscript.speakerId + " ");
 			$li.append(beginTime + ": ");
-			$li.append(actualTranscript.transcript);
+			var text = this._setHighligthing(actualTranscript.transcript, _id);
+			$li.append(text);
 			return $li;
 		},
 
@@ -335,7 +416,7 @@
 			var $items = [];
 			for (var i = 0; i < items.length; i += 1) {
 				var actualTranscript = items[i];
-				var $li = this._generateTranscriptItem(actualTranscript);
+				var $li = this._generateTranscriptItem(actualTranscript, doc._id);
 				$li.find(".icon-play-segment").click(this._onClickPlayAudioTranscript.bind(this, doc, actualTranscript));
 				$items.push($li);
 			}
@@ -359,7 +440,9 @@
 			var $target = $(event.currentTarget);
 			var $nextContainer = $target.next(".info-value");
 			if (!$target.data("load")) {
-				$nextContainer.append(doc['meta.extracted.audio_transcript'].toString());
+				var text = doc['meta.extracted.audio_transcript'];
+				text = this._setHighligthing(text, doc._id);
+				$nextContainer.append(text);
 				$target.data("load", true);
 			}
 			this._toggleCollapseContainer($target);
@@ -643,33 +726,39 @@
 							if(key == "meta.extracted.text_nerl.dbpedia"){
 								value = this._generateHTMLLinks(value);
 							}
-
-							this._renderKey($key, key, this.manager.response.highlighting ? this.manager.response.highlighting[doc._id] : "", doc, $value, $content);
+							var currentEmphasisObject = this._getCurrentEmphasisObject(doc._id);
+							$key.html(this._getSimpleKey(key));
+							if (currentEmphasisObject[key]) {
+								text = this.emphasize(text, this.getEmphasis(currentEmphasisObject[key][0]));
+							}
+							$value.html(text);
+							$content.append($('<p>').append($key).append($value));
+//							this._renderKey($key, key, this.manager.response.highlighting ? this.manager.response.highlighting[doc._id] : "", doc, $value, $content);
 							break;
 					}
 				}
 			}
 
 			//show all the fields returned by the highlighting
-			var docCopy = JSON.parse(JSON.stringify(doc)), responseHighlightingKey, highlightingKey;
-
-			for(responseHighlightingKey in this.manager.response.highlighting){
-				var highlighting = this.manager.response.highlighting[responseHighlightingKey];
-				if(responseHighlightingKey == docCopy._id){
-					for(highlightingKey in highlighting) {
-
-						var isRendered = _.find(keysArray, function (key) {return key === highlightingKey});
-						if (!isRendered && !_.contains(this.excludedFields, highlightingKey)) {
-
-							var $value = $('<span>').addClass("info-value"),
-								$key = $('<span>').addClass("info-label");
-							if (highlightingKey !== "meta.extracted.audio_transcript") {
-								this._renderKey($key, highlightingKey, highlighting, doc, $value, $content);
-							}
-						}
-					}
-				}
-			}
+//			var docCopy = JSON.parse(JSON.stringify(doc)), responseHighlightingKey, highlightingKey;
+//
+//			for(responseHighlightingKey in this.manager.response.highlighting){
+//				var highlighting = this.manager.response.highlighting[responseHighlightingKey];
+//				if(responseHighlightingKey == docCopy._id){
+//					for(highlightingKey in highlighting) {
+//
+//						var isRendered = _.find(keysArray, function (key) {return key === highlightingKey});
+//						if (!isRendered && !_.contains(this.excludedFields, highlightingKey)) {
+//
+//							var $value = $('<span>').addClass("info-value"),
+//								$key = $('<span>').addClass("info-label");
+//							if (highlightingKey !== "meta.extracted.audio_transcript") {
+//								this._renderKey($key, highlightingKey, highlighting, doc, $value, $content);
+//							}
+//						}
+//					}
+//				}
+//			}
 
 			return $content;
 		},
@@ -1086,6 +1175,7 @@
 		},
 
 		_embedVideo: function(videoId){
+			// TODO utilizar el mismo método que con twitter.
 			$(".cke_button__embed").click();
 			$(".cke_dialog.cke_browser_webkit.cke_ltr.cke_single_page").css("display", "none");
 			setTimeout(function(){

@@ -1,9 +1,10 @@
-/*global jQuery,  AjaxSolr, EUMSSI,  UTIL, CKEDITOR, FilterManager */
+/*global jQuery,  AjaxSolr, EUMSSI,  UTIL, CKEDITOR, FilterManager, swal */
 (function ($) {
 
 	AjaxSolr.RichEditorWidget = AjaxSolr.AbstractTextWidget.extend({
 
 		start:0,	//Reset the pagination with doRequest on this Widget
+		cookieName: "firstTime",
 
 		init: function () {
 			this.$target = $(this.target);
@@ -26,19 +27,12 @@
 		 * @private
 		 */
 		_initCKEditor : function(editorId){
-			// The trick to keep the editor in the sample quite small
-			// unless user specified own height.
-			CKEDITOR.config.width = 'auto';
-
-			CKEDITOR.config.extraPlugins = 'embed,autoembed';
-
-			//Toolbar configuration
-			CKEDITOR.config.removeButtons = 'Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CreateDiv,Language,Scayt,SelectAll,Anchor,Flash,Smiley,Iframe,Maximize,About';
-
 			var wysiwygareaAvailable = this._isWysiwygareaAvailable(),
 				isBBCodeBuiltIn = !!CKEDITOR.plugins.get('bbcode');
 
 			var editorElement = CKEDITOR.document.getById(editorId);
+
+			var editor;
 
 			// :(((
 			if (isBBCodeBuiltIn) {
@@ -50,17 +44,19 @@
 
 			// Depending on the wysiwygare plugin availability initialize classic or inline editor.
 			if (wysiwygareaAvailable) {
-				CKEDITOR.replace(editorId);
+				editor = CKEDITOR.replace(editorId, {
+					customConfig: '../../js/richEditorConfig.js'
+				});
 			} else {
 				editorElement.setAttribute('contenteditable', 'true');
-				CKEDITOR.inline(editorId);
+				editor = CKEDITOR.inline(editorId);
 
 				// TODO we can consider displaying some info box that
 				// without wysiwygarea the classic editor may not work.
 			}
 
-			this._addCustomButton();
-			this._addDeleteHighLightButton();
+			this._addCustomButton(editor);
+			this._addDeleteHighLightButton(editor);
 
 			this._setDroppable();
 
@@ -99,44 +95,68 @@
 			EUMSSI.FilterManager.removeFilterByName(FilterManager.NAMES.GENERAL_SEARCH, null, true);
 		},
 
-		_addCustomButton : function(){
-			var editor = CKEDITOR.instances["richeditor-placeholder"];
-			editor.addCommand("myEumssiSearch", { // create named command
-				exec: function(edt) {
-					var selectedText = edt.getSelection().getSelectedText();
-					if (selectedText === "") {
-						var body = edt.document.getBody();
-						selectedText =  body.getText();
-					}
-					this._unHightlight();
-					this.clearGeneralFilter();
-					this._getSuggestedQuery(selectedText);
-				}.bind(this)
+		_searchSuggestedQueries: function(edt) {
+			var selectedText = edt.getSelection().getSelectedText();
+			if (selectedText === "") {
+				var body = edt.document.getBody();
+				selectedText = body.getText();
+			}
+			this._unHightlight();
+			this.clearGeneralFilter();
+			this._getSuggestedQuery(selectedText);
+		},
+
+		_showSuggestedQueriesAlert: function(edt) {
+			swal({
+				title: "",
+				text: "This action detects entities present in your article and search for documents related to these entities.",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Ok"
+			}, function() {
+				localStorage.setItem("firstTime", "onlyOnce");
+				this._searchSuggestedQueries(edt);
+			}.bind(this));
+		},
+
+		_addCustomButton : function(editor){
+			editor.addCommand("eumssiSearch", {
+				exec: this._onEumssiSearch.bind(this)
 			});
 
-			editor.ui.addButton('btnEumssiSearch', { // add new button and bind our command
+			editor.ui.addButton('EumssiSearch', { // add new button and bind our command
 				label: "Get Related Content",
 				title: "Uses the selected text on EUMSSI engine to obtain filter suggestions",
-				command: 'myEumssiSearch',
-				icon: '../../images/favicon-2.png'
+				command: 'eumssiSearch',
+				icon: '../../images/favicon-2.png',
+				toolbar: "highlighting"
 			});
 
 		},
 
-		_addDeleteHighLightButton: function() {
-			var editor = CKEDITOR.instances["richeditor-placeholder"];
-			editor.addCommand("deleteHighLigh", {
+		_onEumssiSearch: function(edt) {
+			if (localStorage.getItem("firstTime") === "") {
+				this._showSuggestedQueriesAlert(edt);
+			} else {
+				this._searchSuggestedQueries(edt);
+			}
+		},
+
+		_addDeleteHighLightButton: function(editor) {
+			editor.addCommand("deleteHighlighting", {
 				exec: function() {
 					this._unHightlight();
 					$(".kea-tags-container").empty().hide();
 				}.bind(this)
 			});
 
-			editor.ui.addButton('btnEumssiDeleteHighlight', { // add new button and bind our command
-				label: "Remove Righlighting",
+			editor.ui.addButton('DeleteHighlighting', { // add new button and bind our command
+				label: "Remove Highlighting",
 				title: "Remove Highlighting",
-				command: 'deleteHighLigh',
-				icon: '../../images/favicon-2.png'
+				command: 'deleteHighlighting',
+				icon: '../../images/favicon-2.png',
+				toolbar: "highlighting"
 			});
 		},
 
@@ -188,8 +208,6 @@
 			offset.top -= $body.scrollTop();
 			offset.left -=  $body.scrollLeft();
 			EUMSSI.UTIL.showMarkMenu(this.$contentMenu, $(event.currentTarget), offset);
-			// TODO REMOVE
-			console.log($(event.currentTarget).html(), entity);
 		},
 
 		_getContextHightlight: function() {
@@ -215,7 +233,7 @@
 			if(!this._query_in_progress){
 				this._query_in_progress = true;
 				var $loading = $('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw margin-bottom"></i>');
-				$("#cke_richeditor-placeholder").find(".cke_button__btneumssisearch").parent().append($loading);
+				$("#cke_richeditor-placeholder").find(".cke_button__eumssisearch").parent().append($loading);
 
 				EUMSSI.Manager.getTextFilterAnalyze(selectedText)
 			      .done(this._onGetSuggestedQuery.bind(this)).always(function() {

@@ -1357,13 +1357,13 @@ body .ui-draggable-handle.ui-draggable-dragging {
 .content .left-slide.introjs-fixParent {
   position: relative!important;
 }
-.content .left-slide .cke_inner .cke_button__btneumssisearch.introjs-relativePosition {
+.content .left-slide .cke_inner .cke_button__eumssisearch.introjs-relativePosition {
   position: relative!important;
 }
-.content .left-slide .cke_inner .cke_button__btneumssisearch .cke_button_label {
+.content .left-slide .cke_inner .cke_button__eumssisearch .cke_button_label {
   display: inline;
 }
-.content .left-slide .cke_button.cke_button__btneumssideletehighlight .cke_button__btneumssideletehighlight_label {
+.content .left-slide .cke_button.cke_button__deletehighlighting .cke_button__deletehighlighting_label {
   display: inline-block !important;
 }
 .content .left-slide .cke_toolbar i.fa {
