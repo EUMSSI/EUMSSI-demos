@@ -4,7 +4,6 @@
 	AjaxSolr.RichEditorWidget = AjaxSolr.AbstractTextWidget.extend({
 
 		start:0,	//Reset the pagination with doRequest on this Widget
-		cookieName: "firstTime",
 
 		init: function () {
 			this.$target = $(this.target);

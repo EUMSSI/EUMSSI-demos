@@ -733,32 +733,10 @@
 							}
 							$value.html(text);
 							$content.append($('<p>').append($key).append($value));
-//							this._renderKey($key, key, this.manager.response.highlighting ? this.manager.response.highlighting[doc._id] : "", doc, $value, $content);
 							break;
 					}
 				}
 			}
-
-			//show all the fields returned by the highlighting
-//			var docCopy = JSON.parse(JSON.stringify(doc)), responseHighlightingKey, highlightingKey;
-//
-//			for(responseHighlightingKey in this.manager.response.highlighting){
-//				var highlighting = this.manager.response.highlighting[responseHighlightingKey];
-//				if(responseHighlightingKey == docCopy._id){
-//					for(highlightingKey in highlighting) {
-//
-//						var isRendered = _.find(keysArray, function (key) {return key === highlightingKey});
-//						if (!isRendered && !_.contains(this.excludedFields, highlightingKey)) {
-//
-//							var $value = $('<span>').addClass("info-value"),
-//								$key = $('<span>').addClass("info-label");
-//							if (highlightingKey !== "meta.extracted.audio_transcript") {
-//								this._renderKey($key, highlightingKey, highlighting, doc, $value, $content);
-//							}
-//						}
-//					}
-//				}
-//			}
 
 			return $content;
 		},
