@@ -134,7 +134,7 @@
 							openVideo();
 						},
 						error: function() {
-							swal("This video is no longer available on file DW");
+							swal("This video is no longer available in the Deutsche Welle repository");
 						}
 					});
 				} else {

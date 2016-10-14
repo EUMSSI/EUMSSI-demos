@@ -106,9 +106,10 @@
 		},
 
 		_showSuggestedQueriesAlert: function(edt) {
+			var text = "This action detects entities in your article and it searchs for documents which include these entities";
 			swal({
 				title: "",
-				text: "This action detects entities present in your article and search for documents related to these entities.",
+				text: text,
 				type: "warning",
 				showCancelButton: true,
 				confirmButtonColor: "#DD6B55",
