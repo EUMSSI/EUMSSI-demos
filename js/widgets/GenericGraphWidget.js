@@ -83,6 +83,9 @@
 			});
 
 			q = EUMSSI.Manager.getLastQuery() || "*:*";
+			var genericwordcloudVal = $(".genericwordcloud-key-selector").val();
+			this.fieldTo = genericwordcloudVal;
+			this.field = genericwordcloudVal;
 			this.pivots = this.field + "," + this.fieldTo;
 			var p_url = "select?q=" + encodeURIComponent(q) + "&rows=0&wt=json&facet=true&facet.pivot=" + this.pivots;
 			var filters = EUMSSI.FilterManager.getFilterQueryString([
