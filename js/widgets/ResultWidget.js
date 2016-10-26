@@ -355,7 +355,8 @@
 			    "meta.extracted.text_nerl.dbpedia.Country",
 			    "meta.extracted.text_nerl.ner.PERSON",
 				"meta.extracted.text_nerl.dbpedia.LOCATION",
-				"meta.extracted.video_persons.thumbnails"
+				"meta.extracted.video_persons.thumbnails",
+			    "meta.extracted.video_ocr.best"
 			];
 		},
 		deleteKeys: function(keysArray) {
