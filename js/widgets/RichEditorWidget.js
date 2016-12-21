@@ -220,7 +220,9 @@
 			return {
 				exclude: ["img", "iframe"],
 				className: "highlight",
-				accuracy: "exactly"
+				accuracy: "exactly",
+				separateWordSearch: false,
+				acrossElements: true
 			};
 		},
 
