@@ -126,6 +126,7 @@
 				]);
 			};
 			$play.click(function() {
+				//TODO Mover al componente de Video Player
 				if (isVideoLink) {
 					$.ajax({
 						type: 'HEAD',
@@ -526,11 +527,21 @@
 		_onClickPlayAudioTranscript: function(doc, transcript){
 			var videoLink = this._getVideoLink(doc);
 			var init = parseFloat(transcript.beginTime, 10);
-			EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [
-				videoLink,
-				doc,
-				init
-			]);
+			//TODO Mover al componente de Video Player
+			if (videoLink) {
+				$.ajax({
+					type: 'HEAD',
+					url: videoLink,
+					success: function() {
+						EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, doc, init ]);
+					},
+					error: function() {
+						swal("This video is no longer available in the Deutsche Welle repository");
+					}
+				});
+			} else {
+				EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, doc, init ]);
+			}
 		},
 
 		/**
@@ -551,8 +562,21 @@
 			if(parentDoc){
 				videoLink = parentDoc['meta.source.httpHigh'] || parentDoc['meta.source.mediaurl'] || parentDoc['meta.source.httpMedium'];
 			}
-
-			EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, parentDoc, parseFloat(segmentDoc.beginOffset), parseFloat(segmentDoc.endOffset) ]);
+			//TODO Mover al componente de Video Player
+			if (videoLink) {
+				$.ajax({
+					type: 'HEAD',
+					url: videoLink,
+					success: function() {
+						EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, parentDoc, parseFloat(segmentDoc.beginOffset), parseFloat(segmentDoc.endOffset) ]);
+					},
+					error: function() {
+						swal("This video is no longer available in the Deutsche Welle repository");
+					}
+				});
+			} else {
+				EUMSSI.EventManager.trigger("videoPlayer:loadVideo", [videoLink, parentDoc, parseFloat(segmentDoc.beginOffset), parseFloat(segmentDoc.endOffset) ]);
+			}
 		},
 
 		_renderTitle: function(doc){
